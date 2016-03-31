@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/options_cat_prefs"
+        android:key="cat1">
+
+                <Preference
+                    android:title="@string/options_units"
+                    android:summary="@string/options_units2"
+                    android:key="units"
+                    />
+                <Preference
+                    android:title="@string/options_currency"
+                    android:summary="@string/options_currency2"
+                    android:key="fiat"
+                 />
+                <Preference
+                    android:title="@string/options_blockexplorer"
+                    android:summary="@string/options_blockexplorer2"
+                    android:key="explorer"
+                />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/options_cat_wallet"
+        android:key="cat4">
+                <Preference
+                    android:title="@string/options_export"
+                    android:summary="@string/options_export2"
+                    android:key="export"
+                    />
+                <Preference
+                    android:title="@string/options_restore"
+                    android:summary="@string/options_restore2"
+                    android:key="restore"
+                    />
+<!--
+                <Preference
+                    android:title="@string/options_xpub"
+                    android:summary="@string/options_xpub2"
+                    android:key="xpub"
+                    />
+-->
+        <CheckBoxPreference
+                    android:title="@string/options_pin"
+                    android:summary="@string/options_pin2"
+                    android:defaultValue="false"
+                    android:key="pin"
+                    />
+                <CheckBoxPreference
+                    android:title="@string/options_scramble_pin"
+                    android:summary="@string/options_scramble_pin2"
+                    android:defaultValue="false"
+                    android:key="scramblePin"
+                    />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/options_cat_other"
+        android:key="cat5">
+		        <Preference
+        	        android:title="@string/about_title"
+            	    android:summary="@string/about_us"
+                	android:key="about"
+                	/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

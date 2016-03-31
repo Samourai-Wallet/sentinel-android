@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/AppTheme"
+    android:orientation="vertical">
+
+    <com.baoyz.swipemenulistview.SwipeMenuListView
+        android:id="@+id/xpubList"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        />
+
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+        android:id="@+id/xpub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        fab:fab_icon="@drawable/ic_library_add_white_24dp"
+        fab:fab_colorNormal="#FFe13838"
+        fab:fab_colorPressed="#FFc42a2a"
+        fab:fab_title="@string/watchlist"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp" />
+
+</RelativeLayout>

@@ -1,0 +1,41 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "com.samourai.sentinel"
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 12
+        versionName "2.0.4"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.baoyz.swipemenulistview:library:1.2.1'
+    compile files('libs/commons-codec-1.10.jar')
+    compile files('libs/core-1.51.0.0.jar')
+    compile files('libs/guava-16.0.1.jar')
+    compile files('libs/prov-1.51.0.0.jar')
+    compile files('libs/slf4j-api-1.6.2.jar')
+    compile files('libs/core-2.2-SNAPSHOT.jar')
+    compile files('libs/zbar.jar')
+    compile files('libs/json-simple-1.1.jar')
+    compile files('libs/protobuf-java-2.5.0.jar')
+    compile files('libs/bitcoinj-0.11x.jar')
+    compile 'net.i2p.android.ext:floatingactionbutton:1.9.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+}
