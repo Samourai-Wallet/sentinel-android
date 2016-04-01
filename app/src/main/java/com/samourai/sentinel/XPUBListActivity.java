@@ -341,12 +341,12 @@ public class XPUBListActivity extends Activity {
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                        dialog.dismiss();
-
                         String label = etLabel.getText().toString().trim();
                         updateXPUBs(xpub, label, false);
                         xpubs = getXPUBS();
                         xpubAdapter.notifyDataSetChanged();
+
+                        dialog.dismiss();
 
                     }
 

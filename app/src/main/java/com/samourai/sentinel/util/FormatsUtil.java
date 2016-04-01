@@ -48,75 +48,6 @@ public class FormatsUtil {
 		}
 	}
 
-	public boolean isBitcoinUri(final String s) {
-
-		boolean ret = false;
-		BitcoinURI uri = null;
-		
-		try {
-			uri = new BitcoinURI(s);
-			ret = true;
-		}
-		catch(BitcoinURIParseException bupe) {
-			ret = false;
-		}
-		
-		return ret;
-	}
-
-	public String getBitcoinUri(final String s) {
-
-		String ret = null;
-		BitcoinURI uri = null;
-		
-		try {
-			uri = new BitcoinURI(s);
-			ret = uri.toString();
-		}
-		catch(BitcoinURIParseException bupe) {
-			ret = null;
-		}
-		
-		return ret;
-	}
-
-	public String getBitcoinAddress(final String s) {
-
-		String ret = null;
-		BitcoinURI uri = null;
-		
-		try {
-			uri = new BitcoinURI(s);
-			ret = uri.getAddress().toString();
-		}
-		catch(BitcoinURIParseException bupe) {
-			ret = null;
-		}
-
-		return ret;
-	}
-
-	public String getBitcoinAmount(final String s) {
-
-		String ret = null;
-		BitcoinURI uri = null;
-		
-		try {
-			uri = new BitcoinURI(s);
-			if(uri.getAmount() != null) {
-				ret = uri.getAmount().toString();
-			}
-			else {
-				ret = "0.0000";
-			}
-		}
-		catch(BitcoinURIParseException bupe) {
-			ret = null;
-		}
-
-		return ret;
-	}
-
 	public boolean isValidBitcoinAddress(final String address) {
 
 		boolean ret = false;
@@ -136,24 +67,6 @@ public class FormatsUtil {
 		}
 
 		return ret;
-	}
-
-	public boolean isValidEmailAddress(final String address) {
-		if(emailPattern.matcher(address).matches()) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-	public boolean isValidMobileNumber(final String mobile) {
-		if(phonePattern.matcher(mobile).matches()) {
-			return true;
-		}
-		else {
-			return false;
-		}
 	}
 
 	private String uri2BitcoinAddress(final String address) {

@@ -150,9 +150,11 @@ public class MainActivity2 extends Activity {
 
                             try {
                                 JSONObject obj = SamouraiSentinel.getInstance(MainActivity2.this).deserialize(null);
+
                                 SamouraiSentinel.getInstance(MainActivity2.this).parseJSON(obj);
 
                                 if(SamouraiSentinel.getInstance(MainActivity2.this).getXPUBs().keySet().size() < 1 && SamouraiSentinel.getInstance(MainActivity2.this).getLegacy().keySet().size() < 1)    {
+
                                     Intent intent = new Intent(MainActivity2.this, InitActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);

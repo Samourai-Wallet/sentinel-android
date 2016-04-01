@@ -56,60 +56,17 @@ public class AppUtil {
 		return instance;
 	}
 
-	public void wipeApp() {
-        try {
-            HD_WalletFactory.getInstance(context).wipe();
-        }
-        catch(IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        final ComponentName component = new ComponentName("com.samourai.wallet", "com.samourai.wallet.MainActivity");
-        context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-        PrefsUtil.getInstance(context).setValue(PrefsUtil.ICON_HIDDEN, false);
-
-        APIFactory.getInstance(context).setXpubBalance(0L);
-		PrefsUtil.getInstance(context).clear();
-        AccessFactory.getInstance(context).setIsLoggedIn(false);
-	}
-
-	public void restartApp() {
-		Intent intent = new Intent(context, MainActivity2.class);
-        if(PrefsUtil.getInstance(context).getValue(PrefsUtil.ICON_HIDDEN, false) == true) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        }
-        else {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        }
-		context.startActivity(intent);
-	}
-
-	public void restartApp(String name, boolean value) {
-		Intent intent = new Intent(context, MainActivity2.class);
-        if(PrefsUtil.getInstance(context).getValue(PrefsUtil.ICON_HIDDEN, false) == true) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        }
-        else {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        }
-		if(name != null) {
-    		intent.putExtra(name, value);
-		}
-		context.startActivity(intent);
-	}
-
-    public boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
+    public void restartApp() {
+        Intent intent = new Intent(context, MainActivity2.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
-    public boolean isInForeground() {
-        return isInForeground;
+    public void restartApp(boolean verified) {
+        Intent intent = new Intent(context, MainActivity2.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("verified", verified);
+        context.startActivity(intent);
     }
 
     public void setIsInForeground(boolean foreground) {

@@ -6,31 +6,24 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
-import android.text.InputType;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+//import android.widget.Toast;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import com.samourai.sentinel.access.AccessFactory;
-import com.samourai.sentinel.crypto.AESUtil;
 import com.samourai.sentinel.util.AppUtil;
-import com.samourai.sentinel.util.CharSequenceX;
 import com.samourai.sentinel.util.FormatsUtil;
 
 import net.sourceforge.zbar.Symbol;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -75,7 +68,16 @@ public class InitActivity extends Activity {
         if(resultCode == Activity.RESULT_OK && requestCode == SCAN_XPUB)	{
 
             if(data != null && data.getStringExtra(ZBarConstants.SCAN_RESULT) != null)	{
-                final String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT);
+
+                String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT);
+
+                if(strResult.startsWith("bitcoin:"))    {
+                    strResult = strResult.substring(8);
+                }
+                if(strResult.indexOf("?") != -1)   {
+                    strResult = strResult.substring(0, strResult.indexOf("?"));
+                }
+
                 addXPUB(strResult);
             }
         }
@@ -184,7 +186,8 @@ public class InitActivity extends Activity {
 
                         String label = etLabel.getText().toString().trim();
                         updateXPUBs(xpub, label, false);
-                        AppUtil.getInstance(InitActivity.this).restartApp();
+
+                        AppUtil.getInstance(InitActivity.this).restartApp(true);
 
                     }
 
@@ -218,7 +221,7 @@ public class InitActivity extends Activity {
                 label = getString(R.string.new_account);
             }
 
-            if(xpub.startsWith("xpub")) {
+            if(FormatsUtil.getInstance().isValidXpub(xpub)) {
                 SamouraiSentinel.getInstance(InitActivity.this).getXPUBs().put(xpub, label);
             }
             else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub)) {
@@ -232,9 +235,9 @@ public class InitActivity extends Activity {
         try {
             SamouraiSentinel.getInstance(InitActivity.this).serialize(SamouraiSentinel.getInstance(InitActivity.this).toJSON(), null);
         } catch (IOException ioe) {
-            ;
+            ioe.printStackTrace();
         } catch (JSONException je) {
-            ;
+            je.printStackTrace();
         }
 
     }

@@ -1,7 +1,7 @@
 package com.samourai.sentinel;
 
 import android.content.Context;
-import android.util.Log;
+//import android.util.Log;
 
 import com.samourai.sentinel.crypto.AESUtil;
 import com.samourai.sentinel.util.CharSequenceX;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -39,7 +38,6 @@ public class SamouraiSentinel {
     private static Context context = null;
 
     private static int currentSelectedAccount = 0;
-    private static boolean showTotalBalance = false;
 
     private static String dataDir = "wallet";
     private static String strFilename = "sentinel.dat";
@@ -68,14 +66,6 @@ public class SamouraiSentinel {
 
     public int getCurrentSelectedAccount() {
         return currentSelectedAccount;
-    }
-
-    public void setShowTotalBalance(boolean show) {
-        showTotalBalance = show;
-    }
-
-    public boolean getShowTotalBalance() {
-        return showTotalBalance;
     }
 
     public HashMap<String,String> getXPUBs()    { return xpubs; }
@@ -166,7 +156,6 @@ public class SamouraiSentinel {
 
         // serialize to byte array.
         String jsonstr = jsonobj.toString(4);
-        byte[] cleartextBytes = jsonstr.getBytes(Charset.forName("UTF-8"));
 
         // prepare tmp file.
         if(tmpfile.exists()) {
@@ -203,7 +192,6 @@ public class SamouraiSentinel {
 
         File dir = context.getDir(dataDir, Context.MODE_PRIVATE);
         File file = new File(dir, strFilename);
-        Log.i("SamouraiSentinel", "payload exists: " + file.exists());
         StringBuilder sb = new StringBuilder();
 
         BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
