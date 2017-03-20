@@ -80,6 +80,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
         />
 
+        <service android:enabled="true" android:name="com.samourai.sentinel.service.WebSocketService" />
+
     </application>
 
 </manifest>

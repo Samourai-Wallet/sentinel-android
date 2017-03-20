@@ -45,7 +45,9 @@ import com.samourai.sentinel.api.Tx;
 import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
+import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.util.AddressFactory;
+import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.BlockExplorerUtil;
 import com.samourai.sentinel.util.DateUtil;
 import com.samourai.sentinel.util.ExchangeRateFactory;
@@ -254,6 +256,10 @@ public class BalanceFragment extends Fragment {
                 android.R.color.holo_red_light);
 
         refreshTx(false);
+
+        if(!AppUtil.getInstance(getActivity().getApplicationContext()).isServiceRunning(WebSocketService.class)) {
+            getActivity().startService(new Intent(getActivity().getApplicationContext(), WebSocketService.class));
+        }
 
         return rootView;
     }
