@@ -119,6 +119,17 @@ public class XPUBListActivity extends Activity {
 
                     case 1:
 
+                    {
+                        Intent intent = new Intent(XPUBListActivity.this, ShowQRActivity.class);
+                        intent.putExtra("label", xpubs.get(position).first);
+                        intent.putExtra("xpub", xpubs.get(position).second);
+                        startActivity(intent);
+                    }
+
+                    break;
+
+                    case 2:
+
                         final EditText etLabel = new EditText(XPUBListActivity.this);
                         etLabel.setSingleLine(true);
                         etLabel.setHint(getText(R.string.xpub_label));
@@ -173,6 +184,17 @@ public class XPUBListActivity extends Activity {
                 deleteItem.setIcon(R.drawable.ic_close_white_24dp);
                 // add to menu
                 menu.addMenuItem(deleteItem);
+
+                // create "qr" item
+                SwipeMenuItem qrItem = new SwipeMenuItem(getApplicationContext());
+                // set item background
+                qrItem.setBackground(new ColorDrawable(Color.rgb(0x17, 0x1B, 0x24)));
+                // set item width
+                qrItem.setWidth(180);
+                // set a icon
+                qrItem.setIcon(R.drawable.ic_receive_qr);
+                // add to menu
+                menu.addMenuItem(qrItem);
 
                 // create "edit" item
                 SwipeMenuItem openItem = new SwipeMenuItem(getApplicationContext());
