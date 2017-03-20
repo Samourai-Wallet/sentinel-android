@@ -46,27 +46,15 @@ import java.util.TimerTask;
 
 public class MainActivity2 extends Activity {
 
-    private final static int SCAN_XPUB = 2011;
-
     private ProgressDialog progress = null;
 
     private CharSequence mTitle;
-
-    private boolean isInForeground = false;
-
-    private Timer timer = null;
-    private Handler handler = null;
 
     private static String[] account_selections = null;
     private static ArrayAdapter<String> adapter = null;
     private static ActionBar.OnNavigationListener navigationListener = null;
 
     private static boolean loadedBalanceFragment = false;
-
-    public static final String MIME_TEXT_PLAIN = "text/plain";
-    private static final int MESSAGE_SENT = 1;
-
-    private static int timer_updates = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +149,6 @@ public class MainActivity2 extends Activity {
                                 }
                                 else    {
                                     restoreWatchOnly();
-                                    doTimer();
                                 }
 
                             }
@@ -309,34 +296,6 @@ public class MainActivity2 extends Activity {
         TimeOutUtil.getInstance().updatePin();
         Intent intent = new Intent(MainActivity2.this, SettingsActivity.class);
         startActivity(intent);
-    }
-
-    private void doTimer() {
-
-        if(timer == null) {
-            timer = new Timer();
-            handler = new Handler();
-
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            timer_updates++;
-                            if(timer_updates % 20 == 0)    {
-                                exchangeRateThread();
-                            }
-
-                            Intent intent = new Intent("com.samourai.wallet.BalanceFragment.REFRESH");
-                            LocalBroadcastManager.getInstance(MainActivity2.this).sendBroadcast(intent);
-                        }
-                    });
-                }
-            }, 15000, 15000);
-        }
-
     }
 
     private void exchangeRateThread() {
