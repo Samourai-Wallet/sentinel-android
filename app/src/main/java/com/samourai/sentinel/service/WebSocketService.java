@@ -8,6 +8,7 @@ import android.os.IBinder;
 
 import com.google.bitcoin.crypto.MnemonicException;
 import com.samourai.sentinel.hd.HD_WalletFactory;
+import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,9 +49,8 @@ public class WebSocketService extends Service {
             mle.printStackTrace();
         }
 
-//        addrSubs = ReceiveLookAtUtil.getInstance().getReceives();
-        addrSubs = new ArrayList<String>();
-        String[] _addrs = addrSubs.toArray(new String[addrSubs.size()]);
+        addrSubs = ReceiveLookAtUtil.getInstance().getReceives();
+        addrs = addrSubs.toArray(new String[addrSubs.size()]);
 
         webSocketHandler = new WebSocketHandler(WebSocketService.this, addrs);
         connectToWebsocketIfNotConnected();

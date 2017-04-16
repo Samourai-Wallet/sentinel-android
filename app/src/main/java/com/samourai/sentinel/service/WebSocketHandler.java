@@ -15,6 +15,7 @@ import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
 
 import com.samourai.sentinel.R;
+import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,14 +63,14 @@ public class WebSocketHandler {
         send("{\"op\":\"blocks_sub\"}");
         Log.i("WebSocketHandler", "{\"op\":\"blocks_sub\"}");
 
-        /*
-        for(int i = 0; i < addrs.length; i++) {
-            if(addrs[i] != null && addrs[i].length() > 0) {
-                send("{\"op\":\"addr_sub\", \"addr\":\""+ addrs[i] + "\"}");
-//                Log.i("WebSocketHandler", "{\"op\":\"addr_sub\",\"addr\":\"" + addrs[i] + "\"}");
+        if(addrs != null && addrs.length > 0)    {
+            for(int i = 0; i < addrs.length; i++) {
+                if(addrs[i] != null && addrs[i].length() > 0) {
+                    send("{\"op\":\"addr_sub\", \"addr\":\""+ addrs[i] + "\"}");
+                    Log.i("WebSocketHandler", "{\"op\":\"addr_sub\",\"addr\":\"" + addrs[i] + "\"}");
+                }
             }
         }
-        */
 
     }
 
@@ -128,7 +129,7 @@ public class WebSocketHandler {
 
                 Looper.prepare();
 
-                Intent intent = new Intent("com.samourai.wallet.ReceiveFragment.REFRESH");
+                Intent intent = new Intent("com.samourai.sentinel.ReceiveFragment.REFRESH");
                 intent.putExtra("received_on", address);
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
@@ -172,7 +173,7 @@ public class WebSocketHandler {
                                         return;
                                     }
 
-//                                        Log.i("WebSocketHandler", jsonObject.toString());
+//                                    Log.i("WebSocketHandler", jsonObject.toString());
 
                                     String op = (String) jsonObject.get("op");
 
@@ -207,7 +208,6 @@ public class WebSocketHandler {
                                             JSONObject outObj = null;
                                             for (int j = 0; j < outArray.length(); j++) {
                                                 outObj = (JSONObject) outArray.get(j);
-                                                /*
                                                 if(outObj.has("addr") && ReceiveLookAtUtil.getInstance().contains(outObj.getString("addr")))   {
                                                     total_value += value;
                                                     out_addr = outObj.getString("addr");
@@ -215,7 +215,6 @@ public class WebSocketHandler {
                                                 else    {
                                                     ;
                                                 }
-                                                */
                                             }
                                         }
 
