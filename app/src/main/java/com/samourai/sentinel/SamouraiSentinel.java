@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.samourai.sentinel.crypto.AESUtil;
 import com.samourai.sentinel.util.CharSequenceX;
+import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -105,6 +106,11 @@ public class SamouraiSentinel {
                     }
                 }
             }
+
+            if(obj != null && obj.has("receives"))    {
+                ReceiveLookAtUtil.getInstance().fromJSON(obj.getJSONArray("receives"));
+            }
+
         }
         catch(JSONException ex) {
             throw new RuntimeException(ex);
@@ -132,6 +138,8 @@ public class SamouraiSentinel {
                 _addr.put(_obj);
             }
             obj.put("legacy", _addr);
+
+            obj.put("receives", ReceiveLookAtUtil.getInstance().toJSON());
 
             return obj;
         }

@@ -24,6 +24,7 @@ import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
+import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.ConnectivityStatus;
@@ -219,6 +220,10 @@ public class MainActivity2 extends Activity {
     protected void onDestroy() {
 
         AppUtil.getInstance(MainActivity2.this).deleteQR();
+
+        if(AppUtil.getInstance(MainActivity2.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
+            stopService(new Intent(MainActivity2.this.getApplicationContext(), WebSocketService.class));
+        }
 
         super.onDestroy();
     }

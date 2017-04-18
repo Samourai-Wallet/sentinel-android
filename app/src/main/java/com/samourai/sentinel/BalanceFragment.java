@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,7 +45,9 @@ import com.samourai.sentinel.api.Tx;
 import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
+import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.util.AddressFactory;
+import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.BlockExplorerUtil;
 import com.samourai.sentinel.util.DateUtil;
 import com.samourai.sentinel.util.ExchangeRateFactory;
@@ -87,6 +90,7 @@ public class BalanceFragment extends Fragment {
     private List<Tx> txs = null;
     private HashMap<String, Boolean> txStates = null;
     private TransactionAdapter txAdapter = null;
+    private SwipeRefreshLayout swipeRefreshLayout = null;
 
     private FloatingActionsMenu ibQuickSend = null;
     private FloatingActionButton actionReceive = null;
@@ -117,7 +121,7 @@ public class BalanceFragment extends Fragment {
                     @Override
                     public void run() {
                         displayBalance();
-                        refreshTx();
+                        refreshTx(false);
                     }
                 });
 
@@ -183,24 +187,7 @@ public class BalanceFragment extends Fragment {
 
             }
         });
-/*
-        actionShapeShift = (FloatingActionButton)rootView.findViewById(R.id.shapeshift);
-        actionShapeShift.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
 
-                if(SamouraiSentinel.getInstance(getActivity()).getCurrentSelectedAccount() == 0)    {
-                    Toast.makeText(getActivity(), R.string.select_account, Toast.LENGTH_SHORT).show();
-                }
-                else    {
-                    TimeOutUtil.getInstance().updatePin();
-                    Intent intent = new Intent(getActivity(), ShapeShiftActivity.class);
-                    startActivity(intent);
-                }
-
-            }
-        });
-*/
         txList = (ListView)rootView.findViewById(R.id.txList);
         txAdapter = new TransactionAdapter();
         txList.setAdapter(txAdapter);
@@ -249,7 +236,30 @@ public class BalanceFragment extends Fragment {
             txList.setDivider(new ColorDrawable(R.color.divider));
         }
 
-        refreshTx();
+        swipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshTx(true);
+                    }
+                });
+
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        refreshTx(false);
+
+        if(!AppUtil.getInstance(getActivity().getApplicationContext()).isServiceRunning(WebSocketService.class)) {
+            getActivity().startService(new Intent(getActivity().getApplicationContext(), WebSocketService.class));
+        }
 
         return rootView;
     }
@@ -260,7 +270,7 @@ public class BalanceFragment extends Fragment {
 
         if(isVisibleToUser) {
             displayBalance();
-            refreshTx();
+            refreshTx(false);
         }
         else {
             ;
@@ -275,7 +285,7 @@ public class BalanceFragment extends Fragment {
         LocalBroadcastManager.getInstance(thisActivity).registerReceiver(receiver, filter);
 
         displayBalance();
-        refreshTx();
+        refreshTx(false);
 
     }
 
@@ -285,25 +295,7 @@ public class BalanceFragment extends Fragment {
 
         LocalBroadcastManager.getInstance(thisActivity).unregisterReceiver(receiver);
     }
-/*
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(resultCode == Activity.RESULT_OK && requestCode == SCAN_URI)	{
-            if(data != null && data.getStringExtra(ZBarConstants.SCAN_RESULT) != null)	{
-                String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT);
-//                doScan(strResult);
-            }
-        }
-        else if(resultCode == Activity.RESULT_CANCELED && requestCode == SCAN_URI)	{
-            ;
-        }
-        else {
-            ;
-        }
-
-    }
-*/
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -465,7 +457,7 @@ public class BalanceFragment extends Fragment {
 
     }
 
-    public void refreshTx() {
+    public void refreshTx(final boolean dragged) {
 
         final Handler handler = new Handler();
 
@@ -511,6 +503,9 @@ public class BalanceFragment extends Fragment {
 
                 handler.post(new Runnable() {
                     public void run() {
+                        if(dragged)    {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
                         txAdapter.notifyDataSetChanged();
                         displayBalance();
                     }

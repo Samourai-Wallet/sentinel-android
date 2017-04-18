@@ -4,8 +4,11 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Display;
@@ -35,11 +39,13 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.encode.QRCodeEncoder;
 import com.samourai.sentinel.api.APIFactory;
+import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.ExchangeRateFactory;
 import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
+import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
 import org.json.JSONObject;
 
@@ -95,6 +101,37 @@ public class ReceiveFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    public static final String ACTION_INTENT = "com.samourai.sentinel.ReceiveFragment.REFRESH";
+
+    protected BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(ACTION_INTENT.equals(intent.getAction())) {
+
+                Bundle extras = intent.getExtras();
+                if(extras != null && extras.containsKey("received_on"))	{
+                    String in_addr = extras.getString("received_on");
+
+                    if(in_addr.equals(addr))    {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                getActivity().getFragmentManager().beginTransaction().remove(ReceiveFragment.this).commit();
+
+                            }
+                        });
+
+                    }
+
+                }
+
+            }
+
+        }
+    };
 
     public ReceiveFragment() {
         ;
@@ -332,6 +369,9 @@ public class ReceiveFragment extends Fragment {
         };
         edAmountFiat.addTextChangedListener(textWatcherFiat);
 
+        IntentFilter filter = new IntentFilter(ACTION_INTENT);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
+
         displayQRCode();
 
         return rootView;
@@ -340,6 +380,7 @@ public class ReceiveFragment extends Fragment {
     @Override
     public void onDestroy() {
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
         super.onDestroy();
     }
 
@@ -479,6 +520,19 @@ public class ReceiveFragment extends Fragment {
 
         tvAddress.setText(addr);
         checkPrevUse();
+
+        ReceiveLookAtUtil.getInstance().add(addr);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(AppUtil.getInstance(getActivity().getApplicationContext()).isServiceRunning(WebSocketService.class)) {
+                    getActivity().stopService(new Intent(getActivity().getApplicationContext(), WebSocketService.class));
+                }
+                getActivity().startService(new Intent(getActivity().getApplicationContext(), WebSocketService.class));
+            }
+        }).start();
+
     }
 
     private Bitmap generateQRCode(String uri) {
