@@ -33,7 +33,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 //import android.util.Log;
 
-import com.google.bitcoin.uri.BitcoinURI;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Coin;
+import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.uri.BitcoinURI;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.android.Contents;
@@ -503,9 +506,8 @@ public class ReceiveFragment extends Fragment {
             }
 
             long lamount = (long)(amount * 1e8);
-            bamount = BigInteger.valueOf(lamount);
             if(!bamount.equals(BigInteger.ZERO)) {
-                ivQR.setImageBitmap(generateQRCode(BitcoinURI.convertToBitcoinURI(addr, bamount, null, null)));
+                ivQR.setImageBitmap(generateQRCode(BitcoinURI.convertToBitcoinURI(Address.fromBase58(MainNetParams.get(), addr), Coin.valueOf(lamount), null, null)));
             }
             else {
                 ivQR.setImageBitmap(generateQRCode(addr));
