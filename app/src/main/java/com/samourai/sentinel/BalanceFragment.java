@@ -19,8 +19,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,20 +27,16 @@ import android.view.ViewGroup;
 import android.view.animation.AnticipateInterpolator;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+//import android.widget.Toast;
+//import android.util.Log;
 
-import com.dm.zbar.android.scanner.ZBarConstants;
-import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import com.google.bitcoin.crypto.MnemonicException;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.api.Tx;
-import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
 import com.samourai.sentinel.service.WebSocketService;
@@ -51,26 +45,18 @@ import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.BlockExplorerUtil;
 import com.samourai.sentinel.util.DateUtil;
 import com.samourai.sentinel.util.ExchangeRateFactory;
-import com.samourai.sentinel.util.FormatsUtil;
 import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.TimeOutUtil;
 import com.samourai.sentinel.util.TypefaceUtil;
 
-import net.sourceforge.zbar.Symbol;
-
-import org.apache.commons.lang.StringUtils;
 import org.bitcoinj.core.Coin;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
