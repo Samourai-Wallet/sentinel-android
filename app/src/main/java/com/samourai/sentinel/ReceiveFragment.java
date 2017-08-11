@@ -468,7 +468,7 @@ public class ReceiveFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
 
                 if (canRefresh) {
-                    addr = getReceiveAddress();
+                    addr = SamouraiSentinel.getInstance(getActivity()).getReceiveAddress();
                     canRefresh = false;
                     displayQRCode();
                 }
