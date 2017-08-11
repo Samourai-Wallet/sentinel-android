@@ -3,10 +3,10 @@ package com.samourai.sentinel.hd;
 import android.content.Context;
 //import android.util.Log;
 
-import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.crypto.MnemonicException;
-import com.google.bitcoin.params.MainNetParams;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.crypto.MnemonicException;
+import org.bitcoinj.params.MainNetParams;
 import com.samourai.sentinel.crypto.AESUtil;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.CharSequenceX;

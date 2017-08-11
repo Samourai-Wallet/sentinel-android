@@ -2,9 +2,9 @@ package com.samourai.sentinel.hd;
 
 //import android.util.Log;
 
-import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.crypto.DeterministicKey;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.crypto.DeterministicKey;
 import com.samourai.sentinel.api.APIFactory;
 
 import org.json.JSONArray;

@@ -39,7 +39,8 @@ dependencies {
     compile files('libs/zbar.jar')
     compile files('libs/json-simple-1.1.jar')
     compile files('libs/protobuf-java-2.5.0.jar')
-    compile files('libs/bitcoinj-0.11x.jar')
+    compile 'org.bitcoinj:bitcoinj-core:0.14.4'
+    compile 'org.apache.commons:commons-lang3:3.3'
     compile 'net.i2p.android.ext:floatingactionbutton:1.9.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
 }

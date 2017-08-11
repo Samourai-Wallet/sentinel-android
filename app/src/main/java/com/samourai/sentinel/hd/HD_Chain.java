@@ -1,8 +1,8 @@
 package com.samourai.sentinel.hd;
 
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.crypto.DeterministicKey;
-import com.google.bitcoin.crypto.HDKeyDerivation;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.crypto.DeterministicKey;
+import org.bitcoinj.crypto.HDKeyDerivation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +39,7 @@ public class HD_Chain {
             mAddresses.add(new HD_Address(mParams, cKey, i));
         }
 
-        strPath = cKey.getPath();
+        strPath = cKey.getPath().toString();
     }
 
     public HD_Address getAddressAt(int addrIdx) {
