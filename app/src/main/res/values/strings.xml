@@ -203,4 +203,10 @@
 
     <string name="choose_email_client">Choose an Email client:</string>
 
+    <string name="bip32_account">BIP32 account</string>
+    <string name="bip44_account">BIP44 account</string>
+    <string name="unsupported_depth">Unsupported XPUB format</string>
+    <string name="base58_error">Unrecognized format</string>
+    <string name="invalid_entry">Invalid XPUB or bitcoin address</string>
+
 </resources>
