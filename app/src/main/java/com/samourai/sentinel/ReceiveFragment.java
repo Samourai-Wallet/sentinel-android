@@ -43,7 +43,6 @@ import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.encode.QRCodeEncoder;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.service.WebSocketService;
-import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.ExchangeRateFactory;
 import com.samourai.sentinel.util.MonetaryUtil;
@@ -177,7 +176,7 @@ public class ReceiveFragment extends Fragment {
         display.getSize(size);
         imgWidth = size.x - 240;
 
-        addr = getReceiveAddress();
+        addr = SamouraiSentinel.getInstance(getActivity()).getReceiveAddress();
 
         addressLayout = (LinearLayout)rootView.findViewById(R.id.receive_address_layout);
         addressLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -218,7 +217,7 @@ public class ReceiveFragment extends Fragment {
             @Override
             public void onSwipeLeft() {
                 if(canRefresh) {
-                    addr = getReceiveAddress();
+                    addr = SamouraiSentinel.getInstance(getActivity()).getReceiveAddress();
                     canRefresh = false;
                     displayQRCode();
                 }
@@ -602,29 +601,6 @@ public class ReceiveFragment extends Fragment {
     public String getDisplayUnits() {
 
         return (String) MonetaryUtil.getInstance().getBTCUnits()[PrefsUtil.getInstance(getActivity()).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC)];
-
-    }
-
-    private String getReceiveAddress()  {
-
-        final Set<String> xpubKeys = SamouraiSentinel.getInstance(getActivity()).getXPUBs().keySet();
-        final Set<String> legacyKeys = SamouraiSentinel.getInstance(getActivity()).getLegacy().keySet();
-        final List<String> xpubList = new ArrayList<String>();
-        xpubList.addAll(xpubKeys);
-        xpubList.addAll(legacyKeys);
-
-        String addr = null;
-
-        if(xpubList.get(SamouraiSentinel.getInstance(getActivity()).getCurrentSelectedAccount() - 1).startsWith("xpub"))    {
-            String xpub = xpubList.get(SamouraiSentinel.getInstance(getActivity()).getCurrentSelectedAccount() - 1);
-            int account = AddressFactory.getInstance(getActivity()).xpub2account().get(xpub);
-            addr = AddressFactory.getInstance(getActivity()).get(AddressFactory.RECEIVE_CHAIN, account);
-        }
-        else    {
-            addr = xpubList.get(SamouraiSentinel.getInstance(getActivity()).getCurrentSelectedAccount() - 1);
-        }
-
-        return addr;
 
     }
 

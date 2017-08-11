@@ -12,26 +12,38 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Toast;
 //import android.util.Log;
 
-import com.google.bitcoin.core.AddressFormatException;
+import com.dm.zbar.android.scanner.ZBarConstants;
+import com.dm.zbar.android.scanner.ZBarScannerActivity;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.crypto.BIP38PrivateKey;
+import org.bitcoinj.params.MainNetParams;
 import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
 import com.samourai.sentinel.service.WebSocketService;
+import com.samourai.sentinel.sweep.PrivKeyReader;
+import com.samourai.sentinel.sweep.SweepUtil;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.AppUtil;
+import com.samourai.sentinel.util.CharSequenceX;
 import com.samourai.sentinel.util.ConnectivityStatus;
 import com.samourai.sentinel.util.ExchangeRateFactory;
 import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.TimeOutUtil;
 import com.samourai.sentinel.util.Web;
+
+import net.sourceforge.zbar.Symbol;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.lang.StringUtils;
@@ -47,7 +59,7 @@ import java.util.TimerTask;
 
 public class MainActivity2 extends Activity {
 
-    private final static int SCAN_XPUB = 2011;
+    private final static int SCAN_COLD_STORAGE = 2011;
 
     private ProgressDialog progress = null;
 
@@ -63,9 +75,6 @@ public class MainActivity2 extends Activity {
     private static ActionBar.OnNavigationListener navigationListener = null;
 
     private static boolean loadedBalanceFragment = false;
-
-    public static final String MIME_TEXT_PLAIN = "text/plain";
-    private static final int MESSAGE_SENT = 1;
 
     private static int timer_updates = 0;
 
@@ -263,6 +272,9 @@ public class MainActivity2 extends Activity {
         if (id == R.id.action_settings) {
             doSettings();
         }
+        else if (id == R.id.action_sweep) {
+            confirmAccountSelection();
+        }
         else {
             ;
         }
@@ -308,6 +320,28 @@ public class MainActivity2 extends Activity {
         }
 
         return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(resultCode == Activity.RESULT_OK && requestCode == SCAN_COLD_STORAGE)	{
+
+            if(data != null && data.getStringExtra(ZBarConstants.SCAN_RESULT) != null)	{
+
+                final String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT);
+
+                doPrivKey(strResult);
+
+            }
+        }
+        else if(resultCode == Activity.RESULT_CANCELED && requestCode == SCAN_COLD_STORAGE)	{
+            ;
+        }
+        else {
+            ;
+        }
+
     }
 
     private void doSettings()	{
@@ -541,6 +575,212 @@ public class MainActivity2 extends Activity {
 
             }
         }).start();
+
+    }
+
+    private void doSweepViaScan()	{
+        Intent intent = new Intent(MainActivity2.this, ZBarScannerActivity.class);
+        intent.putExtra(ZBarConstants.SCAN_MODES, new int[]{ Symbol.QRCODE } );
+        startActivityForResult(intent, SCAN_COLD_STORAGE);
+    }
+
+    private void doSweep()   {
+
+        AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity2.this)
+                .setTitle(R.string.app_name)
+                .setMessage(R.string.action_sweep)
+                .setCancelable(false)
+                .setPositiveButton(R.string.enter_privkey, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        final EditText privkey = new EditText(MainActivity2.this);
+                        privkey.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+                        AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity2.this)
+                                .setTitle(R.string.app_name)
+                                .setMessage(R.string.enter_privkey)
+                                .setView(privkey)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        final String strPrivKey = privkey.getText().toString();
+
+                                        if(strPrivKey != null && strPrivKey.length() > 0)    {
+                                            doPrivKey(strPrivKey);
+                                        }
+
+                                    }
+                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        dialog.dismiss();
+
+                                    }
+                                });
+                        if(!isFinishing())    {
+                            dlg.show();
+                        }
+
+                    }
+
+                }).setNegativeButton(R.string.scan, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        doSweepViaScan();
+
+                    }
+                });
+        if(!isFinishing())    {
+            dlg.show();
+        }
+
+    }
+
+    private void doPrivKey(final String data) {
+
+        PrivKeyReader privKeyReader = null;
+
+        String format = null;
+        try	{
+            privKeyReader = new PrivKeyReader(new CharSequenceX(data), null);
+            format = privKeyReader.getFormat();
+        }
+        catch(Exception e)	{
+            Toast.makeText(MainActivity2.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(format != null)	{
+
+            if(format.equals(PrivKeyReader.BIP38))	{
+
+                final PrivKeyReader pvr = privKeyReader;
+
+                final EditText password38 = new EditText(MainActivity2.this);
+
+                AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity2.this)
+                        .setTitle(R.string.app_name)
+                        .setMessage(R.string.bip38_pw)
+                        .setView(password38)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+
+                                String password = password38.getText().toString();
+
+                                ProgressDialog progress = new ProgressDialog(MainActivity2.this);
+                                progress.setCancelable(false);
+                                progress.setTitle(R.string.app_name);
+                                progress.setMessage(getString(R.string.decrypting_bip38));
+                                progress.show();
+
+                                boolean keyDecoded = false;
+
+                                try {
+                                    BIP38PrivateKey bip38 = new BIP38PrivateKey(MainNetParams.get(), data);
+                                    final ECKey ecKey = bip38.decrypt(password);
+                                    if(ecKey != null && ecKey.hasPrivKey()) {
+
+                                        if(progress != null && progress.isShowing())    {
+                                            progress.cancel();
+                                        }
+
+                                        pvr.setPassword(new CharSequenceX(password));
+                                        keyDecoded = true;
+
+                                        Toast.makeText(MainActivity2.this, pvr.getFormat(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity2.this, pvr.getKey().toAddress(MainNetParams.get()).toString(), Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }
+                                catch(Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(MainActivity2.this, R.string.bip38_pw_error, Toast.LENGTH_SHORT).show();
+                                }
+
+                                if(progress != null && progress.isShowing())    {
+                                    progress.cancel();
+                                }
+
+                                if(keyDecoded)    {
+                                    String strReceiveAddress = SamouraiSentinel.getInstance(MainActivity2.this).getReceiveAddress();
+                                    if(strReceiveAddress != null)    {
+                                        SweepUtil.getInstance(MainActivity2.this).sweep(pvr, strReceiveAddress);
+                                    }
+                                }
+
+                            }
+                        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+
+                                Toast.makeText(MainActivity2.this, R.string.bip38_pw_error, Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                if(!isFinishing())    {
+                    dlg.show();
+                }
+
+            }
+            else if(privKeyReader != null)	{
+                String strReceiveAddress = SamouraiSentinel.getInstance(MainActivity2.this).getReceiveAddress();
+                if(strReceiveAddress != null)    {
+                    SweepUtil.getInstance(MainActivity2.this).sweep(privKeyReader, strReceiveAddress);
+                }
+            }
+            else    {
+                ;
+            }
+
+        }
+        else    {
+            Toast.makeText(MainActivity2.this, R.string.cannot_recognize_privkey, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void confirmAccountSelection()	{
+
+        final Set<String> xpubKeys = SamouraiSentinel.getInstance(MainActivity2.this).getXPUBs().keySet();
+        final Set<String> legacyKeys = SamouraiSentinel.getInstance(MainActivity2.this).getLegacy().keySet();
+        final List<String> xpubList = new ArrayList<String>();
+        xpubList.addAll(xpubKeys);
+        xpubList.addAll(legacyKeys);
+
+        if(xpubList.size() == 1)    {
+            SamouraiSentinel.getInstance(MainActivity2.this).setCurrentSelectedAccount(1);
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().add(R.id.container, ReceiveFragment.newInstance(1)).addToBackStack("Receive").commit();
+            return;
+        }
+
+        final String[] accounts = new String[xpubList.size()];
+        for(int i = 0; i < xpubList.size(); i++)   {
+            if(xpubList.get(i).startsWith("xpub"))    {
+                accounts[i] = SamouraiSentinel.getInstance(MainActivity2.this).getXPUBs().get(xpubList.get(i));
+            }
+            else    {
+                accounts[i] = SamouraiSentinel.getInstance(MainActivity2.this).getLegacy().get(xpubList.get(i));
+            }
+        }
+
+        int sel = SamouraiSentinel.getInstance(MainActivity2.this).getCurrentSelectedAccount() == 0 ? 0 : SamouraiSentinel.getInstance(MainActivity2.this).getCurrentSelectedAccount() - 1;
+
+        new AlertDialog.Builder(MainActivity2.this)
+                .setTitle(R.string.deposit_into)
+                .setSingleChoiceItems(accounts, sel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                dialog.dismiss();
+
+                                SamouraiSentinel.getInstance(MainActivity2.this).setCurrentSelectedAccount(which + 1);
+
+                                doSweep();
+
+                            }
+                        }
+                ).show();
 
     }
 
