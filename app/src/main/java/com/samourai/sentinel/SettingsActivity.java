@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.BlockExplorerUtil;
+import com.samourai.sentinel.util.ExchangeRateFactory;
 import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
 
@@ -180,7 +181,7 @@ public class SettingsActivity extends PreferenceActivity	{
 
     private void getExchange()	{
 
-        final String[] exchanges = com.samourai.sentinel.util.ExchangeRateFactory.getInstance(this).getExchangeLabels();
+        final String[] exchanges = ExchangeRateFactory.getInstance(this).getExchangeLabels();
         final int sel = PrefsUtil.getInstance(SettingsActivity.this).getValue(PrefsUtil.CURRENT_EXCHANGE_SEL, 0);
 
         new AlertDialog.Builder(SettingsActivity.this)
@@ -189,14 +190,16 @@ public class SettingsActivity extends PreferenceActivity	{
                             public void onClick(DialogInterface dialog, int which) {
                                 PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.CURRENT_EXCHANGE, exchanges[which].substring(exchanges[which].length() - 3));
                                 PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.CURRENT_EXCHANGE_SEL, which);
-                                dialog.dismiss();
-                                if (which == 2) {
+                                if(which == 1)    {
                                     PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.CURRENT_FIAT, "USD");
                                     PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.CURRENT_FIAT_SEL, 0);
-                                    Toast.makeText(SettingsActivity.this, R.string.bitfinex_fiat, Toast.LENGTH_SHORT).show();
-                                } else {
+                                    dialog.dismiss();
+                                }
+                                else    {
+                                    dialog.dismiss();
                                     getFiat();
                                 }
+
                             }
                         }
                 ).show();
@@ -209,10 +212,10 @@ public class SettingsActivity extends PreferenceActivity	{
 
         final String[] currencies;
         if(fxSel == 1)	{
-            currencies = com.samourai.sentinel.util.ExchangeRateFactory.getInstance(this).getCurrencyLabelsBTCe();
+            currencies = ExchangeRateFactory.getInstance(this).getCurrencyLabelsBTCe();
         }
         else	{
-            currencies = com.samourai.sentinel.util.ExchangeRateFactory.getInstance(this).getCurrencyLabels();
+            currencies = ExchangeRateFactory.getInstance(this).getCurrencyLabels();
         }
 
         new AlertDialog.Builder(SettingsActivity.this)
@@ -223,7 +226,8 @@ public class SettingsActivity extends PreferenceActivity	{
                                 String selectedCurrency = null;
                                 if (currencies[which].substring(currencies[which].length() - 3).equals("RUR")) {
                                     selectedCurrency = "RUB";
-                                } else {
+                                }
+                                else {
                                     selectedCurrency = currencies[which].substring(currencies[which].length() - 3);
                                 }
 
