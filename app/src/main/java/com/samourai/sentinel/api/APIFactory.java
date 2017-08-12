@@ -56,7 +56,7 @@ public class APIFactory	{
 
         for(int i = 0; i < xpubs.length; i++)   {
             try {
-                StringBuilder url = new StringBuilder(Web.BLOCKCHAIN_DOMAIN);
+                StringBuilder url = new StringBuilder(Web.SAMOURAI_API2);
                 url.append("multiaddr?active=");
                 url.append(xpubs[i]);
 //            Log.i("APIFactory", "XPUB:" + url.toString());
@@ -142,9 +142,6 @@ public class APIFactory	{
                     String _addr = null;
                     String input_xpub = null;
                     String output_xpub = null;
-                    long move_amount = 0L;
-                    long input_amount = 0L;
-                    long output_amount = 0L;
 
                     if(txObj.has("block_height"))  {
                         height = txObj.getLong("block_height");
@@ -170,11 +167,9 @@ public class APIFactory	{
                             inputObj = (JSONObject)inputArray.get(j);
                             if(inputObj.has("prev_out"))  {
                                 JSONObject prevOutObj = (JSONObject)inputObj.get("prev_out");
-                                input_amount += prevOutObj.getLong("value");
                                 if(prevOutObj.has("xpub"))  {
                                     JSONObject xpubObj = (JSONObject)prevOutObj.get("xpub");
                                     addr = (String)xpubObj.get("m");
-                                    input_xpub = addr;
                                 }
                                 else  {
                                     if(SamouraiSentinel.getInstance(context).getLegacy().containsKey((String)prevOutObj.get("addr")))    {
@@ -194,14 +189,9 @@ public class APIFactory	{
                         JSONObject outObj = null;
                         for(int j = 0; j < outArray.length(); j++)  {
                             outObj = (JSONObject)outArray.get(j);
-                            output_amount += outObj.getLong("value");
                             if(outObj.has("xpub"))  {
                                 JSONObject xpubObj = (JSONObject)outObj.get("xpub");
                                 addr = (String)xpubObj.get("m");
-                                if(input_xpub != null && !input_xpub.equals(addr))    {
-                                    output_xpub = addr;
-                                    move_amount = outObj.getLong("value");
-                                }
                             }
                             else  {
                                 if(SamouraiSentinel.getInstance(context).getLegacy().containsKey((String)outObj.get("addr")))    {
@@ -217,33 +207,12 @@ public class APIFactory	{
 
                     if(addr != null)  {
 
-                        //
-                        // test for MOVE from Shuffling -> Samourai account
-                        //
-                        if(input_xpub != null && output_xpub != null && !input_xpub.equals(output_xpub))    {
+                        Tx tx = new Tx(hash, _addr, amount, ts, (latest_block > 0L && height > 0L) ? (latest_block - height) + 1 : 0);
 
-                            Tx tx = new Tx(hash, output_xpub, (move_amount + Math.abs(input_amount - output_amount)) * -1.0, ts, (latest_block > 0L && height > 0L) ? (latest_block - height) + 1 : 0);
-                            if(!xpub_txs.containsKey(input_xpub))  {
-                                xpub_txs.put(input_xpub, new ArrayList<Tx>());
-                            }
-                            xpub_txs.get(input_xpub).add(tx);
-
-                            Tx _tx = new Tx(hash, input_xpub, move_amount, ts, (latest_block > 0L && height > 0L) ? (latest_block - height) + 1 : 0);
-                            if(!xpub_txs.containsKey(output_xpub))  {
-                                xpub_txs.put(output_xpub, new ArrayList<Tx>());
-                            }
-                            xpub_txs.get(output_xpub).add(_tx);
-
+                        if(!xpub_txs.containsKey(addr))  {
+                            xpub_txs.put(addr, new ArrayList<Tx>());
                         }
-                        else    {
-
-                            Tx tx = new Tx(hash, _addr, amount, ts, (latest_block > 0L && height > 0L) ? (latest_block - height) + 1 : 0);
-
-                            if(!xpub_txs.containsKey(addr))  {
-                                xpub_txs.put(addr, new ArrayList<Tx>());
-                            }
-                            xpub_txs.get(addr).add(tx);
-                        }
+                        xpub_txs.get(addr).add(tx);
 
                     }
                 }
@@ -253,7 +222,7 @@ public class APIFactory	{
         }
 
     }
-
+/*
     public JSONObject getAddressInfo(String addr) {
 
         JSONObject jsonObject  = null;
@@ -273,6 +242,12 @@ public class APIFactory	{
         }
 
         return jsonObject;
+    }
+*/
+    public synchronized JSONObject getAddressInfo(String addr) {
+
+        return getXPUB(new String[] { addr });
+
     }
 
     public long getXpubBalance()  {

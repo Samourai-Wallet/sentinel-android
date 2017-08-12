@@ -47,6 +47,7 @@ import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -573,8 +574,10 @@ public class ReceiveFragment extends Fragment {
                         @Override
                         public void run() {
                             try {
-                                if(jsonObject != null) {
-                                    if(jsonObject.has("n_tx") && (jsonObject.getLong("n_tx") > 0)) {
+                                if(jsonObject != null && jsonObject.has("addresses") && jsonObject.getJSONArray("addresses").length() > 0) {
+                                    JSONArray addrs = jsonObject.getJSONArray("addresses");
+                                    JSONObject _addr = addrs.getJSONObject(0);
+                                    if(_addr.has("n_tx") && _addr.getLong("n_tx") > 0L) {
                                         Toast.makeText(getActivity(), R.string.address_used_previously, Toast.LENGTH_SHORT).show();
                                         canRefresh = true;
                                         _menu.findItem(R.id.action_refresh).setVisible(true);
