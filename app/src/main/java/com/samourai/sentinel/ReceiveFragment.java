@@ -392,6 +392,7 @@ public class ReceiveFragment extends Fragment {
 
 //        menu.findItem(R.id.action_sweep).setVisible(false);
         menu.findItem(R.id.action_settings).setVisible(false);
+        menu.findItem(R.id.action_sweep).setVisible(false);
 
         MenuItem itemShare = menu.findItem(R.id.action_share_receive).setVisible(true);
         itemShare.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
