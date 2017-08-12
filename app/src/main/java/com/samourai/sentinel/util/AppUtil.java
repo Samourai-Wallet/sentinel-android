@@ -145,6 +145,20 @@ public class AppUtil {
                                                                                 Toast.makeText(context, R.string.encryption_error, Toast.LENGTH_SHORT).show();
                                                                                 return;
                                                                             }
+                                                                            else    {
+
+                                                                                try {
+                                                                                    JSONObject jsonObj = new JSONObject();
+                                                                                    jsonObj.put("version", 1);
+                                                                                    jsonObj.put("payload", encrypted);
+                                                                                    encrypted = jsonObj.toString();
+                                                                                }
+                                                                                catch(JSONException je) {
+                                                                                    ;
+                                                                                }
+
+                                                                            }
+
                                                                         }
 
                                                                         if (which == 0) {
@@ -231,6 +245,16 @@ public class AppUtil {
                                         if (encrypted == null || encrypted.length() < 1) {
                                             Toast.makeText(context, R.string.decryption_error, Toast.LENGTH_SHORT).show();
                                             AppUtil.getInstance(context).restartApp();
+                                        }
+
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(encrypted);
+                                            if(jsonObject != null && jsonObject.has("payload"))    {
+                                                encrypted = jsonObject.getString("payload");
+                                            }
+                                        }
+                                        catch(JSONException je) {
+                                            ;
                                         }
 
                                         String decrypted = null;
