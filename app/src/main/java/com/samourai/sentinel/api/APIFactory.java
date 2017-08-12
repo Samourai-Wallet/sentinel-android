@@ -222,7 +222,7 @@ public class APIFactory	{
         }
 
     }
-
+/*
     public JSONObject getAddressInfo(String addr) {
 
         JSONObject jsonObject  = null;
@@ -242,6 +242,12 @@ public class APIFactory	{
         }
 
         return jsonObject;
+    }
+*/
+    public synchronized JSONObject getAddressInfo(String addr) {
+
+        return getXPUB(new String[] { addr });
+
     }
 
     public long getXpubBalance()  {
