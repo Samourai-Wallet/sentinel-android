@@ -140,8 +140,6 @@ public class APIFactory	{
                     String hash = null;
                     String addr = null;
                     String _addr = null;
-                    String input_xpub = null;
-                    String output_xpub = null;
 
                     if(txObj.has("block_height"))  {
                         height = txObj.getLong("block_height");
@@ -222,28 +220,7 @@ public class APIFactory	{
         }
 
     }
-/*
-    public JSONObject getAddressInfo(String addr) {
 
-        JSONObject jsonObject  = null;
-
-        try {
-            StringBuilder url = new StringBuilder(Web.BLOCKCHAIN_DOMAIN);
-            url.append("address/");
-            url.append(addr);
-            url.append("?format=json");
-
-            String response = Web.getURL(url.toString());
-            jsonObject = new JSONObject(response);
-        }
-        catch(Exception e) {
-            jsonObject = null;
-            e.printStackTrace();
-        }
-
-        return jsonObject;
-    }
-*/
     public synchronized JSONObject getAddressInfo(String addr) {
 
         return getXPUB(new String[] { addr });
