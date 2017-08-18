@@ -374,9 +374,8 @@ public class XPUBListActivity extends Activity {
                         Toast.makeText(XPUBListActivity.this, R.string.bip44_account, Toast.LENGTH_SHORT).show();
                         break;
                     default:
-                        // unsupported
-                        Toast.makeText(XPUBListActivity.this, R.string.unsupported_depth, Toast.LENGTH_SHORT).show();
-                        return;
+                        // unknown
+                        Toast.makeText(XPUBListActivity.this, R.string.unknown_xpub + ":" + depth, Toast.LENGTH_SHORT).show();
                 }
             }
             catch(AddressFormatException afe) {
