@@ -244,9 +244,8 @@ public class InitActivity extends Activity {
                             Toast.makeText(InitActivity.this, R.string.bip44_account, Toast.LENGTH_SHORT).show();
                             break;
                         default:
-                            // unsupported
-                            Toast.makeText(InitActivity.this, R.string.unsupported_depth, Toast.LENGTH_SHORT).show();
-                            return;
+                            // unknown
+                            Toast.makeText(InitActivity.this, InitActivity.this.getText(R.string.unknown_xpub) + ":" + depth, Toast.LENGTH_SHORT).show();
                     }
                 }
                 catch(AddressFormatException afe) {

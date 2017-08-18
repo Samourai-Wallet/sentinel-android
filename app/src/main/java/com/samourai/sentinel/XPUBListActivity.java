@@ -375,7 +375,7 @@ public class XPUBListActivity extends Activity {
                         break;
                     default:
                         // unknown
-                        Toast.makeText(XPUBListActivity.this, R.string.unknown_xpub + ":" + depth, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(XPUBListActivity.this, XPUBListActivity.this.getText(R.string.unknown_xpub) + ":" + depth, Toast.LENGTH_SHORT).show();
                 }
             }
             catch(AddressFormatException afe) {
