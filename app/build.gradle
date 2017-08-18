@@ -8,8 +8,8 @@ android {
         applicationId "com.samourai.sentinel"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 14
-        versionName "2.1"
+        versionCode 17
+        versionName "2.2.02"
     }
     buildTypes {
         release {
@@ -30,16 +30,18 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.baoyz.swipemenulistview:library:1.2.1'
     compile 'com.neovisionaries:nv-websocket-client:1.9'
-    compile files('libs/commons-codec-1.10.jar')
-    compile files('libs/core-1.51.0.0.jar')
-    compile files('libs/guava-16.0.1.jar')
-    compile files('libs/prov-1.51.0.0.jar')
+    compile 'commons-codec:commons-codec:1.4'
+    compile 'com.google.guava:guava:16.0.1'
+    compile 'com.madgag.spongycastle:core:1.54.0.0'
+    compile 'com.madgag.spongycastle:prov:1.54.0.0'
+    compile 'net.i2p.android.ext:floatingactionbutton:1.9.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile('com.google.zxing:core:3.3.0') {
+        transitive = true
+    }
     compile files('libs/slf4j-api-1.6.2.jar')
-    compile files('libs/core-2.2-SNAPSHOT.jar')
-    compile files('libs/zbar.jar')
     compile files('libs/json-simple-1.1.jar')
     compile files('libs/protobuf-java-2.5.0.jar')
     compile files('libs/bitcoinj-0.11x.jar')
-    compile 'net.i2p.android.ext:floatingactionbutton:1.9.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile files('libs/zbar.jar')
 }

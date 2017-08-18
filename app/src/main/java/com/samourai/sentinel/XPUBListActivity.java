@@ -20,6 +20,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
@@ -31,11 +32,14 @@ import org.bitcoinj.core.Coin;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Base58;
 import com.samourai.sentinel.access.AccessFactory;
 
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -349,6 +353,42 @@ public class XPUBListActivity extends Activity {
 
         if(SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().containsKey(xpub))    {
             return;
+        }
+
+        if(FormatsUtil.getInstance().isValidXpub(xpub)) {
+
+            try {
+                // get depth
+                byte[] xpubBytes = Base58.decodeChecked(xpub);
+                ByteBuffer bb = ByteBuffer.wrap(xpubBytes);
+                bb.getInt();
+                // depth:
+                byte depth = bb.get();
+                switch(depth)    {
+                    // BIP32 account
+                    case 1:
+                        Toast.makeText(XPUBListActivity.this, R.string.bip32_account, Toast.LENGTH_SHORT).show();
+                        break;
+                    // BIP44 account
+                    case 3:
+                        Toast.makeText(XPUBListActivity.this, R.string.bip44_account, Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        // unknown
+                        Toast.makeText(XPUBListActivity.this, XPUBListActivity.this.getText(R.string.unknown_xpub) + ":" + depth, Toast.LENGTH_SHORT).show();
+                }
+            }
+            catch(AddressFormatException afe) {
+                Toast.makeText(XPUBListActivity.this, R.string.base58_error, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        }
+        else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub)) {
+            ;
+        }
+        else {
+            Toast.makeText(XPUBListActivity.this, R.string.invalid_entry, Toast.LENGTH_SHORT).show();
         }
 
         final EditText etLabel = new EditText(XPUBListActivity.this);

@@ -1,9 +1,6 @@
 package com.samourai.sentinel.util;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.samourai.sentinel.util.PrefsUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,8 +44,8 @@ public class ExchangeRateFactory	{
 
     private static String[] exchangeLabels = {
             "LocalBitcoins.com",
-            "BTC-e",
-            "Bitfinex"
+//            "BTC-e",
+            "Bitfinex",
     };
 
     private ExchangeRateFactory()	 { ; }
@@ -72,10 +69,12 @@ public class ExchangeRateFactory	{
     public double getAvgPrice(String currency)	 {
         int fxSel = PrefsUtil.getInstance(context).getValue(PrefsUtil.CURRENT_EXCHANGE_SEL, 0);
         HashMap<String,Double> fxRates = null;
+        /*
         if(fxSel == 1)	 {
             fxRates = fxRatesBTCe;
         }
-        else if(fxSel == 2)	 {
+        */
+        if(fxSel == 1)	 {
             fxRates = fxRatesBFX;
         }
         else	 {
@@ -141,7 +140,25 @@ public class ExchangeRateFactory	{
 
     public void parseBFX()	 {
         for(int i = 0; i < currencies.length; i++)	 {
-            getBFX("USD");
+            if(currencies[i].equals("USD"))	 {
+                getBFX("USD");
+            }
+            else	 {
+                continue;
+            }
+        }
+    }
+
+    public double getBitfinexPrice(String currency)	 {
+
+        HashMap<String,Double> fxRates = fxRatesBFX;
+
+        if(fxRates.get(currency) != null && fxRates.get(currency) > 0.0)	 {
+            PrefsUtil.getInstance(context).setValue("CANNED_" + currency, Double.toString(fxRates.get(currency)));
+            return fxRates.get(currency);
+        }
+        else	 {
+            return Double.parseDouble(PrefsUtil.getInstance(context).getValue("CANNED_" + currency, "0.0"));
         }
     }
 
@@ -181,9 +198,7 @@ public class ExchangeRateFactory	{
                     if(currency.equals("RUR"))	{
                         fxRatesBTCe.put("RUB", Double.valueOf(avg_price));
                     }
-                    else    {
-                        fxRatesBTCe.put(currency, Double.valueOf(avg_price));
-                    }
+                    fxRatesBTCe.put(currency, Double.valueOf(avg_price));
 //                    Log.i("ExchangeRateFactory", "BTCe:" + currency + " " + Double.valueOf(avg_price));
                 }
             }
@@ -196,15 +211,18 @@ public class ExchangeRateFactory	{
     private void getBFX(String currency)	 {
         try {
             JSONObject jsonObject = new JSONObject(strDataBFX);
-            if(jsonObject != null)	{
-                double avg_price = 0.0;
-                if(jsonObject.has("last_price"))	{
-                    avg_price = jsonObject.getDouble("last_price");
-                }
+            if(jsonObject != null && jsonObject.has("last_price"))	{
+                String strLastPrice = jsonObject.getString("last_price");
+                double avg_price = Double.parseDouble(strLastPrice);
                 fxRatesBFX.put(currency, Double.valueOf(avg_price));
-//                Log.i("ExchangeRateFactory", "BFX:" + currency + " " + Double.valueOf(avg_price));
+//                    Log.i("ExchangeRateFactory", "BFX:" + currency + " " + Double.valueOf(avg_price));
             }
-        } catch (JSONException je) {
+        }
+        catch (JSONException je) {
+            fxRatesBFX.put(currency, Double.valueOf(-1.0));
+//            fxSymbols.put(currency, null);
+        }
+        catch (NumberFormatException nfe) {
             fxRatesBFX.put(currency, Double.valueOf(-1.0));
 //            fxSymbols.put(currency, null);
         }
