@@ -62,9 +62,7 @@ import java.util.Set;
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
 
-public class BalanceFragment extends Fragment {
-
-    private static final String ARG_SECTION_NUMBER = "section_number";
+public class BalanceActivity extends Activity {
 
     private static final int SCAN_URI = 2077;
 
@@ -85,16 +83,6 @@ public class BalanceFragment extends Fragment {
 
     private boolean isBTC = true;
 
-    private Activity thisActivity = null;
-
-    public static BalanceFragment newInstance(int sectionNumber) {
-        BalanceFragment fragment = new BalanceFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     public static final String ACTION_INTENT = "com.samourai.sentinel.BalanceFragment.REFRESH";
 
     protected BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -103,7 +91,7 @@ public class BalanceFragment extends Fragment {
 
             if(ACTION_INTENT.equals(intent.getAction())) {
 
-                getActivity().runOnUiThread(new Runnable() {
+                BalanceActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         displayBalance();
@@ -116,29 +104,15 @@ public class BalanceFragment extends Fragment {
         }
     };
 
-    public BalanceFragment() {
-        ;
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_balance, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_balance);
 
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            rootView.setBackgroundColor(R.color.divider);
-        }
+        BalanceActivity.this.getActionBar().setTitle(R.string.app_name);
 
-        rootView.setFilterTouchesWhenObscured(true);
-
-        getActivity().getActionBar().setTitle(R.string.app_name);
-
-        thisActivity = getActivity();
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tvBalanceBar = (LinearLayout)inflater.inflate(R.layout.balance_layout, container, false);
-        } else {
-            tvBalanceBar = (LinearLayout)inflater.inflate(R.layout.balance_layout, null, false);
-        }
+        LayoutInflater inflator = BalanceActivity.this.getLayoutInflater();
+        tvBalanceBar = (LinearLayout)inflator.inflate(R.layout.balance_layout, null);
         tvBalanceBar.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -151,8 +125,8 @@ public class BalanceFragment extends Fragment {
         tvBalanceAmount = (TextView)tvBalanceBar.findViewById(R.id.BalanceAmount);
         tvBalanceUnits = (TextView)tvBalanceBar.findViewById(R.id.BalanceUnits);
 
-        ibQuickSend = (FloatingActionsMenu)rootView.findViewById(R.id.wallet_menu);
-        actionReceive = (FloatingActionButton)rootView.findViewById(R.id.receive);
+        ibQuickSend = (FloatingActionsMenu)findViewById(R.id.wallet_menu);
+        actionReceive = (FloatingActionButton)findViewById(R.id.receive);
         actionReceive.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -162,19 +136,19 @@ public class BalanceFragment extends Fragment {
             }
         });
 
-        actionXPUB = (FloatingActionButton)rootView.findViewById(R.id.xpub);
+        actionXPUB = (FloatingActionButton)findViewById(R.id.xpub);
         actionXPUB.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
 
                 TimeOutUtil.getInstance().updatePin();
-                Intent intent = new Intent(getActivity(), XPUBListActivity.class);
+                Intent intent = new Intent(BalanceActivity.this, XPUBListActivity.class);
                 startActivity(intent);
 
             }
         });
 
-        txList = (ListView)rootView.findViewById(R.id.txList);
+        txList = (ListView)findViewById(R.id.txList);
         txAdapter = new TransactionAdapter();
         txList.setAdapter(txAdapter);
         txList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -207,7 +181,7 @@ public class BalanceFragment extends Fragment {
 
                     String strTx = tx.getHash();
                     if(strTx != null) {
-                        int sel = PrefsUtil.getInstance(thisActivity).getValue(PrefsUtil.BLOCK_EXPLORER, 0);
+                        int sel = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BLOCK_EXPLORER, 0);
                         CharSequence url = BlockExplorerUtil.getInstance().getBlockExplorerUrls()[sel];
 
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url + strTx));
@@ -218,11 +192,8 @@ public class BalanceFragment extends Fragment {
 
             }
         });
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            txList.setDivider(new ColorDrawable(R.color.divider));
-        }
 
-        swipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -243,24 +214,10 @@ public class BalanceFragment extends Fragment {
 
         refreshTx(false);
 
-        if(!AppUtil.getInstance(getActivity().getApplicationContext()).isServiceRunning(WebSocketService.class)) {
-            getActivity().startService(new Intent(getActivity().getApplicationContext(), WebSocketService.class));
+        if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
+            BalanceActivity.this.startService(new Intent(BalanceActivity.this.getApplicationContext(), WebSocketService.class));
         }
 
-        return rootView;
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        if(isVisibleToUser) {
-            displayBalance();
-            refreshTx(false);
-        }
-        else {
-            ;
-        }
     }
 
     @Override
@@ -268,7 +225,7 @@ public class BalanceFragment extends Fragment {
         super.onResume();
 
         IntentFilter filter = new IntentFilter(ACTION_INTENT);
-        LocalBroadcastManager.getInstance(thisActivity).registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(BalanceActivity.this).registerReceiver(receiver, filter);
 
         displayBalance();
         refreshTx(false);
@@ -279,13 +236,7 @@ public class BalanceFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        LocalBroadcastManager.getInstance(thisActivity).unregisterReceiver(receiver);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity2) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+        LocalBroadcastManager.getInstance(BalanceActivity.this).unregisterReceiver(receiver);
     }
 
     private class TransactionAdapter extends BaseAdapter {
@@ -295,7 +246,7 @@ public class BalanceFragment extends Fragment {
         private static final int TYPE_BALANCE = 1;
 
         TransactionAdapter() {
-            inflater = (LayoutInflater)thisActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater = (LayoutInflater)BalanceActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
@@ -372,14 +323,14 @@ public class BalanceFragment extends Fragment {
                 Tx tx = txs.get(position - 1);
 
                 TextView tvTodayLabel = (TextView)view.findViewById(R.id.TodayLabel);
-                String strDateGroup = DateUtil.getInstance(thisActivity).group(tx.getTS());
+                String strDateGroup = DateUtil.getInstance(BalanceActivity.this).group(tx.getTS());
                 if(position == 1) {
                     tvTodayLabel.setText(strDateGroup);
                     tvTodayLabel.setVisibility(View.VISIBLE);
                 }
                 else {
                     Tx prevTx = txs.get(position - 2);
-                    String strPrevDateGroup = DateUtil.getInstance(thisActivity).group(prevTx.getTS());
+                    String strPrevDateGroup = DateUtil.getInstance(BalanceActivity.this).group(prevTx.getTS());
 
                     if(strPrevDateGroup.equals(strDateGroup)) {
                         tvTodayLabel.setVisibility(View.GONE);
@@ -391,15 +342,15 @@ public class BalanceFragment extends Fragment {
                 }
 
                 String strDetails = null;
-                String strTS = DateUtil.getInstance(thisActivity).formatted(tx.getTS());
+                String strTS = DateUtil.getInstance(BalanceActivity.this).formatted(tx.getTS());
                 long _amount = 0L;
                 if(tx.getAmount() < 0.0) {
                     _amount = Math.abs((long)tx.getAmount());
-                    strDetails = thisActivity.getString(R.string.you_sent);
+                    strDetails = BalanceActivity.this.getString(R.string.you_sent);
                 }
                 else {
                     _amount = (long)tx.getAmount();
-                    strDetails = thisActivity.getString(R.string.you_received);
+                    strDetails = BalanceActivity.this.getString(R.string.you_received);
                 }
                 String strAmount = getDisplayAmount(_amount);
                 String strUnits = getDisplayUnits();
@@ -410,7 +361,7 @@ public class BalanceFragment extends Fragment {
                 ImageView ivTxStatus = (ImageView)view.findViewById(R.id.TransactionStatus);
                 TextView tvConfirmationCount = (TextView)view.findViewById(R.id.ConfirmationCount);
 
-                tvDirection.setTypeface(TypefaceUtil.getInstance(thisActivity).getAwesomeTypeface());
+                tvDirection.setTypeface(TypefaceUtil.getInstance(BalanceActivity.this).getAwesomeTypeface());
                 if(tx.getAmount() < 0.0) {
                     tvDirection.setTextColor(Color.RED);
                     tvDirection.setText(Character.toString((char) TypefaceUtil.awesome_arrow_up));
@@ -447,28 +398,28 @@ public class BalanceFragment extends Fragment {
             public void run() {
                 Looper.prepare();
 
-                int idx = SamouraiSentinel.getInstance(getActivity()).getCurrentSelectedAccount();
+                int idx = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount();
 
                 List<String> _xpubs = new ArrayList<String>();
-                _xpubs.addAll(SamouraiSentinel.getInstance(getActivity()).getXPUBs().keySet());
-                _xpubs.addAll(SamouraiSentinel.getInstance(getActivity()).getLegacy().keySet());
-                APIFactory.getInstance(getActivity()).getXPUB(_xpubs.toArray(new String[_xpubs.size()]));
+                _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet());
+                _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet());
+                APIFactory.getInstance(BalanceActivity.this).getXPUB(_xpubs.toArray(new String[_xpubs.size()]));
 
                 if(idx == 0)    {
-                    txs = APIFactory.getInstance(getActivity()).getAllXpubTxs();
+                    txs = APIFactory.getInstance(BalanceActivity.this).getAllXpubTxs();
                 }
                 else    {
-                    txs = APIFactory.getInstance(getActivity()).getXpubTxs().get(_xpubs.get(idx - 1));
+                    txs = APIFactory.getInstance(BalanceActivity.this).getXpubTxs().get(_xpubs.get(idx - 1));
                 }
 
                 try {
-                    if(HD_WalletFactory.getInstance(getActivity()).get() != null)    {
+                    if(HD_WalletFactory.getInstance(BalanceActivity.this).get() != null)    {
 
-                        HD_Wallet hdw = HD_WalletFactory.getInstance(getActivity()).get();
+                        HD_Wallet hdw = HD_WalletFactory.getInstance(BalanceActivity.this).get();
 
                         for(int i = 0; i < hdw.getAccounts().size(); i++)   {
-                            HD_WalletFactory.getInstance(thisActivity).get().getAccount(i).getReceive().setAddrIdx(AddressFactory.getInstance().getHighestTxReceiveIdx(i));
-//                            HD_WalletFactory.getInstance(thisActivity).get().getAccount(i).getChange().setAddrIdx(AddressFactory.getInstance().getHighestTxChangeIdx(i));
+                            HD_WalletFactory.getInstance(BalanceActivity.this).get().getAccount(i).getReceive().setAddrIdx(AddressFactory.getInstance().getHighestTxReceiveIdx(i));
+//                            HD_WalletFactory.getInstance(BalanceActivity.this).get().getAccount(i).getChange().setAddrIdx(AddressFactory.getInstance().getHighestTxChangeIdx(i));
                         }
 
                     }
@@ -480,7 +431,7 @@ public class BalanceFragment extends Fragment {
                     ;
                 }
 
-                PrefsUtil.getInstance(thisActivity).setValue(PrefsUtil.FIRST_RUN, false);
+                PrefsUtil.getInstance(BalanceActivity.this).setValue(PrefsUtil.FIRST_RUN, false);
 
                 handler.post(new Runnable() {
                     public void run() {
@@ -500,21 +451,21 @@ public class BalanceFragment extends Fragment {
     }
 
     public void displayBalance() {
-        String strFiat = PrefsUtil.getInstance(thisActivity).getValue(PrefsUtil.CURRENT_FIAT, "USD");
-        double btc_fx = ExchangeRateFactory.getInstance(thisActivity).getAvgPrice(strFiat);
+        String strFiat = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.CURRENT_FIAT, "USD");
+        double btc_fx = ExchangeRateFactory.getInstance(BalanceActivity.this).getAvgPrice(strFiat);
 
-        int idx = SamouraiSentinel.getInstance(getActivity()).getCurrentSelectedAccount();
+        int idx = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount();
         long balance = 0L;
 
         List<String> _xpubs = new ArrayList<String>();
-        _xpubs.addAll(SamouraiSentinel.getInstance(getActivity()).getXPUBs().keySet());
-        _xpubs.addAll(SamouraiSentinel.getInstance(getActivity()).getLegacy().keySet());
+        _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet());
+        _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet());
         if(idx == 0)    {
-            balance = APIFactory.getInstance(getActivity()).getXpubBalance();
+            balance = APIFactory.getInstance(BalanceActivity.this).getXpubBalance();
         }
-        else if(_xpubs.get(idx - 1) != null && APIFactory.getInstance(getActivity()).getXpubAmounts().get(_xpubs.get(idx - 1)) != null)    {
-            if(APIFactory.getInstance(getActivity()).getXpubAmounts().get(_xpubs.get(idx - 1)) != null)    {
-                balance = APIFactory.getInstance(getActivity()).getXpubAmounts().get(_xpubs.get(idx - 1));
+        else if(_xpubs.get(idx - 1) != null && APIFactory.getInstance(BalanceActivity.this).getXpubAmounts().get(_xpubs.get(idx - 1)) != null)    {
+            if(APIFactory.getInstance(BalanceActivity.this).getXpubAmounts().get(_xpubs.get(idx - 1)) != null)    {
+                balance = APIFactory.getInstance(BalanceActivity.this).getXpubAmounts().get(_xpubs.get(idx - 1));
             }
         }
         else    {
@@ -543,7 +494,7 @@ public class BalanceFragment extends Fragment {
         df.setMinimumFractionDigits(1);
         df.setMaximumFractionDigits(8);
 
-        int unit = PrefsUtil.getInstance(thisActivity).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
+        int unit = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
         switch(unit) {
             case MonetaryUtil.MICRO_BTC:
                 strAmount = df.format(((double)(value * 1000000L)) / 1e8);
@@ -561,7 +512,7 @@ public class BalanceFragment extends Fragment {
 
     public String getDisplayUnits() {
 
-        return (String) MonetaryUtil.getInstance().getBTCUnits()[PrefsUtil.getInstance(thisActivity).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC)];
+        return (String) MonetaryUtil.getInstance().getBTCUnits()[PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC)];
 
     }
 
@@ -620,15 +571,15 @@ public class BalanceFragment extends Fragment {
 
     private void confirmAccountSelection()	{
 
-        final Set<String> xpubKeys = SamouraiSentinel.getInstance(getActivity()).getXPUBs().keySet();
-        final Set<String> legacyKeys = SamouraiSentinel.getInstance(getActivity()).getLegacy().keySet();
+        final Set<String> xpubKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet();
+        final Set<String> legacyKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet();
         final List<String> xpubList = new ArrayList<String>();
         xpubList.addAll(xpubKeys);
         xpubList.addAll(legacyKeys);
 
         if(xpubList.size() == 1)    {
-            SamouraiSentinel.getInstance(getActivity()).setCurrentSelectedAccount(1);
-            Intent intent = new Intent(getActivity(), ReceiveActivity.class);
+            SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(1);
+            Intent intent = new Intent(BalanceActivity.this, ReceiveActivity.class);
             startActivity(intent);
             return;
         }
@@ -636,25 +587,25 @@ public class BalanceFragment extends Fragment {
         final String[] accounts = new String[xpubList.size()];
         for(int i = 0; i < xpubList.size(); i++)   {
             if(xpubList.get(i).startsWith("xpub"))    {
-                accounts[i] = SamouraiSentinel.getInstance(getActivity()).getXPUBs().get(xpubList.get(i));
+                accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(i));
             }
             else    {
-                accounts[i] = SamouraiSentinel.getInstance(getActivity()).getLegacy().get(xpubList.get(i));
+                accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));
             }
         }
 
-        int sel = SamouraiSentinel.getInstance(getActivity()).getCurrentSelectedAccount() == 0 ? 0 : SamouraiSentinel.getInstance(getActivity()).getCurrentSelectedAccount() - 1;
+        int sel = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount() == 0 ? 0 : SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount() - 1;
 
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(BalanceActivity.this)
                 .setTitle(R.string.deposit_into)
                 .setSingleChoiceItems(accounts, sel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 dialog.dismiss();
 
-                                SamouraiSentinel.getInstance(getActivity()).setCurrentSelectedAccount(which + 1);
+                                SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(which + 1);
 
-                                Intent intent = new Intent(getActivity(), ReceiveActivity.class);
+                                Intent intent = new Intent(BalanceActivity.this, ReceiveActivity.class);
                                 startActivity(intent);
 
                             }

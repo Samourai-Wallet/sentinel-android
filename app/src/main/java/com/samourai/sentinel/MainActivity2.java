@@ -76,8 +76,6 @@ public class MainActivity2 extends Activity {
     private static ArrayAdapter<String> adapter = null;
     private static ActionBar.OnNavigationListener navigationListener = null;
 
-    private static boolean loadedBalanceFragment = false;
-
     private static int timer_updates = 0;
 
     @Override
@@ -97,10 +95,9 @@ public class MainActivity2 extends Activity {
             public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 
                 SamouraiSentinel.getInstance(MainActivity2.this).setCurrentSelectedAccount(itemPosition);
-                if(loadedBalanceFragment)    {
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.container, BalanceFragment.newInstance(4)).commit();
-                }
+
+                Intent intent = new Intent(MainActivity2.this, BalanceActivity.class);
+                startActivity(intent);
 
                 return false;
             }
@@ -116,8 +113,6 @@ public class MainActivity2 extends Activity {
         if(extras != null && extras.containsKey("verified"))	{
             isVerified = extras.getBoolean("verified");
         }
-
-        loadedBalanceFragment = false;
 
         if(!ConnectivityStatus.hasConnectivity(MainActivity2.this))  {
 
@@ -524,10 +519,9 @@ public class MainActivity2 extends Activity {
                             SamouraiSentinel.getInstance(MainActivity2.this).setCurrentSelectedAccount(0);
                         }
 
-                        if(xpubKeys.size() > 0 || legacyKeys.size() > 0 && !loadedBalanceFragment)    {
-                            loadedBalanceFragment = true;
-                            FragmentManager fragmentManager = getFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.container, BalanceFragment.newInstance(4)).commit();
+                        if(xpubKeys.size() > 0 || legacyKeys.size() > 0)    {
+                            Intent intent = new Intent(MainActivity2.this, BalanceActivity.class);
+                            startActivity(intent);
                         }
 
                         try {
