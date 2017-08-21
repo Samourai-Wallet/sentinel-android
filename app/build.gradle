@@ -8,8 +8,8 @@ android {
         applicationId "com.samourai.sentinel"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 17
-        versionName "2.2.02"
+        versionCode 18
+        versionName "2.3"
     }
     buildTypes {
         release {
@@ -32,6 +32,8 @@ dependencies {
     compile 'com.neovisionaries:nv-websocket-client:1.9'
     compile 'commons-codec:commons-codec:1.4'
     compile 'com.google.guava:guava:16.0.1'
+    compile 'org.bitcoinj:bitcoinj-core:0.14.4'
+    compile 'org.apache.commons:commons-lang3:3.3'
     compile 'com.madgag.spongycastle:core:1.54.0.0'
     compile 'com.madgag.spongycastle:prov:1.54.0.0'
     compile 'net.i2p.android.ext:floatingactionbutton:1.9.0'
@@ -42,6 +44,5 @@ dependencies {
     compile files('libs/slf4j-api-1.6.2.jar')
     compile files('libs/json-simple-1.1.jar')
     compile files('libs/protobuf-java-2.5.0.jar')
-    compile files('libs/bitcoinj-0.11x.jar')
     compile files('libs/zbar.jar')
 }

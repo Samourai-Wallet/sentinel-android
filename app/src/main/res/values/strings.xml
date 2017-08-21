@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="version_name">2.2.02</string>
+    <string name="version_name">2.3</string>
     <string name="app_name">Sentinel</string>
 
     <string name="new_version_message">Welcome to Sentinel\n\nSentinel is your deposit only bitcoin wallet. Sentinel cannot send bitcoin. Scan any XPUB and Sentinel will keep watch, alerting you of any new incoming transactions and allowing you to create new addresses so you can receive bitcoin on your mobile device.\n\nSentinel is the easiest and most secure way to keep track and receive payments to your cold storage wallet.\n\nSentinel can\'t send bitcoin out of your wallet, and your private keys are never communicated with Sentinel in any way.</string>
@@ -26,7 +26,6 @@
     <string name="action_tx">Transactions</string>
     <string name="action_xpub">Your XPUB</string>
     <string name="action_settings">Settings</string>
-    <string name="action_sweep">Sweep cold storage</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="about_us">About Sentinel</string>
@@ -210,5 +209,13 @@
     <string name="invalid_entry">Invalid XPUB or bitcoin address</string>
 
     <string name="unknown_xpub">XPUB depth</string>
+
+    <string name="action_sweep">Sweep private key</string>
+    <string name="enter_privkey">Enter private key</string>
+    <string name="cannot_recognize_privkey">Cannot recognize private key</string>
+    <string name="cannot_sweep_privkey">Error sweeping private key</string>
+    <string name="cannot_find_unspents">Unspents list is empty</string>
+    <string name="please_wait_sending">Sending transaction, please wait.</string>
+    <string name="pushtx_returns_null">Spend failed. Server returned null value.</string>
 
 </resources>

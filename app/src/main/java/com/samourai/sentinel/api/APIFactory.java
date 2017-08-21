@@ -4,13 +4,20 @@ import android.content.Context;
 //import android.util.Log;
 
 import com.samourai.sentinel.SamouraiSentinel;
+import com.samourai.sentinel.sweep.MyTransactionOutPoint;
+import com.samourai.sentinel.sweep.UTXO;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.Web;
 
+import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.script.Script;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.Hex;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -254,6 +261,87 @@ public class APIFactory	{
         Collections.sort(ret, new TxMostRecentDateComparator());
 
         return ret;
+    }
+
+    public synchronized UTXO getUnspentOutputsForSweep(String address) {
+
+        try {
+
+            String response = null;
+
+            StringBuilder args = new StringBuilder();
+            args.append("active=");
+            args.append(address);
+            response = Web.postURL(Web.SAMOURAI_API2 + "unspent?", args.toString());
+
+            return parseUnspentOutputsForSweep(response);
+
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private synchronized UTXO parseUnspentOutputsForSweep(String unspents)   {
+
+        UTXO utxo = null;
+
+        if(unspents != null)    {
+
+            try {
+                JSONObject jsonObj = new JSONObject(unspents);
+
+                if(jsonObj == null || !jsonObj.has("unspent_outputs"))    {
+                    return null;
+                }
+                JSONArray utxoArray = jsonObj.getJSONArray("unspent_outputs");
+                if(utxoArray == null || utxoArray.length() == 0) {
+                    return null;
+                }
+
+//            Log.d("APIFactory", "unspents found:" + outputsRoot.size());
+
+                for (int i = 0; i < utxoArray.length(); i++) {
+
+                    JSONObject outDict = utxoArray.getJSONObject(i);
+
+                    byte[] hashBytes = Hex.decode((String)outDict.get("tx_hash"));
+                    Sha256Hash txHash = Sha256Hash.wrap(hashBytes);
+                    int txOutputN = ((Number)outDict.get("tx_output_n")).intValue();
+                    BigInteger value = BigInteger.valueOf(((Number)outDict.get("value")).longValue());
+                    String script = (String)outDict.get("script");
+                    byte[] scriptBytes = Hex.decode(script);
+                    int confirmations = ((Number)outDict.get("confirmations")).intValue();
+
+                    try {
+                        String address = new Script(scriptBytes).getToAddress(MainNetParams.get()).toString();
+
+                        // Construct the output
+                        MyTransactionOutPoint outPoint = new MyTransactionOutPoint(txHash, txOutputN, value, scriptBytes, address);
+                        outPoint.setConfirmations(confirmations);
+                        if(utxo == null)    {
+                            utxo = new UTXO();
+                        }
+                        utxo.getOutpoints().add(outPoint);
+
+                    }
+                    catch(Exception e) {
+                        ;
+                    }
+
+                }
+
+            }
+            catch(JSONException je) {
+                ;
+            }
+
+        }
+
+        return utxo;
+
     }
 
     private class TxMostRecentDateComparator implements Comparator<Tx> {
