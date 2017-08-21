@@ -26,7 +26,6 @@
     <string name="action_tx">Transactions</string>
     <string name="action_xpub">Your XPUB</string>
     <string name="action_settings">Settings</string>
-    <string name="action_sweep">Sweep cold storage</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="about_us">About Sentinel</string>
@@ -202,5 +201,13 @@
     <string name="restore_wallet_from_backup">Restore wallet from backup</string>
 
     <string name="choose_email_client">Choose an Email client:</string>
+
+    <string name="action_sweep">Sweep private key</string>
+    <string name="enter_privkey">Enter private key</string>
+    <string name="cannot_recognize_privkey">Cannot recognize private key</string>
+    <string name="cannot_sweep_privkey">Error sweeping private key</string>
+    <string name="cannot_find_unspents">Unspents list is empty</string>
+    <string name="please_wait_sending">Sending transaction, please wait.</string>
+    <string name="pushtx_returns_null">Spend failed. Server returned null value.</string>
 
 </resources>

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 
-import com.google.bitcoin.crypto.MnemonicException;
+import org.bitcoinj.crypto.MnemonicException;
 import com.samourai.sentinel.hd.HD_WalletFactory;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
 

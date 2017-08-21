@@ -2,13 +2,13 @@ package com.samourai.sentinel.util;
 
 import android.util.Patterns;
 
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.Base58;
-import com.google.bitcoin.core.WrongNetworkException;
-import com.google.bitcoin.params.MainNetParams;
-import com.google.bitcoin.uri.BitcoinURI;
-import com.google.bitcoin.uri.BitcoinURIParseException;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.Base58;
+import org.bitcoinj.core.WrongNetworkException;
+import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.uri.BitcoinURI;
+import org.bitcoinj.uri.BitcoinURIParseException;
 
 import java.nio.ByteBuffer;
 import java.util.regex.Pattern;

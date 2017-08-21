@@ -34,7 +34,9 @@ import android.widget.TextView;
 //import android.widget.Toast;
 //import android.util.Log;
 
-import com.google.bitcoin.crypto.MnemonicException;
+import org.bitcoinj.crypto.MnemonicException;
+import org.bitcoinj.core.Coin;
+
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.api.Tx;
 import com.samourai.sentinel.hd.HD_Wallet;
@@ -49,8 +51,6 @@ import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.TimeOutUtil;
 import com.samourai.sentinel.util.TypefaceUtil;
-
-import org.bitcoinj.core.Coin;
 
 import java.io.IOException;
 import java.text.DecimalFormat;

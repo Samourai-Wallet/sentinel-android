@@ -2,7 +2,7 @@ package com.samourai.sentinel;
 
 import android.os.Handler;
 
-import com.google.bitcoin.core.Transaction;
+import org.bitcoinj.core.Transaction;
 
 import java.lang.ref.WeakReference;
 import java.util.HashSet;

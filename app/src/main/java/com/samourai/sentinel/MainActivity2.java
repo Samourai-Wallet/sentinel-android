@@ -19,14 +19,16 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
-//import android.util.Log;
+import android.util.Log;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
+
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.BIP38PrivateKey;
 import org.bitcoinj.params.MainNetParams;
+
 import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
@@ -639,12 +641,15 @@ public class MainActivity2 extends Activity {
 
     private void doPrivKey(final String data) {
 
+        Log.d("MainActivity2", "privkey:" + data);
+
         PrivKeyReader privKeyReader = null;
 
         String format = null;
         try	{
             privKeyReader = new PrivKeyReader(new CharSequenceX(data), null);
             format = privKeyReader.getFormat();
+            Log.d("MainActivity2", "privkey format:" + format);
         }
         catch(Exception e)	{
             Toast.makeText(MainActivity2.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -725,6 +730,7 @@ public class MainActivity2 extends Activity {
             }
             else if(privKeyReader != null)	{
                 String strReceiveAddress = SamouraiSentinel.getInstance(MainActivity2.this).getReceiveAddress();
+                Log.d("MainActivity2", "receive address:" + strReceiveAddress);
                 if(strReceiveAddress != null)    {
                     SweepUtil.getInstance(MainActivity2.this).sweep(privKeyReader, strReceiveAddress);
                 }
@@ -750,8 +756,6 @@ public class MainActivity2 extends Activity {
 
         if(xpubList.size() == 1)    {
             SamouraiSentinel.getInstance(MainActivity2.this).setCurrentSelectedAccount(1);
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().add(R.id.container, ReceiveFragment.newInstance(1)).addToBackStack("Receive").commit();
             return;
         }
 
@@ -775,6 +779,8 @@ public class MainActivity2 extends Activity {
                                 dialog.dismiss();
 
                                 SamouraiSentinel.getInstance(MainActivity2.this).setCurrentSelectedAccount(which + 1);
+
+                                getActionBar().setSelectedNavigationItem(which + 1);
 
                                 doSweep();
 

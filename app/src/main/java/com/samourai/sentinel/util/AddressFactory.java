@@ -3,7 +3,7 @@ package com.samourai.sentinel.util;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.google.bitcoin.crypto.MnemonicException;
+import org.bitcoinj.crypto.MnemonicException;
 import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.hd.HD_Address;
 import com.samourai.sentinel.hd.HD_WalletFactory;
