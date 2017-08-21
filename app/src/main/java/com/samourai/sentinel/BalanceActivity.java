@@ -20,6 +20,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,6 +53,7 @@ import org.json.JSONException;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
+import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.api.Tx;
 import com.samourai.sentinel.hd.HD_Account;
@@ -335,6 +337,42 @@ public class BalanceActivity extends Activity {
             ;
         }
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.ask_you_sure_exit).setCancelable(false);
+            AlertDialog alert = builder.create();
+
+            alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    AccessFactory.getInstance(BalanceActivity.this).setIsLoggedIn(false);
+                    TimeOutUtil.getInstance().reset();
+                    dialog.dismiss();
+
+                    Intent intent = new Intent(BalanceActivity.this, ExodusActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }});
+
+            alert.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }});
+
+            alert.show();
+
+            return true;
+        }
+        else	{
+            ;
+        }
+
+        return false;
     }
 
     public void restoreActionBar() {

@@ -182,46 +182,6 @@ public class MainActivity2 extends Activity {
         setIntent(intent);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        if(keyCode == KeyEvent.KEYCODE_BACK) {
-
-            if(getFragmentManager().getBackStackEntryCount() > 0) {
-                getFragmentManager().popBackStack();
-            }
-            else {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(R.string.ask_you_sure_exit).setCancelable(false);
-                AlertDialog alert = builder.create();
-
-                alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        AccessFactory.getInstance(MainActivity2.this).setIsLoggedIn(false);
-                        TimeOutUtil.getInstance().reset();
-                        dialog.dismiss();
-                        moveTaskToBack(true);
-                    }});
-
-                alert.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }});
-
-                alert.show();
-
-            }
-
-            return true;
-        }
-        else	{
-            ;
-        }
-
-        return false;
-    }
-
     private void doTimer() {
 
         if(timer == null) {
