@@ -628,8 +628,8 @@ public class BalanceFragment extends Fragment {
 
         if(xpubList.size() == 1)    {
             SamouraiSentinel.getInstance(getActivity()).setCurrentSelectedAccount(1);
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().add(R.id.container, ReceiveFragment.newInstance(1)).addToBackStack("Receive").commit();
+            Intent intent = new Intent(getActivity(), ReceiveActivity.class);
+            startActivity(intent);
             return;
         }
 
@@ -654,8 +654,8 @@ public class BalanceFragment extends Fragment {
 
                                 SamouraiSentinel.getInstance(getActivity()).setCurrentSelectedAccount(which + 1);
 
-                                FragmentManager fragmentManager = getFragmentManager();
-                                fragmentManager.beginTransaction().add(R.id.container, ReceiveFragment.newInstance(1)).addToBackStack("Receive").commit();
+                                Intent intent = new Intent(getActivity(), ReceiveActivity.class);
+                                startActivity(intent);
 
                             }
                         }

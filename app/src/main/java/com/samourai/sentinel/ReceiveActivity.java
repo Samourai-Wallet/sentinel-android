@@ -37,10 +37,12 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.uri.BitcoinURI;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.encode.QRCodeEncoder;
+
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.util.AppUtil;
@@ -66,11 +68,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-//import com.google.bitcoin.core.Coin;
-
-public class ReceiveFragment extends Fragment {
-
-    private static final String ARG_SECTION_NUMBER = "section_number";
+public class ReceiveActivity extends Activity {
 
     private Locale locale = null;
 
@@ -97,14 +95,6 @@ public class ReceiveFragment extends Fragment {
     private boolean canRefresh = false;
     private Menu _menu = null;
 
-    public static ReceiveFragment newInstance(int sectionNumber) {
-        ReceiveFragment fragment = new ReceiveFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     public static final String ACTION_INTENT = "com.samourai.sentinel.ReceiveFragment.REFRESH";
 
     protected BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -118,11 +108,11 @@ public class ReceiveFragment extends Fragment {
                     String in_addr = extras.getString("received_on");
 
                     if(in_addr.equals(addr))    {
-                        getActivity().runOnUiThread(new Runnable() {
+                        ReceiveActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
 
-                                getActivity().getFragmentManager().beginTransaction().remove(ReceiveFragment.this).commit();
+                                finish();
 
                             }
                         });
@@ -136,61 +126,39 @@ public class ReceiveFragment extends Fragment {
         }
     };
 
-    public ReceiveFragment() {
-        ;
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = null;
-        rootView = inflater.inflate(R.layout.fragment_receive, container, false);
-
-        rootView.setFilterTouchesWhenObscured(true);
-
-        rootView.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                return true;
-            }
-        });
-
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            rootView.setBackgroundColor(getActivity().getResources().getColor(R.color.divider));
-        }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_receive);
 
         locale = Locale.getDefault();
 
-//        getActivity().getActionBar().setTitle("My Bitcoin Address");
-        setHasOptionsMenu(true);
+        ReceiveActivity.this.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-
-        display = (getActivity()).getWindowManager().getDefaultDisplay();
+        display = (ReceiveActivity.this).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         imgWidth = size.x - 240;
 
-        addr = SamouraiSentinel.getInstance(getActivity()).getReceiveAddress();
+        addr = SamouraiSentinel.getInstance(ReceiveActivity.this).getReceiveAddress();
 
-        addressLayout = (LinearLayout)rootView.findViewById(R.id.receive_address_layout);
+        addressLayout = (LinearLayout)findViewById(R.id.receive_address_layout);
         addressLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(ReceiveActivity.this)
                         .setTitle(R.string.app_name)
                         .setMessage(R.string.receive_address_to_clipboard)
                         .setCancelable(false)
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) ReceiveActivity.this.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
                                 android.content.ClipData clip = null;
                                 clip = android.content.ClipData.newPlainText("Receive address", addr);
                                 clipboard.setPrimaryClip(clip);
-                                Toast.makeText(getActivity(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ReceiveActivity.this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
                             }
 
                         }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -204,16 +172,16 @@ public class ReceiveFragment extends Fragment {
             }
         });
 
-        tvAddress = (TextView)rootView.findViewById(R.id.receive_address);
+        tvAddress = (TextView)findViewById(R.id.receive_address);
 
-        ivQR = (ImageView)rootView.findViewById(R.id.qr);
+        ivQR = (ImageView)findViewById(R.id.qr);
         ivQR.setMaxWidth(imgWidth);
 
-        ivQR.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+        ivQR.setOnTouchListener(new OnSwipeTouchListener(ReceiveActivity.this) {
             @Override
             public void onSwipeLeft() {
                 if(canRefresh) {
-                    addr = SamouraiSentinel.getInstance(getActivity()).getReceiveAddress();
+                    addr = SamouraiSentinel.getInstance(ReceiveActivity.this).getReceiveAddress();
                     canRefresh = false;
                     displayQRCode();
                 }
@@ -224,13 +192,13 @@ public class ReceiveFragment extends Fragment {
         DecimalFormatSymbols symbols=format.getDecimalFormatSymbols();
         defaultSeparator = Character.toString(symbols.getDecimalSeparator());
 
-        strFiat = PrefsUtil.getInstance(getActivity()).getValue(PrefsUtil.CURRENT_FIAT, "USD");
-        btc_fx = ExchangeRateFactory.getInstance(getActivity()).getAvgPrice(strFiat);
-        tvFiatSymbol = (TextView)rootView.findViewById(R.id.fiatSymbol);
+        strFiat = PrefsUtil.getInstance(ReceiveActivity.this).getValue(PrefsUtil.CURRENT_FIAT, "USD");
+        btc_fx = ExchangeRateFactory.getInstance(ReceiveActivity.this).getAvgPrice(strFiat);
+        tvFiatSymbol = (TextView)findViewById(R.id.fiatSymbol);
         tvFiatSymbol.setText(getDisplayUnits() + "-" + strFiat);
 
-        edAmountBTC = (EditText)rootView.findViewById(R.id.amountBTC);
-        edAmountFiat = (EditText)rootView.findViewById(R.id.amountFiat);
+        edAmountBTC = (EditText)findViewById(R.id.amountBTC);
+        edAmountFiat = (EditText)findViewById(R.id.amountFiat);
 
         textWatcherBTC = new TextWatcher() {
 
@@ -239,7 +207,7 @@ public class ReceiveFragment extends Fragment {
                 edAmountBTC.removeTextChangedListener(this);
                 edAmountFiat.removeTextChangedListener(textWatcherFiat);
 
-                int unit = PrefsUtil.getInstance(getActivity()).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
+                int unit = PrefsUtil.getInstance(ReceiveActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
                 int max_len = 8;
                 NumberFormat btcFormat = NumberFormat.getInstance(Locale.getDefault());
                 switch (unit) {
@@ -336,7 +304,7 @@ public class ReceiveFragment extends Fragment {
                     ;
                 }
 
-                int unit = PrefsUtil.getInstance(getActivity()).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
+                int unit = PrefsUtil.getInstance(ReceiveActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
                 switch (unit) {
                     case MonetaryUtil.MICRO_BTC:
                         d = d * 1000000.0;
@@ -368,23 +336,22 @@ public class ReceiveFragment extends Fragment {
         edAmountFiat.addTextChangedListener(textWatcherFiat);
 
         IntentFilter filter = new IntentFilter(ACTION_INTENT);
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(ReceiveActivity.this).registerReceiver(receiver, filter);
 
         displayQRCode();
 
-        return rootView;
     }
 
     @Override
     public void onDestroy() {
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        ReceiveActivity.this.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        LocalBroadcastManager.getInstance(ReceiveActivity.this).unregisterReceiver(receiver);
         super.onDestroy();
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
 
 //        menu.findItem(R.id.action_sweep).setVisible(false);
         menu.findItem(R.id.action_settings).setVisible(false);
@@ -395,7 +362,7 @@ public class ReceiveFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(ReceiveActivity.this)
                         .setTitle(R.string.app_name)
                         .setMessage(R.string.receive_address_to_share)
                         .setCancelable(false)
@@ -403,14 +370,14 @@ public class ReceiveFragment extends Fragment {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
 
-                                String strFileName = AppUtil.getInstance(getActivity()).getReceiveQRFilename();
+                                String strFileName = AppUtil.getInstance(ReceiveActivity.this).getReceiveQRFilename();
                                 File file = new File(strFileName);
                                 if(!file.exists()) {
                                     try {
                                         file.createNewFile();
                                     }
                                     catch(Exception e) {
-                                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ReceiveActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 file.setReadable(true, false);
@@ -423,7 +390,7 @@ public class ReceiveFragment extends Fragment {
                                     ;
                                 }
 
-                                android.content.ClipboardManager clipboard = (android.content.ClipboardManager)getActivity().getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                                android.content.ClipboardManager clipboard = (android.content.ClipboardManager)ReceiveActivity.this.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
                                 android.content.ClipData clip = null;
                                 clip = android.content.ClipData.newPlainText("Receive address", addr);
                                 clipboard.setPrimaryClip(clip);
@@ -443,7 +410,7 @@ public class ReceiveFragment extends Fragment {
                                     intent.setAction(Intent.ACTION_SEND);
                                     intent.setType("image/png");
                                     intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-                                    startActivity(Intent.createChooser(intent, getActivity().getText(R.string.send_payment_code)));
+                                    startActivity(Intent.createChooser(intent, ReceiveActivity.this.getText(R.string.send_payment_code)));
                                 }
 
                             }
@@ -465,7 +432,7 @@ public class ReceiveFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
 
                 if (canRefresh) {
-                    addr = SamouraiSentinel.getInstance(getActivity()).getReceiveAddress();
+                    addr = SamouraiSentinel.getInstance(ReceiveActivity.this).getReceiveAddress();
                     canRefresh = false;
                     displayQRCode();
                 }
@@ -475,12 +442,8 @@ public class ReceiveFragment extends Fragment {
         });
 
         _menu = menu;
-    }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity2) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void displayQRCode() {
@@ -489,7 +452,7 @@ public class ReceiveFragment extends Fragment {
         try {
             double amount = NumberFormat.getInstance(locale).parse(edAmountBTC.getText().toString()).doubleValue();
 
-            int unit = PrefsUtil.getInstance(getActivity()).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
+            int unit = PrefsUtil.getInstance(ReceiveActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
             switch (unit) {
                 case MonetaryUtil.MICRO_BTC:
                     amount = amount / 1000000.0;
@@ -524,10 +487,10 @@ public class ReceiveFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if(AppUtil.getInstance(getActivity().getApplicationContext()).isServiceRunning(WebSocketService.class)) {
-                    getActivity().stopService(new Intent(getActivity().getApplicationContext(), WebSocketService.class));
+                if(AppUtil.getInstance(ReceiveActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
+                    ReceiveActivity.this.stopService(new Intent(ReceiveActivity.this.getApplicationContext(), WebSocketService.class));
                 }
-                getActivity().startService(new Intent(getActivity().getApplicationContext(), WebSocketService.class));
+                ReceiveActivity.this.startService(new Intent(ReceiveActivity.this.getApplicationContext(), WebSocketService.class));
             }
         }).start();
 
@@ -550,12 +513,12 @@ public class ReceiveFragment extends Fragment {
 
     private void checkPrevUse() {
 
-        final Set<String> xpubKeys = SamouraiSentinel.getInstance(getActivity()).getXPUBs().keySet();
-        final Set<String> legacyKeys = SamouraiSentinel.getInstance(getActivity()).getLegacy().keySet();
+        final Set<String> xpubKeys = SamouraiSentinel.getInstance(ReceiveActivity.this).getXPUBs().keySet();
+        final Set<String> legacyKeys = SamouraiSentinel.getInstance(ReceiveActivity.this).getLegacy().keySet();
         final List<String> xpubList = new ArrayList<String>();
         xpubList.addAll(xpubKeys);
         xpubList.addAll(legacyKeys);
-        if(!xpubList.get(SamouraiSentinel.getInstance(getActivity()).getCurrentSelectedAccount() - 1).startsWith("xpub"))    {
+        if(!xpubList.get(SamouraiSentinel.getInstance(ReceiveActivity.this).getCurrentSelectedAccount() - 1).startsWith("xpub"))    {
             return;
         }
 
@@ -565,7 +528,7 @@ public class ReceiveFragment extends Fragment {
             @Override
             public void run() {
                 try {
-                    final JSONObject jsonObject = APIFactory.getInstance(getActivity()).getAddressInfo(addr);
+                    final JSONObject jsonObject = APIFactory.getInstance(ReceiveActivity.this).getAddressInfo(addr);
 
                     handler.post(new Runnable() {
                         @Override
@@ -575,7 +538,7 @@ public class ReceiveFragment extends Fragment {
                                     JSONArray addrs = jsonObject.getJSONArray("addresses");
                                     JSONObject _addr = addrs.getJSONObject(0);
                                     if(_addr.has("n_tx") && _addr.getLong("n_tx") > 0L) {
-                                        Toast.makeText(getActivity(), R.string.address_used_previously, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ReceiveActivity.this, R.string.address_used_previously, Toast.LENGTH_SHORT).show();
                                         canRefresh = true;
                                         _menu.findItem(R.id.action_refresh).setVisible(true);
                                     }
@@ -599,7 +562,7 @@ public class ReceiveFragment extends Fragment {
 
     public String getDisplayUnits() {
 
-        return (String) MonetaryUtil.getInstance().getBTCUnits()[PrefsUtil.getInstance(getActivity()).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC)];
+        return (String) MonetaryUtil.getInstance().getBTCUnits()[PrefsUtil.getInstance(ReceiveActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC)];
 
     }
 
