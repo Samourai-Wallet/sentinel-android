@@ -3,7 +3,6 @@ package com.samourai.sentinel;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -239,46 +238,6 @@ public class MainActivity2 extends Activity {
         setIntent(intent);
     }
 
-    public void onSectionAttached(int number) {
-        mTitle = getString(R.string.app_name);
-    }
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        menu.getItem(0).setVisible(false);
-        menu.getItem(1).setVisible(false);
-        menu.getItem(2).setVisible(true);
-        restoreActionBar();
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            doSettings();
-        }
-        else if (id == R.id.action_sweep) {
-            confirmAccountSelection();
-        }
-        else {
-            ;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -339,12 +298,6 @@ public class MainActivity2 extends Activity {
             ;
         }
 
-    }
-
-    private void doSettings()	{
-        TimeOutUtil.getInstance().updatePin();
-        Intent intent = new Intent(MainActivity2.this, SettingsActivity.class);
-        startActivity(intent);
     }
 
     private void doTimer() {

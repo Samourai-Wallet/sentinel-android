@@ -1,25 +1,24 @@
 package com.samourai.sentinel;
 
 import android.animation.ObjectAnimator;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -237,6 +236,48 @@ public class BalanceActivity extends Activity {
         super.onPause();
 
         LocalBroadcastManager.getInstance(BalanceActivity.this).unregisterReceiver(receiver);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+
+        menu.getItem(0).setVisible(false);
+        menu.getItem(1).setVisible(false);
+        menu.getItem(2).setVisible(true);
+        restoreActionBar();
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            doSettings();
+        }
+        else if (id == R.id.action_sweep) {
+            confirmAccountSelection();
+        }
+        else {
+            ;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void restoreActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(R.string.app_name);
+    }
+
+    private void doSettings()	{
+        TimeOutUtil.getInstance().updatePin();
+        Intent intent = new Intent(BalanceActivity.this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     private class TransactionAdapter extends BaseAdapter {
