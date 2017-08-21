@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -28,6 +29,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AnticipateInterpolator;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,16 +40,21 @@ import android.widget.Toast;
 //import android.widget.Toast;
 //import android.util.Log;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.lang.StringUtils;
+import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.BIP38PrivateKey;
 import org.bitcoinj.crypto.MnemonicException;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.params.MainNetParams;
+import org.json.JSONException;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.api.Tx;
+import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
 import com.samourai.sentinel.service.WebSocketService;
@@ -93,11 +100,16 @@ public class BalanceActivity extends Activity {
     private FloatingActionsMenu ibQuickSend = null;
     private FloatingActionButton actionReceive = null;
     private FloatingActionButton actionXPUB = null;
-//    private FloatingActionButton actionShapeShift = null;
 
     private boolean isBTC = true;
 
+    private static String[] account_selections = null;
+    private static ArrayAdapter<String> adapter = null;
+    private static ActionBar.OnNavigationListener navigationListener = null;
+
     public static final String ACTION_INTENT = "com.samourai.sentinel.BalanceFragment.REFRESH";
+
+    private ProgressDialog progress = null;
 
     protected BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -124,6 +136,26 @@ public class BalanceActivity extends Activity {
         setContentView(R.layout.activity_balance);
 
         BalanceActivity.this.getActionBar().setTitle(R.string.app_name);
+
+        //
+        // account selection
+        //
+        account_selections = new String[1];
+        account_selections[0] = "";
+        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
+        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        navigationListener = new ActionBar.OnNavigationListener() {
+            @Override
+            public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+
+                SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(itemPosition);
+
+                refreshTx(false);
+
+                return false;
+            }
+        };
+        getActionBar().setListNavigationCallbacks(adapter, navigationListener);
 
         LayoutInflater inflator = BalanceActivity.this.getLayoutInflater();
         tvBalanceBar = (LinearLayout)inflator.inflate(R.layout.balance_layout, null);
@@ -226,11 +258,11 @@ public class BalanceActivity extends Activity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        refreshTx(false);
-
         if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
             BalanceActivity.this.startService(new Intent(BalanceActivity.this.getApplicationContext(), WebSocketService.class));
         }
+
+        restoreWatchOnly();
 
     }
 
@@ -861,6 +893,129 @@ public class BalanceActivity extends Activity {
                             }
                         }
                 ).show();
+
+    }
+
+    private void restoreWatchOnly() {
+
+        final Set<String> xpubKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet();
+        final List<String> xpubList = new ArrayList<String>();
+        xpubList.addAll(xpubKeys);
+
+        final Handler handler = new Handler();
+
+        if (progress != null && progress.isShowing()) {
+            progress.dismiss();
+            progress = null;
+        }
+
+        progress = new ProgressDialog(BalanceActivity.this);
+        progress.setCancelable(false);
+        progress.setTitle(R.string.app_name);
+        progress.setMessage(getString(R.string.please_wait));
+        progress.show();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Looper.prepare();
+
+                if(xpubList.size() > 0)    {
+                    try {
+                        String xpubs = StringUtils.join(xpubList.toArray(new String[xpubList.size()]), ":");
+//                        Log.i("BalanceActivity", xpubs);
+                        if(xpubKeys.size() > 0)    {
+                            HD_Wallet hdw = HD_WalletFactory.getInstance(BalanceActivity.this).restoreWallet(xpubs, null, 1);
+                            if(hdw != null) {
+                                List<HD_Account> accounts = hdw.getAccounts();
+                                for(int i = 0; i < accounts.size(); i++)   {
+                                    AddressFactory.getInstance().account2xpub().put(i, xpubList.get(i));
+                                    AddressFactory.getInstance().xpub2account().put(xpubList.get(i), i);
+                                }
+                            }
+                        }
+
+                    }
+                    catch(DecoderException de) {
+                        PrefsUtil.getInstance(BalanceActivity.this).clear();
+                        Toast.makeText(BalanceActivity.this, R.string.xpub_error, Toast.LENGTH_SHORT).show();
+                        de.printStackTrace();
+                    }
+                    catch(AddressFormatException afe) {
+                        PrefsUtil.getInstance(BalanceActivity.this).clear();
+                        Toast.makeText(BalanceActivity.this, R.string.xpub_error, Toast.LENGTH_SHORT).show();
+                        afe.printStackTrace();
+                    }
+                    finally {
+                    }
+                }
+
+                if (progress != null && progress.isShowing()) {
+                    progress.dismiss();
+                    progress = null;
+                }
+
+                final Set<String> legacyKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet();
+                final List<String> legacyList = new ArrayList<String>();
+                xpubList.addAll(legacyKeys);
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(xpubList.size() == 1)    {
+                            account_selections = new String[1];
+                            if(xpubList.get(0).startsWith("xpub"))    {
+                                account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(0));
+                            }
+                            else    {
+                                account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(0));
+                            }
+                        }
+                        else    {
+                            account_selections = new String[xpubList.size() + 1];
+                            account_selections[0] = BalanceActivity.this.getString(R.string.total_title);
+                            for(int i = 0; i < xpubList.size(); i++)   {
+                                if(xpubList.get(i).startsWith("xpub"))    {
+                                    account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(i));
+                                }
+                                else    {
+                                    account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));
+                                }
+                            }
+                        }
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
+                        }
+                        else    {
+                            adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.spinner_dropdown, account_selections);
+                        }
+                        getActionBar().setListNavigationCallbacks(adapter, navigationListener);
+                        adapter.notifyDataSetChanged();
+                        if(account_selections.length == 1)    {
+                            SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(0);
+                        }
+
+                        refreshTx(false);
+
+                        try {
+                            SamouraiSentinel.getInstance(BalanceActivity.this).serialize(SamouraiSentinel.getInstance(BalanceActivity.this).toJSON(), null);
+                        }
+                        catch(IOException ioe)  {
+                            ;
+                        }
+                        catch(JSONException je)  {
+                            ;
+                        }
+
+                    }
+                });
+
+                Looper.loop();
+
+            }
+        }).start();
 
     }
 
