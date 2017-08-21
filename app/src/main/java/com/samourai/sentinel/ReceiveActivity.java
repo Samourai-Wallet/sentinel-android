@@ -339,6 +339,14 @@ public class ReceiveActivity extends Activity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        AppUtil.getInstance(ReceiveActivity.this).checkTimeOut();
+
+    }
+
+    @Override
     public void onDestroy() {
         ReceiveActivity.this.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         LocalBroadcastManager.getInstance(ReceiveActivity.this).unregisterReceiver(receiver);

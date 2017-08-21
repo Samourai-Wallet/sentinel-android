@@ -152,6 +152,8 @@ public class MainActivity2 extends Activity {
     protected void onResume() {
         super.onResume();
 
+        TimeOutUtil.getInstance().updatePin();
+
         AppUtil.getInstance(MainActivity2.this).setIsInForeground(true);
 
         AppUtil.getInstance(MainActivity2.this).deleteQR();

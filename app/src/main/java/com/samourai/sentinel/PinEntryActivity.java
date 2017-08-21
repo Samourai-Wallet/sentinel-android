@@ -19,6 +19,7 @@ import com.samourai.sentinel.access.ScrambledPin;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.Hash;
 import com.samourai.sentinel.util.PrefsUtil;
+import com.samourai.sentinel.util.TimeOutUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -310,6 +311,8 @@ public class PinEntryActivity extends Activity {
                     Hash hash = new Hash(b);
 
                     if(PrefsUtil.getInstance(PinEntryActivity.this).getValue(PrefsUtil.PIN_HASH, "").equals(hash.toString())) {
+
+                        TimeOutUtil.getInstance().updatePin();
 
                         Intent i = new Intent(PinEntryActivity.this, MainActivity2.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);

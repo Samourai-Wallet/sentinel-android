@@ -99,6 +99,16 @@ public class ShowQRActivity extends Activity {
         displayQRCode();
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        AppUtil.getInstance(ShowQRActivity.this).checkTimeOut();
+
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.showqr, menu);

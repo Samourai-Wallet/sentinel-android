@@ -254,6 +254,16 @@ public class XPUBListActivity extends Activity {
 
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        AppUtil.getInstance(XPUBListActivity.this).checkTimeOut();
+
+    }
+
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 

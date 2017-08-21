@@ -275,6 +275,8 @@ public class BalanceActivity extends Activity {
         IntentFilter filter = new IntentFilter(ACTION_INTENT);
         LocalBroadcastManager.getInstance(BalanceActivity.this).registerReceiver(receiver, filter);
 
+        AppUtil.getInstance(BalanceActivity.this).checkTimeOut();
+
         displayBalance();
         refreshTx(false);
 

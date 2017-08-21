@@ -345,4 +345,13 @@ public class AppUtil {
 
     }
 
+    public void checkTimeOut()   {
+        if(TimeOutUtil.getInstance().isTimedOut())    {
+            AppUtil.getInstance(context).restartApp();
+        }
+        else    {
+            TimeOutUtil.getInstance().updatePin();
+        }
+    }
+
 }
