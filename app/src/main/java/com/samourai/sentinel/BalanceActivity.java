@@ -42,7 +42,7 @@ import android.widget.Toast;
 //import android.util.Log;
 
 import org.apache.commons.codec.DecoderException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.BIP38PrivateKey;
@@ -780,7 +780,7 @@ public class BalanceActivity extends Activity {
 
     private void doPrivKey(final String data) {
 
-        Log.d("BalanceActivity", "privkey:" + data);
+//        Log.d("BalanceActivity", "privkey:" + data);
 
         PrivKeyReader privKeyReader = null;
 
@@ -788,7 +788,7 @@ public class BalanceActivity extends Activity {
         try	{
             privKeyReader = new PrivKeyReader(new CharSequenceX(data), null);
             format = privKeyReader.getFormat();
-            Log.d("BalanceActivity", "privkey format:" + format);
+//            Log.d("BalanceActivity", "privkey format:" + format);
         }
         catch(Exception e)	{
             Toast.makeText(BalanceActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();

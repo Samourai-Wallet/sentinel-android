@@ -61,8 +61,9 @@ public class SweepUtil  {
 
                     String address = privKeyReader.getKey().toAddress(MainNetParams.get()).toString();
                     UTXO utxo = APIFactory.getInstance(context).getUnspentOutputsForSweep(address);
-                    Log.d("SweepUtil", "UTXO size:" + utxo.getOutpoints().size());
-                    if(utxo != null)    {
+                    if(utxo != null && utxo.getOutpoints().size() > 0)    {
+
+                        Log.d("SweepUtil", "UTXO size:" + utxo.getOutpoints().size());
 
                         long total_value = 0L;
                         final List<MyTransactionOutPoint> outpoints = utxo.getOutpoints();
@@ -104,7 +105,7 @@ public class SweepUtil  {
                                 tx = SendFactory.getInstance(context).signTransactionForSweep(tx, privKeyReader);
                                 final String hexTx = new String(Hex.encode(tx.bitcoinSerialize()));
                                 Log.d("SweepUtil", hexTx);
-/*
+//
                                 String response = null;
                                 try {
                                     response = PushTx.getInstance(context).samourai(hexTx);
@@ -124,7 +125,7 @@ public class SweepUtil  {
                                 catch(JSONException je) {
                                     Toast.makeText(context, "pushTx:" + je.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
-*/
+//
                                 if(progress != null && progress.isShowing())    {
                                     progress.dismiss();
                                 }
@@ -147,7 +148,8 @@ public class SweepUtil  {
 
                 }
                 catch(Exception e) {
-                    Toast.makeText(context, R.string.cannot_sweep_privkey, Toast.LENGTH_SHORT).show();
+                    Log.d("SweepUtil", e.getMessage());
+                    Toast.makeText(context, context.getText(R.string.cannot_sweep_privkey) + ", " + e.getMessage() , Toast.LENGTH_SHORT).show();
                 }
 
                 Looper.loop();
