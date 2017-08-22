@@ -10,6 +10,7 @@ android {
         targetSdkVersion 21
         versionCode 18
         versionName "2.3"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -23,14 +24,28 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:multidex:1.0.0'
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.baoyz.swipemenulistview:library:1.2.1'
     compile 'com.neovisionaries:nv-websocket-client:1.9'
     compile 'commons-codec:commons-codec:1.4'
+    compile 'commons-io:commons-io:2.5'
     compile 'com.google.guava:guava:16.0.1'
     compile 'org.bitcoinj:bitcoinj-core:0.14.4'
     compile 'org.apache.commons:commons-lang3:3.3'
@@ -41,8 +56,4 @@ dependencies {
     compile('com.google.zxing:core:3.3.0') {
         transitive = true
     }
-    compile files('libs/slf4j-api-1.6.2.jar')
-    compile files('libs/json-simple-1.1.jar')
-    compile files('libs/protobuf-java-2.5.0.jar')
-    compile files('libs/zbar.jar')
 }
