@@ -1,7 +1,6 @@
 package com.samourai.sentinel.api;
 
 import android.content.Context;
-import android.util.Log;
 //import android.util.Log;
 
 import com.samourai.sentinel.SamouraiSentinel;

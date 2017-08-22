@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
+import android.util.Log;
 
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;

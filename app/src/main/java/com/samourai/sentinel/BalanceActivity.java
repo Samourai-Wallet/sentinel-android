@@ -38,7 +38,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-//import android.widget.Toast;
 //import android.util.Log;
 
 import org.apache.commons.codec.DecoderException;
