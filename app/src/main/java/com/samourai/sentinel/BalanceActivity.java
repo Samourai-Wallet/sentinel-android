@@ -165,7 +165,7 @@ public class BalanceActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 isBTC = (isBTC) ? false : true;
                 displayBalance();
-//                txAdapter.notifyDataSetChanged();
+                txAdapter.notifyDataSetChanged();
                 return false;
             }
         });
@@ -501,8 +501,16 @@ public class BalanceActivity extends Activity {
                     _amount = (long)tx.getAmount();
                     strDetails = BalanceActivity.this.getString(R.string.you_received);
                 }
-                String strAmount = getDisplayAmount(_amount);
-                String strUnits = getDisplayUnits();
+                String strAmount = null;
+                String strUnits = null;
+                if(isBTC)    {
+                    strAmount = getBTCDisplayAmount(_amount);
+                    strUnits = getBTCDisplayUnits();
+                }
+                else    {
+                    strAmount = getFiatDisplayAmount(_amount);
+                    strUnits = getFiatDisplayUnits();
+                }
 
                 TextView tvDirection = (TextView)view.findViewById(R.id.TransactionDirection);
                 TextView tvDirection2 = (TextView)view.findViewById(R.id.TransactionDirection2);
@@ -1055,6 +1063,51 @@ public class BalanceActivity extends Activity {
 
             }
         }).start();
+
+    }
+
+    private String getBTCDisplayAmount(long value) {
+
+        String strAmount = null;
+        DecimalFormat df = new DecimalFormat("#");
+        df.setMinimumIntegerDigits(1);
+        df.setMinimumFractionDigits(1);
+        df.setMaximumFractionDigits(8);
+
+        int unit = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
+        switch(unit) {
+            case MonetaryUtil.MICRO_BTC:
+                strAmount = df.format(((double)(value * 1000000L)) / 1e8);
+                break;
+            case MonetaryUtil.MILLI_BTC:
+                strAmount = df.format(((double)(value * 1000L)) / 1e8);
+                break;
+            default:
+                strAmount = Coin.valueOf(value).toPlainString();
+                break;
+        }
+
+        return strAmount;
+    }
+
+    private String getBTCDisplayUnits() {
+
+        return (String) MonetaryUtil.getInstance().getBTCUnits()[PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC)];
+
+    }
+
+    private String getFiatDisplayAmount(long value) {
+
+        String strFiat = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.CURRENT_FIAT, "USD");
+        double btc_fx = ExchangeRateFactory.getInstance(BalanceActivity.this).getAvgPrice(strFiat);
+        String strAmount = MonetaryUtil.getInstance().getFiatFormat(strFiat).format(btc_fx * (((double)value) / 1e8));
+
+        return strAmount;
+    }
+
+    private String getFiatDisplayUnits() {
+
+        return PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.CURRENT_FIAT, "USD");
 
     }
 
