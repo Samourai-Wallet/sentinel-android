@@ -14,6 +14,7 @@ import android.widget.Toast;
 //import android.util.Log;
 
 import com.samourai.sentinel.access.AccessFactory;
+import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.ConnectivityStatus;
@@ -39,8 +40,6 @@ public class MainActivity2 extends Activity {
 
     private Timer timer = null;
     private Handler handler = null;
-
-    private static int timer_updates = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +68,7 @@ public class MainActivity2 extends Activity {
 
         }
         else  {
+            feeThread();
             exchangeRateThread();
 
             if(PrefsUtil.getInstance(MainActivity2.this).getValue("popup_" + getResources().getString(R.string.version_name), false) == true)	{
@@ -197,19 +197,32 @@ public class MainActivity2 extends Activity {
                         @Override
                         public void run() {
 
-                            timer_updates++;
-                            if(timer_updates % 20 == 0)    {
-                                exchangeRateThread();
-                            }
+                            feeThread();
+                            exchangeRateThread();
 
-                            Intent intent = new Intent("com.samourai.wallet.BalanceFragment.REFRESH");
-                            LocalBroadcastManager.getInstance(MainActivity2.this).sendBroadcast(intent);
                         }
                     });
                 }
-            }, 15000, 15000);
+            }, 1000, 60000 * 15);
         }
 
+    }
+
+    private void feeThread() {
+
+        final Handler handler = new Handler();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Looper.prepare();
+
+                APIFactory.getInstance(MainActivity2.this).getDynamicFees();
+
+                Looper.loop();
+
+            }
+        }).start();
     }
 
     private void exchangeRateThread() {
@@ -240,13 +253,6 @@ public class MainActivity2 extends Activity {
                 catch(Exception e) {
                     e.printStackTrace();
                 }
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ;
-                    }
-                });
 
                 Looper.loop();
 

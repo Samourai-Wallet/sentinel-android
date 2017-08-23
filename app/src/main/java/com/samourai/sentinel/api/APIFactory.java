@@ -1,10 +1,13 @@
 package com.samourai.sentinel.api;
 
 import android.content.Context;
+import android.util.Log;
 //import android.util.Log;
 
 import com.samourai.sentinel.SamouraiSentinel;
+import com.samourai.sentinel.sweep.FeeUtil;
 import com.samourai.sentinel.sweep.MyTransactionOutPoint;
+import com.samourai.sentinel.sweep.SuggestedFee;
 import com.samourai.sentinel.sweep.UTXO;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.Web;
@@ -366,6 +369,84 @@ public class APIFactory	{
 
             return ret;
         }
+
+    }
+
+    public synchronized JSONObject getDynamicFees() {
+
+        JSONObject jsonObject  = null;
+
+        try {
+            StringBuilder url = new StringBuilder(Web._21CO_FEE_URL);
+//            Log.i("APIFactory", "Dynamic fees:" + url.toString());
+            String response = Web.getURL(url.toString());
+//            Log.i("APIFactory", "Dynamic fees response:" + response);
+            try {
+                jsonObject = new JSONObject(response);
+                parseDynamicFees_21(jsonObject);
+            }
+            catch(JSONException je) {
+                je.printStackTrace();
+                jsonObject = null;
+            }
+        }
+        catch(Exception e) {
+            jsonObject = null;
+            e.printStackTrace();
+        }
+
+        return jsonObject;
+    }
+
+    private synchronized boolean parseDynamicFees_21(JSONObject jsonObject) throws JSONException  {
+
+        if(jsonObject != null)  {
+
+            //
+            // 21.co API
+            //
+            List<SuggestedFee> suggestedFees = new ArrayList<SuggestedFee>();
+
+            if(jsonObject.has("fastestFee"))    {
+                long fee = jsonObject.getInt("fastestFee");
+                SuggestedFee suggestedFee = new SuggestedFee();
+                suggestedFee.setDefaultPerKB(BigInteger.valueOf(fee * 1000L));
+                suggestedFee.setStressed(false);
+                suggestedFee.setOK(true);
+                suggestedFees.add(suggestedFee);
+            }
+
+            if(jsonObject.has("halfHourFee"))    {
+                long fee = jsonObject.getInt("halfHourFee");
+                SuggestedFee suggestedFee = new SuggestedFee();
+                suggestedFee.setDefaultPerKB(BigInteger.valueOf(fee * 1000L));
+                suggestedFee.setStressed(false);
+                suggestedFee.setOK(true);
+                suggestedFees.add(suggestedFee);
+            }
+
+            if(jsonObject.has("hourFee"))    {
+                long fee = jsonObject.getInt("hourFee");
+                SuggestedFee suggestedFee = new SuggestedFee();
+                suggestedFee.setDefaultPerKB(BigInteger.valueOf(fee * 1000L));
+                suggestedFee.setStressed(false);
+                suggestedFee.setOK(true);
+                suggestedFees.add(suggestedFee);
+            }
+
+            if(suggestedFees.size() > 0)    {
+                FeeUtil.getInstance().setEstimatedFees(suggestedFees);
+
+                Log.d("APIFactory", "high fee:" + FeeUtil.getInstance().getHighFee().getDefaultPerKB().toString());
+                Log.d("APIFactory", "suggested fee:" + FeeUtil.getInstance().getSuggestedFee().getDefaultPerKB().toString());
+                Log.d("APIFactory", "low fee:" + FeeUtil.getInstance().getLowFee().getDefaultPerKB().toString());
+            }
+
+            return true;
+
+        }
+
+        return false;
 
     }
 

@@ -67,6 +67,7 @@ public class SweepUtil  {
                             total_value += outpoint.getValue().longValue();
                         }
 
+                        FeeUtil.getInstance().setSuggestedFee(FeeUtil.getInstance().getNormalFee());
                         final BigInteger fee = FeeUtil.getInstance().estimatedFee(outpoints.size(), 1);
 
                         final long amount = total_value - fee.longValue();
