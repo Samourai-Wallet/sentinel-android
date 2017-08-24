@@ -158,7 +158,7 @@ public class SamouraiSentinel {
         return file.exists();
     }
 
-    public void serialize(JSONObject jsonobj, CharSequenceX password) throws IOException, JSONException {
+    public synchronized void serialize(JSONObject jsonobj, CharSequenceX password) throws IOException, JSONException {
 
         File dir = context.getDir(dataDir, Context.MODE_PRIVATE);
         File newfile = new File(dir, strFilename);
@@ -200,7 +200,7 @@ public class SamouraiSentinel {
         }
     }
 
-    public JSONObject deserialize(CharSequenceX password) throws IOException, JSONException {
+    public synchronized JSONObject deserialize(CharSequenceX password) throws IOException, JSONException {
 
         File dir = context.getDir(dataDir, Context.MODE_PRIVATE);
         File file = new File(dir, strFilename);
