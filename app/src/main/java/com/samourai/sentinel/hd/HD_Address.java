@@ -1,12 +1,12 @@
 package com.samourai.sentinel.hd;
 
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.core.Utils;
-import com.google.bitcoin.crypto.ChildNumber;
-import com.google.bitcoin.crypto.DeterministicKey;
-import com.google.bitcoin.crypto.HDKeyDerivation;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Utils;
+import org.bitcoinj.crypto.ChildNumber;
+import org.bitcoinj.crypto.DeterministicKey;
+import org.bitcoinj.crypto.HDKeyDerivation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,12 +27,17 @@ public class HD_Address {
         mChildNum = child;
 
         DeterministicKey dk = HDKeyDerivation.deriveChildKey(cKey, new ChildNumber(mChildNum, false));
-        ecKey = new ECKey(dk.getPrivKeyBytes(), dk.getPubKeyBytes());
+        if(dk.hasPrivKey())    {
+            ecKey = new ECKey(dk.getPrivKeyBytes(), dk.getPubKey());
+        }
+        else    {
+            ecKey = ECKey.fromPublicOnly(dk.getPubKey());
+        }
 
         long now = Utils.now().getTime() / 1000;
         ecKey.setCreationTimeSeconds(now);
 
-        strPath = dk.getPath();
+        strPath = dk.getPath().toString();
     }
 
     public String getAddressString() {

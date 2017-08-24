@@ -19,8 +19,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.util.Log;
 import android.widget.Toast;
+//import android.util.Log;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
@@ -28,6 +28,8 @@ import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.sourceforge.zbar.Symbol;
 
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.Coin;
 import org.json.JSONException;
 
@@ -38,8 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.Base58;
 import com.samourai.sentinel.access.AccessFactory;
 
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -253,6 +253,16 @@ public class XPUBListActivity extends Activity {
         }
 
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        AppUtil.getInstance(XPUBListActivity.this).checkTimeOut();
+
+    }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

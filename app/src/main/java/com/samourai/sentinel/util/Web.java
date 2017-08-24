@@ -8,10 +8,12 @@ import java.net.URL;
 
 public class Web	{
 
+    public static final String SAMOURAI_API = "https://api.samouraiwallet.com/";
     public static final String SAMOURAI_API2 = "https://api.samouraiwallet.com/v2/";
     public static final String LBC_EXCHANGE_URL = "https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/";
     public static final String BTCe_EXCHANGE_URL = "https://btc-e.com/api/3/ticker/";
     public static final String BFX_EXCHANGE_URL = "https://api.bitfinex.com/v1/pubticker/btcusd";
+    public static final String _21CO_FEE_URL = "https://bitcoinfees.21.co/api/v1/fees/recommended";
 
     private static final int DefaultRequestRetry = 2;
     private static final int DefaultRequestTimeout = 60000;

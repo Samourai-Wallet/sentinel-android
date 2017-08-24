@@ -1,16 +1,26 @@
 package com.samourai.sentinel.api;
 
 import android.content.Context;
+import android.util.Log;
 //import android.util.Log;
 
 import com.samourai.sentinel.SamouraiSentinel;
+import com.samourai.sentinel.sweep.FeeUtil;
+import com.samourai.sentinel.sweep.MyTransactionOutPoint;
+import com.samourai.sentinel.sweep.SuggestedFee;
+import com.samourai.sentinel.sweep.UTXO;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.Web;
 
+import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.script.Script;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.spongycastle.util.encoders.Hex;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,9 +69,9 @@ public class APIFactory	{
                 StringBuilder url = new StringBuilder(Web.SAMOURAI_API2);
                 url.append("multiaddr?active=");
                 url.append(xpubs[i]);
-//            Log.i("APIFactory", "XPUB:" + url.toString());
+//                Log.i("APIFactory", "XPUB:" + url.toString());
                 String response = Web.getURL(url.toString());
-//            Log.i("APIFactory", "XPUB response:" + response);
+//                Log.i("APIFactory", "XPUB response:" + response);
                 try {
                     jsonObject = new JSONObject(response);
                     xpub_txs.put(xpubs[i], new ArrayList<Tx>());
@@ -256,6 +266,87 @@ public class APIFactory	{
         return ret;
     }
 
+    public synchronized UTXO getUnspentOutputsForSweep(String address) {
+
+        try {
+
+            String response = null;
+
+            StringBuilder args = new StringBuilder();
+            args.append("active=");
+            args.append(address);
+            response = Web.postURL(Web.SAMOURAI_API2 + "unspent?", args.toString());
+
+            return parseUnspentOutputsForSweep(response);
+
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private synchronized UTXO parseUnspentOutputsForSweep(String unspents)   {
+
+        UTXO utxo = null;
+
+        if(unspents != null)    {
+
+            try {
+                JSONObject jsonObj = new JSONObject(unspents);
+
+                if(jsonObj == null || !jsonObj.has("unspent_outputs"))    {
+                    return null;
+                }
+                JSONArray utxoArray = jsonObj.getJSONArray("unspent_outputs");
+                if(utxoArray == null || utxoArray.length() == 0) {
+                    return null;
+                }
+
+//            Log.d("APIFactory", "unspents found:" + outputsRoot.size());
+
+                for (int i = 0; i < utxoArray.length(); i++) {
+
+                    JSONObject outDict = utxoArray.getJSONObject(i);
+
+                    byte[] hashBytes = Hex.decode((String)outDict.get("tx_hash"));
+                    Sha256Hash txHash = Sha256Hash.wrap(hashBytes);
+                    int txOutputN = ((Number)outDict.get("tx_output_n")).intValue();
+                    BigInteger value = BigInteger.valueOf(((Number)outDict.get("value")).longValue());
+                    String script = (String)outDict.get("script");
+                    byte[] scriptBytes = Hex.decode(script);
+                    int confirmations = ((Number)outDict.get("confirmations")).intValue();
+
+                    try {
+                        String address = new Script(scriptBytes).getToAddress(MainNetParams.get()).toString();
+
+                        // Construct the output
+                        MyTransactionOutPoint outPoint = new MyTransactionOutPoint(txHash, txOutputN, value, scriptBytes, address);
+                        outPoint.setConfirmations(confirmations);
+                        if(utxo == null)    {
+                            utxo = new UTXO();
+                        }
+                        utxo.getOutpoints().add(outPoint);
+
+                    }
+                    catch(Exception e) {
+                        ;
+                    }
+
+                }
+
+            }
+            catch(JSONException je) {
+                ;
+            }
+
+        }
+
+        return utxo;
+
+    }
+
     private class TxMostRecentDateComparator implements Comparator<Tx> {
 
         public int compare(Tx t1, Tx t2) {
@@ -278,6 +369,84 @@ public class APIFactory	{
 
             return ret;
         }
+
+    }
+
+    public synchronized JSONObject getDynamicFees() {
+
+        JSONObject jsonObject  = null;
+
+        try {
+            StringBuilder url = new StringBuilder(Web._21CO_FEE_URL);
+//            Log.i("APIFactory", "Dynamic fees:" + url.toString());
+            String response = Web.getURL(url.toString());
+//            Log.i("APIFactory", "Dynamic fees response:" + response);
+            try {
+                jsonObject = new JSONObject(response);
+                parseDynamicFees_21(jsonObject);
+            }
+            catch(JSONException je) {
+                je.printStackTrace();
+                jsonObject = null;
+            }
+        }
+        catch(Exception e) {
+            jsonObject = null;
+            e.printStackTrace();
+        }
+
+        return jsonObject;
+    }
+
+    private synchronized boolean parseDynamicFees_21(JSONObject jsonObject) throws JSONException  {
+
+        if(jsonObject != null)  {
+
+            //
+            // 21.co API
+            //
+            List<SuggestedFee> suggestedFees = new ArrayList<SuggestedFee>();
+
+            if(jsonObject.has("fastestFee"))    {
+                long fee = jsonObject.getInt("fastestFee");
+                SuggestedFee suggestedFee = new SuggestedFee();
+                suggestedFee.setDefaultPerKB(BigInteger.valueOf(fee * 1000L));
+                suggestedFee.setStressed(false);
+                suggestedFee.setOK(true);
+                suggestedFees.add(suggestedFee);
+            }
+
+            if(jsonObject.has("halfHourFee"))    {
+                long fee = jsonObject.getInt("halfHourFee");
+                SuggestedFee suggestedFee = new SuggestedFee();
+                suggestedFee.setDefaultPerKB(BigInteger.valueOf(fee * 1000L));
+                suggestedFee.setStressed(false);
+                suggestedFee.setOK(true);
+                suggestedFees.add(suggestedFee);
+            }
+
+            if(jsonObject.has("hourFee"))    {
+                long fee = jsonObject.getInt("hourFee");
+                SuggestedFee suggestedFee = new SuggestedFee();
+                suggestedFee.setDefaultPerKB(BigInteger.valueOf(fee * 1000L));
+                suggestedFee.setStressed(false);
+                suggestedFee.setOK(true);
+                suggestedFees.add(suggestedFee);
+            }
+
+            if(suggestedFees.size() > 0)    {
+                FeeUtil.getInstance().setEstimatedFees(suggestedFees);
+
+                Log.d("APIFactory", "high fee:" + FeeUtil.getInstance().getHighFee().getDefaultPerKB().toString());
+                Log.d("APIFactory", "suggested fee:" + FeeUtil.getInstance().getSuggestedFee().getDefaultPerKB().toString());
+                Log.d("APIFactory", "low fee:" + FeeUtil.getInstance().getLowFee().getDefaultPerKB().toString());
+            }
+
+            return true;
+
+        }
+
+        return false;
 
     }
 

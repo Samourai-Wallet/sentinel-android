@@ -4,6 +4,7 @@ import android.content.Context;
 //import android.util.Log;
 
 import com.samourai.sentinel.crypto.AESUtil;
+import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.CharSequenceX;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
@@ -20,8 +21,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class SamouraiSentinel {
 
@@ -154,7 +158,7 @@ public class SamouraiSentinel {
         return file.exists();
     }
 
-    public void serialize(JSONObject jsonobj, CharSequenceX password) throws IOException, JSONException {
+    public synchronized void serialize(JSONObject jsonobj, CharSequenceX password) throws IOException, JSONException {
 
         File dir = context.getDir(dataDir, Context.MODE_PRIVATE);
         File newfile = new File(dir, strFilename);
@@ -196,7 +200,7 @@ public class SamouraiSentinel {
         }
     }
 
-    public JSONObject deserialize(CharSequenceX password) throws IOException, JSONException {
+    public synchronized JSONObject deserialize(CharSequenceX password) throws IOException, JSONException {
 
         File dir = context.getDir(dataDir, Context.MODE_PRIVATE);
         File file = new File(dir, strFilename);
@@ -230,6 +234,29 @@ public class SamouraiSentinel {
         }
 
         return node;
+    }
+
+    public String getReceiveAddress()  {
+
+        final Set<String> xpubKeys = SamouraiSentinel.getInstance(context).getXPUBs().keySet();
+        final Set<String> legacyKeys = SamouraiSentinel.getInstance(context).getLegacy().keySet();
+        final List<String> xpubList = new ArrayList<String>();
+        xpubList.addAll(xpubKeys);
+        xpubList.addAll(legacyKeys);
+
+        String addr = null;
+
+        if(xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("xpub"))    {
+            String xpub = xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1);
+            int account = AddressFactory.getInstance(context).xpub2account().get(xpub);
+            addr = AddressFactory.getInstance(context).get(AddressFactory.RECEIVE_CHAIN, account);
+        }
+        else    {
+            addr = xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1);
+        }
+
+        return addr;
+
     }
 
 }

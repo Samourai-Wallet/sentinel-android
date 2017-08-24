@@ -143,6 +143,16 @@ public class SettingsActivity extends PreferenceActivity	{
 
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        AppUtil.getInstance(SettingsActivity.this).checkTimeOut();
+
+    }
+
+
     private void getUnits()	{
 
         final CharSequence[] units = MonetaryUtil.getInstance().getBTCUnits();

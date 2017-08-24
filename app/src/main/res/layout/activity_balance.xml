@@ -11,13 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <ListView
-         android:id="@+id/txList"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:divider="@drawable/list_divider"
-         android:layout_below="@+id/BalanceBar"
-         />
+        <ListView
+            android:id="@+id/txList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@drawable/list_divider"
+            android:layout_below="@+id/BalanceBar"
+            />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -35,18 +35,18 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp">
-<!--
-        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
-            android:id="@+id/shapeshift"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_size="mini"
-            fab:fab_icon="@drawable/ic_receive_shapeshift"
-            fab:fab_colorNormal="#FF7ad5f7"
-            fab:fab_colorPressed="#FF60a8c3"
-            fab:fab_title="@string/shapeshift"
-            />
--->
+        <!--
+                <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/shapeshift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_size="mini"
+                    fab:fab_icon="@drawable/ic_receive_shapeshift"
+                    fab:fab_colorNormal="#FF7ad5f7"
+                    fab:fab_colorPressed="#FF60a8c3"
+                    fab:fab_title="@string/shapeshift"
+                    />
+        -->
         <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
             android:id="@+id/receive"
             android:layout_width="wrap_content"
