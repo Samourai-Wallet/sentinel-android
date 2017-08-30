@@ -1,6 +1,7 @@
 package com.samourai.sentinel;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 //import android.util.Log;
 
 import com.samourai.sentinel.crypto.AESUtil;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class SamouraiSentinel {
@@ -47,6 +49,9 @@ public class SamouraiSentinel {
     private static String dataDir = "wallet";
     private static String strFilename = "sentinel.dat";
     private static String strTmpFilename = "sentinel.bak";
+
+    private static String strSentinelXPUB = "sentinel.xpub";
+    private static String strSentinelLegacy = "sentinel.legacy";
 
     private SamouraiSentinel()    { ; }
 
@@ -193,6 +198,9 @@ public class SamouraiSentinel {
 //            mLogger.warn("rename to " + newfile.getPath() + " failed");
 //            Log.i("HD_WalletFactory", "rename to " + newfile.getPath() + " failed");
         }
+
+        saveToPrefs();
+
     }
 
     public synchronized JSONObject deserialize(CharSequenceX password) throws IOException, JSONException {
@@ -228,6 +236,44 @@ public class SamouraiSentinel {
         }
 
         return node;
+    }
+
+    public void saveToPrefs()  {
+
+        SharedPreferences _xpub = context.getSharedPreferences(strSentinelXPUB, 0);
+        SharedPreferences.Editor xEditor = _xpub.edit();
+        for(String xpub : xpubs.keySet()) {
+            xEditor.putString(xpub, xpubs.get(xpub));
+        }
+        xEditor.commit();
+
+        SharedPreferences _legacy = context.getSharedPreferences(strSentinelLegacy, 0);
+        SharedPreferences.Editor lEditor = _legacy.edit();
+        for(String leg : legacy.keySet()) {
+            lEditor.putString(leg, legacy.get(leg));
+        }
+        lEditor.commit();
+
+    }
+
+    public void restoreFromPrefs()  {
+
+        SharedPreferences xpub = context.getSharedPreferences(strSentinelXPUB, 0);
+        if(xpub != null)    {
+            Map<String, ?> allXPUB = xpub.getAll();
+            for (Map.Entry<String, ?> entry : allXPUB.entrySet()) {
+                SamouraiSentinel.getInstance(context).getXPUBs().put(entry.getKey(), entry.getValue().toString());
+            }
+        }
+
+        SharedPreferences legacy = context.getSharedPreferences(strSentinelLegacy, 0);
+        if(legacy != null)    {
+            Map<String, ?> allLegacy = legacy.getAll();
+            for (Map.Entry<String, ?> entry : allLegacy.entrySet()) {
+                SamouraiSentinel.getInstance(context).getLegacy().put(entry.getKey(), entry.getValue().toString());
+            }
+        }
+
     }
 
     public String getReceiveAddress()  {
