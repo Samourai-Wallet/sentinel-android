@@ -31,14 +31,9 @@ import java.util.Set;
 
 public class SamouraiSentinel {
 
-    public final static int SAMOURAI_ACCOUNT = 0;
-    public final static int MIXING_ACCOUNT = 1;
-//    public final static int PUBLIC_ACCOUNT = 2;
-
-    public final static int NB_ACCOUNTS = 2;
-
     private static HashMap<String,String> xpubs = null;
     private static HashMap<String,String> legacy = null;
+    private static HashMap<String,String> bip49 = null;
     private static HashMap<String,Integer> highestReceiveIdx = null;
 
     private static SamouraiSentinel instance = null;
@@ -52,6 +47,7 @@ public class SamouraiSentinel {
 
     private static String strSentinelXPUB = "sentinel.xpub";
     private static String strSentinelLegacy = "sentinel.legacy";
+    private static String strSentinelBIP49 = "sentinel.bip49";
 
     private SamouraiSentinel()    { ; }
 
@@ -62,6 +58,7 @@ public class SamouraiSentinel {
         if(instance == null)    {
             xpubs = new HashMap<String,String>();
             legacy = new HashMap<String,String>();
+            bip49 = new HashMap<String,String>();
             highestReceiveIdx = new HashMap<String,Integer>();
 
             instance = new SamouraiSentinel();
@@ -79,6 +76,8 @@ public class SamouraiSentinel {
     }
 
     public HashMap<String,String> getXPUBs()    { return xpubs; }
+
+    public HashMap<String,String> getBIP49()    { return bip49; }
 
     public HashMap<String,String> getLegacy()    { return legacy; }
 
@@ -99,6 +98,23 @@ public class SamouraiSentinel {
                         }
                         else    {
                             xpubs.put(key, _obj.getString(key));
+                        }
+                    }
+                }
+            }
+
+            if(obj != null && obj.has("bip49"))    {
+                JSONArray _bip49s = obj.getJSONArray("bip49");
+                for(int i = 0; i < _bip49s.length(); i++)   {
+                    JSONObject _obj = _bip49s.getJSONObject(i);
+                    Iterator it = _obj.keys();
+                    while (it.hasNext()) {
+                        String key = (String)it.next();
+                        if(key.equals("receiveIdx"))    {
+                            highestReceiveIdx.put(key, _obj.getInt(key));
+                        }
+                        else    {
+                            bip49.put(key, _obj.getString(key));
                         }
                     }
                 }
@@ -139,6 +155,15 @@ public class SamouraiSentinel {
                 _xpubs.put(_obj);
             }
             obj.put("xpubs", _xpubs);
+
+            JSONArray _bip49s = new JSONArray();
+            for(String b49 : bip49.keySet()) {
+                JSONObject _obj = new JSONObject();
+                _obj.put(b49, bip49.get(b49));
+                _obj.put("receiveIdx", highestReceiveIdx.get(b49) == null ? 0 : highestReceiveIdx.get(b49));
+                _xpubs.put(_obj);
+            }
+            obj.put("bip49", _bip49s);
 
             JSONArray _addr = new JSONArray();
             for(String addr : legacy.keySet()) {
@@ -247,6 +272,13 @@ public class SamouraiSentinel {
         }
         xEditor.commit();
 
+        SharedPreferences _bip49 = context.getSharedPreferences(strSentinelBIP49, 0);
+        SharedPreferences.Editor bEditor = _bip49.edit();
+        for(String b49 : bip49.keySet()) {
+            bEditor.putString(b49, bip49.get(b49));
+        }
+        bEditor.commit();
+
         SharedPreferences _legacy = context.getSharedPreferences(strSentinelLegacy, 0);
         SharedPreferences.Editor lEditor = _legacy.edit();
         for(String leg : legacy.keySet()) {
@@ -266,6 +298,14 @@ public class SamouraiSentinel {
             }
         }
 
+        SharedPreferences bip49s = context.getSharedPreferences(strSentinelBIP49, 0);
+        if(bip49s != null)    {
+            Map<String, ?> all49 = bip49s.getAll();
+            for (Map.Entry<String, ?> entry : all49.entrySet()) {
+                SamouraiSentinel.getInstance(context).getBIP49().put(entry.getKey(), entry.getValue().toString());
+            }
+        }
+
         SharedPreferences legacy = context.getSharedPreferences(strSentinelLegacy, 0);
         if(legacy != null)    {
             Map<String, ?> allLegacy = legacy.getAll();
@@ -279,9 +319,11 @@ public class SamouraiSentinel {
     public String getReceiveAddress()  {
 
         final Set<String> xpubKeys = SamouraiSentinel.getInstance(context).getXPUBs().keySet();
+        final Set<String> bip49Keys = SamouraiSentinel.getInstance(context).getBIP49().keySet();
         final Set<String> legacyKeys = SamouraiSentinel.getInstance(context).getLegacy().keySet();
         final List<String> xpubList = new ArrayList<String>();
         xpubList.addAll(xpubKeys);
+        xpubList.addAll(bip49Keys);
         xpubList.addAll(legacyKeys);
 
         String addr = null;
