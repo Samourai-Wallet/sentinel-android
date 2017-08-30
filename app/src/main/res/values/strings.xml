@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="version_name">2.3.1</string>
+    <string name="version_name">2.3.2</string>
     <string name="app_name">Sentinel</string>
 
     <string name="new_version_message">Welcome to Sentinel\n\nSentinel is your deposit only bitcoin wallet. Sentinel cannot send bitcoin. Scan any XPUB and Sentinel will keep watch, alerting you of any new incoming transactions and allowing you to create new addresses so you can receive bitcoin on your mobile device.\n\nSentinel is the easiest and most secure way to keep track and receive payments to your cold storage wallet.\n\nSentinel can\'t send bitcoin out of your wallet, and your private keys are never communicated with Sentinel in any way.</string>
