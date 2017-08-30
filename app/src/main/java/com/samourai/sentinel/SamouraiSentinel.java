@@ -163,8 +163,6 @@ public class SamouraiSentinel {
         File dir = context.getDir(dataDir, Context.MODE_PRIVATE);
         File newfile = new File(dir, strFilename);
         File tmpfile = new File(dir, strTmpFilename);
-        newfile.setWritable(true, true);
-        tmpfile.setWritable(true, true);
 
         // serialize to byte array.
         String jsonstr = jsonobj.toString(4);
@@ -182,12 +180,9 @@ public class SamouraiSentinel {
             data = jsonstr;
         }
 
-        Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpfile), "UTF-8"));
-        try {
-            out.write(data);
-        } finally {
-            out.close();
-        }
+        FileOutputStream fos = new FileOutputStream(tmpfile);
+        fos.write(data.getBytes());
+        fos.close();
 
         // rename tmp file
         if(tmpfile.renameTo(newfile)) {
@@ -204,16 +199,15 @@ public class SamouraiSentinel {
 
         File dir = context.getDir(dataDir, Context.MODE_PRIVATE);
         File file = new File(dir, strFilename);
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("");
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-        String str = null;
-
-        while((str = in.readLine()) != null) {
-            sb.append(str);
+        FileInputStream fis = new FileInputStream(file);
+        byte[] buffer = new byte[1024];
+        int n = 0;
+        while((n = fis.read(buffer)) != -1) {
+            sb.append(new String(buffer, 0, n));
         }
-
-        in.close();
+        fis.close();
 
         JSONObject node = null;
         if(password == null) {
