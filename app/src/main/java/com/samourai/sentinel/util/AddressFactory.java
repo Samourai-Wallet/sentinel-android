@@ -3,6 +3,7 @@ package com.samourai.sentinel.util;
 import android.content.Context;
 import android.widget.Toast;
 
+import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.MnemonicException;
 import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.hd.HD_Address;
@@ -88,6 +89,36 @@ public class AddressFactory {
         }
 
         return addr.getAddressString();
+
+    }
+
+    public ECKey getECKey(int chain, int accountIdx)	{
+
+        int idx = 0;
+        HD_Address addr = null;
+
+        try	{
+            idx = HD_WalletFactory.getInstance(context).get().getAccount(accountIdx).getChain(chain).getAddrIdx();
+            addr = HD_WalletFactory.getInstance(context).get().getAccount(accountIdx).getChain(chain).getAddressAt(idx);
+            if(chain == RECEIVE_CHAIN && canIncReceiveAddress(accountIdx))	{
+                HD_WalletFactory.getInstance(context).get().getAccount(accountIdx).getChain(chain).incAddrIdx();
+                HD_WalletFactory.getInstance(context).saveWalletToJSON(null);
+            }
+        }
+        catch(JSONException je)	{
+            je.printStackTrace();
+            Toast.makeText(context, "HD wallet error", Toast.LENGTH_SHORT).show();
+        }
+        catch(IOException ioe)	{
+            ioe.printStackTrace();
+            Toast.makeText(context, "HD wallet error", Toast.LENGTH_SHORT).show();
+        }
+        catch(MnemonicException.MnemonicLengthException mle)	{
+            mle.printStackTrace();
+            Toast.makeText(context, "HD wallet error", Toast.LENGTH_SHORT).show();
+        }
+
+        return addr.getECKey();
 
     }
 
