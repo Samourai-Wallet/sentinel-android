@@ -48,6 +48,10 @@ public class HD_Address {
         return ecKey.toAddress(mParams);
     }
 
+    public ECKey getECKey() {
+        return ecKey;
+    }
+
     public JSONObject toJSON() {
         try {
             JSONObject obj = new JSONObject();
