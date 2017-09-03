@@ -5,7 +5,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -21,12 +25,14 @@ import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.FormatsUtil;
+import com.samourai.sentinel.util.Web;
 
 import net.sourceforge.zbar.Symbol;
 
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Base58;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -138,6 +144,8 @@ public class InitActivity extends Activity {
                                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
+                                        dialog.dismiss();
+
                                         String xpubStr = xpub.getText().toString().trim();
 
                                         if (xpubStr != null && xpubStr.length() > 0) {
@@ -149,7 +157,7 @@ public class InitActivity extends Activity {
                                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
 
-                                ;
+                                dialog.dismiss();
 
                             }
                         }).show();
@@ -158,6 +166,8 @@ public class InitActivity extends Activity {
                 })
                 .setNegativeButton(R.string.scan, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+
+                        dialog.dismiss();
 
                         doScan();
 
@@ -172,7 +182,7 @@ public class InitActivity extends Activity {
         startActivityForResult(intent, SCAN_XPUB);
     }
 
-    private void addXPUB(final String xpub) {
+    private void addXPUB(final String xpubStr) {
 
         final EditText etLabel = new EditText(InitActivity.this);
         etLabel.setSingleLine(true);
@@ -188,10 +198,35 @@ public class InitActivity extends Activity {
 
                         dialog.dismiss();
 
-                        String label = etLabel.getText().toString().trim();
-                        updateXPUBs(xpub, label, false);
+                        final String label = etLabel.getText().toString().trim();
 
-                        AppUtil.getInstance(InitActivity.this).restartApp(true);
+                        if(FormatsUtil.getInstance().isValidBitcoinAddress(xpubStr))    {
+                            updateXPUBs(xpubStr, label, false, false);
+                            AppUtil.getInstance(InitActivity.this).restartApp(true);
+                        }
+                        else    {
+
+                            new AlertDialog.Builder(InitActivity.this)
+                                    .setTitle(R.string.app_name)
+                                    .setMessage(R.string.prompt_xpub_type)
+                                    .setCancelable(false)
+                                    .setPositiveButton(R.string.bip32_44, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            updateXPUBs(xpubStr, label, false, false);
+                                            AppUtil.getInstance(InitActivity.this).restartApp(true);
+                                        }
+
+                                    }).setNegativeButton(R.string.trezor, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+
+                                    dialog.dismiss();
+
+                                    new BIP49Task().execute(new String[] { xpubStr, label });
+
+                                }
+                            }).show();
+
+                        }
 
                     }
 
@@ -205,62 +240,58 @@ public class InitActivity extends Activity {
 
     }
 
-    private void updateXPUBs(String xpub, String label, boolean delete)   {
+    private void updateXPUBs(String xpub, String label, boolean delete, boolean isBIP49)   {
 
-        if(delete)    {
-            if(xpub.startsWith("xpub")) {
-                SamouraiSentinel.getInstance(InitActivity.this).getXPUBs().remove(xpub);
-            }
-            else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub)) {
-                SamouraiSentinel.getInstance(InitActivity.this).getLegacy().remove(xpub);
-            }
-            else {
-                ;
-            }
+        if (label == null || label.length() < 1) {
+            label = getString(R.string.new_account);
         }
-        else    {
-            if (label != null && label.length() > 0) {
-                ;
-            } else {
-                label = getString(R.string.new_account);
-            }
 
-            if(FormatsUtil.getInstance().isValidXpub(xpub)) {
+        if(FormatsUtil.getInstance().isValidXpub(xpub)) {
 
-                try {
-                    // get depth
-                    byte[] xpubBytes = Base58.decodeChecked(xpub);
-                    ByteBuffer bb = ByteBuffer.wrap(xpubBytes);
-                    bb.getInt();
-                    // depth:
-                    byte depth = bb.get();
-                    switch(depth)    {
-                        // BIP32 account
-                        case 1:
-                            Toast.makeText(InitActivity.this, R.string.bip32_account, Toast.LENGTH_SHORT).show();
-                            break;
-                        // BIP44 account
-                        case 3:
+            try {
+                // get depth
+                byte[] xpubBytes = Base58.decodeChecked(xpub);
+                ByteBuffer bb = ByteBuffer.wrap(xpubBytes);
+                bb.getInt();
+                // depth:
+                byte depth = bb.get();
+                switch(depth)    {
+                    // BIP32 account
+                    case 1:
+                        Toast.makeText(InitActivity.this, R.string.bip32_account, Toast.LENGTH_SHORT).show();
+                        break;
+                    // BIP44 account
+                    case 3:
+                        if(isBIP49)    {
+                            Toast.makeText(InitActivity.this, R.string.bip49_account, Toast.LENGTH_SHORT).show();
+                        }
+                        else    {
                             Toast.makeText(InitActivity.this, R.string.bip44_account, Toast.LENGTH_SHORT).show();
-                            break;
-                        default:
-                            // unknown
-                            Toast.makeText(InitActivity.this, InitActivity.this.getText(R.string.unknown_xpub) + ":" + depth, Toast.LENGTH_SHORT).show();
-                    }
+                        }
+                        break;
+                    default:
+                        // unknown
+                        Toast.makeText(InitActivity.this, InitActivity.this.getText(R.string.unknown_xpub) + ":" + depth, Toast.LENGTH_SHORT).show();
                 }
-                catch(AddressFormatException afe) {
-                    Toast.makeText(InitActivity.this, R.string.base58_error, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                SamouraiSentinel.getInstance(InitActivity.this).getXPUBs().put(xpub, label);
             }
-            else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub)) {
+            catch(AddressFormatException afe) {
+                Toast.makeText(InitActivity.this, R.string.base58_error, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if(isBIP49)    {
+                SamouraiSentinel.getInstance(InitActivity.this).getBIP49().put(xpub, label);
+            }
+            else    {
                 SamouraiSentinel.getInstance(InitActivity.this).getLegacy().put(xpub, label);
             }
-            else {
-                Toast.makeText(InitActivity.this, R.string.invalid_entry, Toast.LENGTH_SHORT).show();
-            }
+
+        }
+        else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub)) {
+            SamouraiSentinel.getInstance(InitActivity.this).getXPUBs().put(xpub, label);
+        }
+        else {
+            Toast.makeText(InitActivity.this, R.string.invalid_entry, Toast.LENGTH_SHORT).show();
         }
 
         try {
@@ -269,6 +300,74 @@ public class InitActivity extends Activity {
             ioe.printStackTrace();
         } catch (JSONException je) {
             je.printStackTrace();
+        }
+
+    }
+
+    private class BIP49Task extends AsyncTask<String, Void, String> {
+
+        private Handler handler = null;
+
+        @Override
+        protected void onPreExecute() {
+            handler = new Handler();
+
+            ProgressDialog progress = new ProgressDialog(InitActivity.this);
+            progress.setCancelable(false);
+            progress.setTitle(R.string.app_name);
+            progress.setMessage(getString(R.string.please_wait));
+            progress.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            Looper.prepare();
+
+            String response = null;
+            try {
+                StringBuilder args = new StringBuilder();
+                args.append("xpub=");
+                args.append(params[0]);
+                args.append("&type=restore");
+                args.append("&segwit=bip49");
+                response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
+
+                Log.d("InitActivity", "BIP49:" + response);
+
+                JSONObject obj = new JSONObject(response);
+                if(obj != null && obj.has("status") && obj.getString("status").equals("ok"))    {
+                    updateXPUBs(params[0], params[1], false, true);
+                    if(progress != null && progress.isShowing())    {
+                        progress.dismiss();
+                        progress = null;
+                    }
+                    AppUtil.getInstance(InitActivity.this).restartApp(true);
+                }
+
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                ;
+            }
+
+            Looper.loop();
+
+            return "OK";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(progress != null && progress.isShowing())    {
+                progress.dismiss();
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            ;
         }
 
     }

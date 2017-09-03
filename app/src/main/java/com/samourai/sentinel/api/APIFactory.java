@@ -1,7 +1,6 @@
 package com.samourai.sentinel.api;
 
 import android.content.Context;
-import android.util.Log;
 //import android.util.Log;
 
 import com.samourai.sentinel.SamouraiSentinel;
@@ -437,9 +436,11 @@ public class APIFactory	{
             if(suggestedFees.size() > 0)    {
                 FeeUtil.getInstance().setEstimatedFees(suggestedFees);
 
+                /*
                 Log.d("APIFactory", "high fee:" + FeeUtil.getInstance().getHighFee().getDefaultPerKB().toString());
                 Log.d("APIFactory", "suggested fee:" + FeeUtil.getInstance().getSuggestedFee().getDefaultPerKB().toString());
                 Log.d("APIFactory", "low fee:" + FeeUtil.getInstance().getLowFee().getDefaultPerKB().toString());
+                */
             }
 
             return true;

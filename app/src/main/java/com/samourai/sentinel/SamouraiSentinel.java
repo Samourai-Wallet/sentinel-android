@@ -2,13 +2,17 @@ package com.samourai.sentinel;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 //import android.util.Log;
 
 import com.samourai.sentinel.crypto.AESUtil;
+import com.samourai.sentinel.segwit.SegwitAddress;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.CharSequenceX;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.params.MainNetParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,8 +50,8 @@ public class SamouraiSentinel {
     private static String strTmpFilename = "sentinel.bak";
 
     private static String strSentinelXPUB = "sentinel.xpub";
-    private static String strSentinelLegacy = "sentinel.legacy";
     private static String strSentinelBIP49 = "sentinel.bip49";
+    private static String strSentinelLegacy = "sentinel.legacy";
 
     private SamouraiSentinel()    { ; }
 
@@ -57,8 +61,8 @@ public class SamouraiSentinel {
 
         if(instance == null)    {
             xpubs = new HashMap<String,String>();
-            legacy = new HashMap<String,String>();
             bip49 = new HashMap<String,String>();
+            legacy = new HashMap<String,String>();
             highestReceiveIdx = new HashMap<String,Integer>();
 
             instance = new SamouraiSentinel();
@@ -80,6 +84,28 @@ public class SamouraiSentinel {
     public HashMap<String,String> getBIP49()    { return bip49; }
 
     public HashMap<String,String> getLegacy()    { return legacy; }
+
+    public List<String> getAllAddrs()    {
+        Set<String> xpubKeys = xpubs.keySet();
+        for(String key : xpubKeys)   {
+            Log.d("SamouraiSentinel", "xpub:" + key);
+        }
+        Set<String> bip49Keys = bip49.keySet();
+        for(String key : bip49Keys)   {
+            Log.d("SamouraiSentinel", "bip49:" + key);
+        }
+        Set<String> legacyKeys = legacy.keySet();
+        for(String key : legacyKeys)   {
+            Log.d("SamouraiSentinel", "legacy:" + key);
+        }
+
+        List<String> xpubList = new ArrayList<String>();
+        xpubList.addAll(xpubKeys);
+        xpubList.addAll(bip49Keys);
+        xpubList.addAll(legacyKeys);
+
+        return xpubList;
+    }
 
     public void parseJSON(JSONObject obj) {
 
@@ -161,7 +187,7 @@ public class SamouraiSentinel {
                 JSONObject _obj = new JSONObject();
                 _obj.put(b49, bip49.get(b49));
                 _obj.put("receiveIdx", highestReceiveIdx.get(b49) == null ? 0 : highestReceiveIdx.get(b49));
-                _xpubs.put(_obj);
+                _bip49s.put(_obj);
             }
             obj.put("bip49", _bip49s);
 
@@ -318,20 +344,25 @@ public class SamouraiSentinel {
 
     public String getReceiveAddress()  {
 
-        final Set<String> xpubKeys = SamouraiSentinel.getInstance(context).getXPUBs().keySet();
-        final Set<String> bip49Keys = SamouraiSentinel.getInstance(context).getBIP49().keySet();
-        final Set<String> legacyKeys = SamouraiSentinel.getInstance(context).getLegacy().keySet();
-        final List<String> xpubList = new ArrayList<String>();
-        xpubList.addAll(xpubKeys);
-        xpubList.addAll(bip49Keys);
-        xpubList.addAll(legacyKeys);
+        final List<String> xpubList = getAllAddrs();
 
         String addr = null;
+        ECKey ecKey = null;
 
         if(xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("xpub"))    {
             String xpub = xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1);
+            Log.d("SamouraiSentinel", "xpub:" + xpub);
             int account = AddressFactory.getInstance(context).xpub2account().get(xpub);
-            addr = AddressFactory.getInstance(context).get(AddressFactory.RECEIVE_CHAIN, account);
+            Log.d("SamouraiSentinel", "account:" + account);
+            if(SamouraiSentinel.getInstance(context).getBIP49().keySet().contains(xpub))    {
+                ecKey = AddressFactory.getInstance(context).getECKey(AddressFactory.RECEIVE_CHAIN, account);
+                SegwitAddress segwitAddress = new SegwitAddress(ecKey.getPubKey(), MainNetParams.get());
+                addr = segwitAddress.getAddressAsString();
+                Log.d("SamouraiSentinel", "addr:" + addr);
+            }
+            else    {
+                addr = AddressFactory.getInstance(context).get(AddressFactory.RECEIVE_CHAIN, account);
+            }
         }
         else    {
             addr = xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1);

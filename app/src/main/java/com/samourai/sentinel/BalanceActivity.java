@@ -86,7 +86,6 @@ import net.sourceforge.zbar.Symbol;
 public class BalanceActivity extends Activity {
 
     private final static int SCAN_COLD_STORAGE = 2011;
-    private static final int SCAN_URI = 2077;
 
     private LinearLayout tvBalanceBar = null;
     private TextView tvBalanceAmount = null;
@@ -557,9 +556,7 @@ public class BalanceActivity extends Activity {
 
                 int idx = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount();
 
-                List<String> _xpubs = new ArrayList<String>();
-                _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet());
-                _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet());
+                List<String> _xpubs = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrs();
                 APIFactory.getInstance(BalanceActivity.this).getXPUB(_xpubs.toArray(new String[_xpubs.size()]));
 
                 if(idx == 0)    {
@@ -576,7 +573,6 @@ public class BalanceActivity extends Activity {
 
                         for(int i = 0; i < hdw.getAccounts().size(); i++)   {
                             HD_WalletFactory.getInstance(BalanceActivity.this).get().getAccount(i).getReceive().setAddrIdx(AddressFactory.getInstance().getHighestTxReceiveIdx(i));
-//                            HD_WalletFactory.getInstance(BalanceActivity.this).get().getAccount(i).getChange().setAddrIdx(AddressFactory.getInstance().getHighestTxChangeIdx(i));
                         }
 
                     }
@@ -616,6 +612,7 @@ public class BalanceActivity extends Activity {
 
         List<String> _xpubs = new ArrayList<String>();
         _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet());
+        _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().keySet());
         _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet());
         if(idx == 0)    {
             balance = APIFactory.getInstance(BalanceActivity.this).getXpubBalance();
@@ -894,11 +891,7 @@ public class BalanceActivity extends Activity {
 
     private void confirmAccountSelection(final boolean isSweep)	{
 
-        final Set<String> xpubKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet();
-        final Set<String> legacyKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet();
-        final List<String> xpubList = new ArrayList<String>();
-        xpubList.addAll(xpubKeys);
-        xpubList.addAll(legacyKeys);
+        final List<String> xpubList = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrs();
 
         if(xpubList.size() == 1)    {
             SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(1);
@@ -909,8 +902,11 @@ public class BalanceActivity extends Activity {
 
         final String[] accounts = new String[xpubList.size()];
         for(int i = 0; i < xpubList.size(); i++)   {
-            if(xpubList.get(i).startsWith("xpub"))    {
+            if(xpubList.get(i).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i)))    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(i));
+            }
+            else if(xpubList.get(i).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
+                accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
             }
             else    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));
@@ -946,8 +942,10 @@ public class BalanceActivity extends Activity {
     private void restoreWatchOnly() {
 
         final Set<String> xpubKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet();
+        final Set<String> bip49Keys = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().keySet();
         final List<String> xpubList = new ArrayList<String>();
         xpubList.addAll(xpubKeys);
+        xpubList.addAll(bip49Keys);
 
         final Handler handler = new Handler();
 
@@ -1004,7 +1002,6 @@ public class BalanceActivity extends Activity {
                 }
 
                 final Set<String> legacyKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet();
-                final List<String> legacyList = new ArrayList<String>();
                 xpubList.addAll(legacyKeys);
 
                 handler.post(new Runnable() {
@@ -1013,8 +1010,11 @@ public class BalanceActivity extends Activity {
 
                         if(xpubList.size() == 1)    {
                             account_selections = new String[1];
-                            if(xpubList.get(0).startsWith("xpub"))    {
+                            if(xpubList.get(0).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(0)))    {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(0));
+                            }
+                            else if(xpubList.get(0).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(0)))   {
+                                account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(0));
                             }
                             else    {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(0));
@@ -1024,8 +1024,11 @@ public class BalanceActivity extends Activity {
                             account_selections = new String[xpubList.size() + 1];
                             account_selections[0] = BalanceActivity.this.getString(R.string.total_title);
                             for(int i = 0; i < xpubList.size(); i++)   {
-                                if(xpubList.get(i).startsWith("xpub"))    {
+                                if(xpubList.get(i).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i)))    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(i));
+                                }
+                                else if(xpubList.get(i).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
+                                    account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
                                 }
                                 else    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));

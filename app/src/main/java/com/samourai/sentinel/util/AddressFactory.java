@@ -72,12 +72,7 @@ public class AddressFactory {
             addr = HD_WalletFactory.getInstance(context).get().getAccount(accountIdx).getChain(chain).getAddressAt(idx);
             if(chain == RECEIVE_CHAIN && canIncReceiveAddress(accountIdx))	{
                 HD_WalletFactory.getInstance(context).get().getAccount(accountIdx).getChain(chain).incAddrIdx();
-                HD_WalletFactory.getInstance(context).saveWalletToJSON(null);
             }
-        }
-        catch(JSONException je)	{
-            je.printStackTrace();
-            Toast.makeText(context, "HD wallet error", Toast.LENGTH_SHORT).show();
         }
         catch(IOException ioe)	{
             ioe.printStackTrace();
@@ -102,12 +97,7 @@ public class AddressFactory {
             addr = HD_WalletFactory.getInstance(context).get().getAccount(accountIdx).getChain(chain).getAddressAt(idx);
             if(chain == RECEIVE_CHAIN && canIncReceiveAddress(accountIdx))	{
                 HD_WalletFactory.getInstance(context).get().getAccount(accountIdx).getChain(chain).incAddrIdx();
-                HD_WalletFactory.getInstance(context).saveWalletToJSON(null);
             }
-        }
-        catch(JSONException je)	{
-            je.printStackTrace();
-            Toast.makeText(context, "HD wallet error", Toast.LENGTH_SHORT).show();
         }
         catch(IOException ioe)	{
             ioe.printStackTrace();

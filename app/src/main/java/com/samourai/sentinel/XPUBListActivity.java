@@ -8,9 +8,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -32,6 +36,7 @@ import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.Coin;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -51,6 +56,7 @@ import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.FormatsUtil;
 import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
+import com.samourai.sentinel.util.Web;
 
 public class XPUBListActivity extends Activity {
 
@@ -65,7 +71,7 @@ public class XPUBListActivity extends Activity {
 
     private boolean walletChanged = false;
 
-    private ProgressDialog progress = null;
+    private Handler handler = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +107,7 @@ public class XPUBListActivity extends Activity {
                                         dialog.dismiss();
 
                                         String xpub = xpubs.get(position).second;
-                                        updateXPUBs(xpub, null, true);
+                                        updateXPUBs(xpub, null, true, false);
                                         xpubs = getXPUBS();
                                         if(xpubs.size() == 0)    {
                                             PrefsUtil.getInstance(XPUBListActivity.this).setValue(PrefsUtil.XPUB, "");
@@ -150,7 +156,11 @@ public class XPUBListActivity extends Activity {
 
                                         String label = etLabel.getText().toString().trim();
                                         String xpub = xpubs.get(position).second;
-                                        updateXPUBs(xpub, label, false);
+                                        boolean isBIP49 = false;
+                                        if(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().keySet().contains(xpub))    {
+                                            isBIP49 = true;
+                                        }
+                                        updateXPUBs(xpub, label, false, isBIP49);
                                         xpubs = getXPUBS();
                                         xpubAdapter.notifyDataSetChanged();
 
@@ -295,6 +305,12 @@ public class XPUBListActivity extends Activity {
             ret.add(pair);
         }
 
+        keys = SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().keySet();
+        for(String key : keys)   {
+            pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().get(key), key);
+            ret.add(pair);
+        }
+
         keys = SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().keySet();
         for(String key : keys)   {
             pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().get(key), key);
@@ -325,6 +341,8 @@ public class XPUBListActivity extends Activity {
                                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
+                                        dialog.dismiss();
+
                                         String xpubStr = xpub.getText().toString().trim();
 
                                         if (xpubStr != null && xpubStr.length() > 0) {
@@ -336,7 +354,7 @@ public class XPUBListActivity extends Activity {
                                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
 
-                                ;
+                                dialog.dismiss();
 
                             }
                         }).show();
@@ -345,6 +363,8 @@ public class XPUBListActivity extends Activity {
                 })
                 .setNegativeButton(R.string.scan, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+
+                        dialog.dismiss();
 
                         doScan();
 
@@ -401,42 +421,123 @@ public class XPUBListActivity extends Activity {
             Toast.makeText(XPUBListActivity.this, R.string.invalid_entry, Toast.LENGTH_SHORT).show();
         }
 
+        handler = new Handler();
+
         final EditText etLabel = new EditText(XPUBListActivity.this);
         etLabel.setSingleLine(true);
         etLabel.setHint(getText(R.string.xpub_label));
 
         new AlertDialog.Builder(XPUBListActivity.this)
                 .setTitle(R.string.app_name)
-//                .setMessage(R.string.xpub_label)
                 .setView(etLabel)
                 .setCancelable(false)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                        String label = etLabel.getText().toString().trim();
-                        updateXPUBs(xpub, label, false);
-                        xpubs = getXPUBS();
-                        xpubAdapter.notifyDataSetChanged();
-
                         dialog.dismiss();
+
+                        final String label = etLabel.getText().toString().trim();
+
+                        if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub))    {
+                            updateXPUBs(xpub, label, false, false);
+                            xpubs = getXPUBS();
+                            xpubAdapter.notifyDataSetChanged();
+                        }
+                        else    {
+
+                            new AlertDialog.Builder(XPUBListActivity.this)
+                                    .setTitle(R.string.app_name)
+                                    .setMessage(R.string.prompt_xpub_type)
+                                    .setCancelable(false)
+                                    .setPositiveButton(R.string.bip32_44, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            dialog.dismiss();
+                                            updateXPUBs(xpub, label, false, false);
+                                            xpubs = getXPUBS();
+                                            xpubAdapter.notifyDataSetChanged();
+                                        }
+
+                                    }).setNegativeButton(R.string.trezor, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+
+                                    dialog.dismiss();
+
+                                    Toast.makeText(XPUBListActivity.this, R.string.please_wait, Toast.LENGTH_SHORT).show();
+
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            Looper.prepare();
+
+                                            String response = null;
+                                            try {
+                                                StringBuilder args = new StringBuilder();
+                                                args.append("xpub=");
+                                                args.append(xpub);
+                                                args.append("&type=restore");
+                                                args.append("&segwit=bip49");
+                                                response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
+
+                                                Log.d("XPUBActivity", "BIP49:" + response);
+
+                                                JSONObject obj = new JSONObject(response);
+                                                if(obj != null && obj.has("status") && obj.getString("status").equals("ok"))    {
+                                                    updateXPUBs(xpub, label, false, true);
+                                                    xpubs = getXPUBS();
+                                                    handler.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            xpubAdapter.notifyDataSetChanged();
+                                                            Toast.makeText(XPUBListActivity.this, R.string.xpub_add_ok, Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                                }
+                                                else    {
+                                                    handler.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Toast.makeText(XPUBListActivity.this, R.string.xpub_add_ko, Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                                }
+
+                                            }
+                                            catch(Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            finally {
+                                                ;
+                                            }
+
+                                            Looper.loop();
+
+                                        }
+                                    }).start();
+
+                                }
+                            }).show();
+
+                        }
 
                     }
 
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
-                ;
+                dialog.dismiss();
 
             }
         }).show();
 
     }
 
-    private void updateXPUBs(String xpub, String label, boolean delete)   {
+    private void updateXPUBs(String xpub, String label, boolean delete, boolean isBIP49)   {
 
         if(delete)    {
             if(xpub.startsWith("xpub")) {
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().remove(xpub);
+                SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().remove(xpub);
             }
             else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub)) {
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().remove(xpub);
@@ -446,14 +547,48 @@ public class XPUBListActivity extends Activity {
             }
         }
         else    {
-            if (label != null && label.length() > 0) {
-                ;
-            } else {
+            if (label == null || label.length() < 1) {
                 label = getString(R.string.new_account);
             }
 
+            try {
+                // get depth
+                byte[] xpubBytes = Base58.decodeChecked(xpub);
+                ByteBuffer bb = ByteBuffer.wrap(xpubBytes);
+                bb.getInt();
+                // depth:
+                byte depth = bb.get();
+                switch(depth)    {
+                    // BIP32 account
+                    case 1:
+                        Toast.makeText(XPUBListActivity.this, R.string.bip32_account, Toast.LENGTH_SHORT).show();
+                        break;
+                    // BIP44 account
+                    case 3:
+                        if(isBIP49)    {
+                            Toast.makeText(XPUBListActivity.this, R.string.bip49_account, Toast.LENGTH_SHORT).show();
+                        }
+                        else    {
+                            Toast.makeText(XPUBListActivity.this, R.string.bip44_account, Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                    default:
+                        // unknown
+                        Toast.makeText(XPUBListActivity.this, XPUBListActivity.this.getText(R.string.unknown_xpub) + ":" + depth, Toast.LENGTH_SHORT).show();
+                }
+            }
+            catch(AddressFormatException afe) {
+                Toast.makeText(XPUBListActivity.this, R.string.base58_error, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if(xpub.startsWith("xpub")) {
-                SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().put(xpub, label);
+                if(isBIP49)    {
+                    SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().put(xpub, label);
+                }
+                else    {
+                    SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().put(xpub, label);
+                }
             }
             else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub)) {
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().put(xpub, label);
@@ -557,6 +692,79 @@ public class XPUBListActivity extends Activity {
     public String getDisplayUnits() {
 
         return (String) MonetaryUtil.getInstance().getBTCUnits()[PrefsUtil.getInstance(XPUBListActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC)];
+
+    }
+
+    private class BIP49Task extends AsyncTask<String, Void, String> {
+
+        private Handler handler = null;
+        private ProgressDialog progress = null;
+
+        @Override
+        protected void onPreExecute() {
+            handler = new Handler();
+
+            ProgressDialog progress = new ProgressDialog(XPUBListActivity.this);
+            progress.setCancelable(false);
+            progress.setTitle(R.string.app_name);
+            progress.setMessage(getString(R.string.please_wait));
+            progress.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            Looper.prepare();
+
+            String response = null;
+            try {
+                StringBuilder args = new StringBuilder();
+                args.append("xpub=");
+                args.append(params[0]);
+                args.append("&type=restore");
+                args.append("&segwit=bip49");
+                response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
+
+                Log.d("XPUBListActivity", "BIP49:" + response);
+
+                JSONObject obj = new JSONObject(response);
+                if(obj != null && obj.has("status") && obj.getString("status").equals("ok"))    {
+                    updateXPUBs(params[0], params[1], false, true);
+                    return "OK";
+                }
+
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                ;
+            }
+
+            Looper.loop();
+
+            return "OK";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(progress != null && progress.isShowing())    {
+                progress.dismiss();
+            }
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    xpubAdapter.notifyDataSetChanged();
+                }
+            });
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            ;
+        }
 
     }
 
