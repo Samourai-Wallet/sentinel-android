@@ -40,6 +40,7 @@ import java.nio.ByteBuffer;
 public class InitActivity extends Activity {
 
     private ProgressDialog progress = null;
+    private Handler handler = null;
 
     private final static int SCAN_XPUB = 2011;
 
@@ -188,6 +189,8 @@ public class InitActivity extends Activity {
         etLabel.setSingleLine(true);
         etLabel.setHint(getText(R.string.xpub_label));
 
+        handler = new Handler();
+
         new AlertDialog.Builder(InitActivity.this)
                 .setTitle(R.string.app_name)
 //                .setMessage(R.string.xpub_label)
@@ -221,7 +224,57 @@ public class InitActivity extends Activity {
 
                                     dialog.dismiss();
 
-                                    new BIP49Task().execute(new String[] { xpubStr, label });
+                                    Toast.makeText(InitActivity.this, R.string.please_wait, Toast.LENGTH_SHORT).show();
+
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            Looper.prepare();
+
+                                            String response = null;
+                                            try {
+                                                StringBuilder args = new StringBuilder();
+                                                args.append("xpub=");
+                                                args.append(xpubStr);
+                                                args.append("&type=restore");
+                                                args.append("&segwit=bip49");
+                                                response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
+
+                                                Log.d("InitActivity", "BIP49:" + response);
+
+                                                JSONObject obj = new JSONObject(response);
+                                                if(obj != null && obj.has("status") && obj.getString("status").equals("ok"))    {
+                                                    updateXPUBs(xpubStr, label, false, true);
+                                                    handler.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Toast.makeText(InitActivity.this, R.string.xpub_add_ok, Toast.LENGTH_SHORT).show();
+                                                            AppUtil.getInstance(InitActivity.this).restartApp();
+                                                        }
+                                                    });
+                                                }
+                                                else    {
+                                                    handler.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Toast.makeText(InitActivity.this, R.string.xpub_add_ko, Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                                }
+
+                                            }
+                                            catch(Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            finally {
+                                                ;
+                                            }
+
+                                            Looper.loop();
+
+                                        }
+                                    }).start();
 
                                 }
                             }).show();

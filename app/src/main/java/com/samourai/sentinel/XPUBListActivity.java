@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.FormatsUtil;
+import com.samourai.sentinel.util.MapUtil;
 import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.Web;
@@ -299,22 +301,24 @@ public class XPUBListActivity extends Activity {
 
         Pair<String,String> pair = null;
         List<Pair<String,String>> ret = new ArrayList<Pair<String,String>>();
-        Set<String> keys = SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().keySet();
+        HashMap<String,String> map = SamouraiSentinel.getInstance(XPUBListActivity.this).getAllMapSorted();
+        Set<String> keys = map.keySet();
         for(String key : keys)   {
-            pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().get(key), key);
-            ret.add(pair);
-        }
-
-        keys = SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().keySet();
-        for(String key : keys)   {
-            pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().get(key), key);
-            ret.add(pair);
-        }
-
-        keys = SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().keySet();
-        for(String key : keys)   {
-            pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().get(key), key);
-            ret.add(pair);
+            if(SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().keySet().contains(key))    {
+                pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().get(key), key);
+                ret.add(pair);
+            }
+            else if(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().keySet().contains(key))    {
+                pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().get(key), key);
+                ret.add(pair);
+            }
+            else if(SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().keySet().contains(key))    {
+                pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().get(key), key);
+                ret.add(pair);
+            }
+            else    {
+                ;
+            }
         }
 
         return ret;
@@ -692,79 +696,6 @@ public class XPUBListActivity extends Activity {
     public String getDisplayUnits() {
 
         return (String) MonetaryUtil.getInstance().getBTCUnits()[PrefsUtil.getInstance(XPUBListActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC)];
-
-    }
-
-    private class BIP49Task extends AsyncTask<String, Void, String> {
-
-        private Handler handler = null;
-        private ProgressDialog progress = null;
-
-        @Override
-        protected void onPreExecute() {
-            handler = new Handler();
-
-            ProgressDialog progress = new ProgressDialog(XPUBListActivity.this);
-            progress.setCancelable(false);
-            progress.setTitle(R.string.app_name);
-            progress.setMessage(getString(R.string.please_wait));
-            progress.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            Looper.prepare();
-
-            String response = null;
-            try {
-                StringBuilder args = new StringBuilder();
-                args.append("xpub=");
-                args.append(params[0]);
-                args.append("&type=restore");
-                args.append("&segwit=bip49");
-                response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
-
-                Log.d("XPUBListActivity", "BIP49:" + response);
-
-                JSONObject obj = new JSONObject(response);
-                if(obj != null && obj.has("status") && obj.getString("status").equals("ok"))    {
-                    updateXPUBs(params[0], params[1], false, true);
-                    return "OK";
-                }
-
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
-            finally {
-                ;
-            }
-
-            Looper.loop();
-
-            return "OK";
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if(progress != null && progress.isShowing())    {
-                progress.dismiss();
-            }
-
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    xpubAdapter.notifyDataSetChanged();
-                }
-            });
-
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            ;
-        }
 
     }
 

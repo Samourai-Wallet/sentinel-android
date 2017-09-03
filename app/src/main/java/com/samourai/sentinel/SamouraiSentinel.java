@@ -9,6 +9,7 @@ import com.samourai.sentinel.crypto.AESUtil;
 import com.samourai.sentinel.segwit.SegwitAddress;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.CharSequenceX;
+import com.samourai.sentinel.util.MapUtil;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
 import org.bitcoinj.core.ECKey;
@@ -27,8 +28,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,26 +90,29 @@ public class SamouraiSentinel {
 
     public HashMap<String,String> getLegacy()    { return legacy; }
 
-    public List<String> getAllAddrs()    {
-        Set<String> xpubKeys = xpubs.keySet();
-        for(String key : xpubKeys)   {
-            Log.d("SamouraiSentinel", "xpub:" + key);
-        }
-        Set<String> bip49Keys = bip49.keySet();
-        for(String key : bip49Keys)   {
-            Log.d("SamouraiSentinel", "bip49:" + key);
-        }
-        Set<String> legacyKeys = legacy.keySet();
-        for(String key : legacyKeys)   {
-            Log.d("SamouraiSentinel", "legacy:" + key);
-        }
+    public List<String> getAllAddrsSorted()    {
+
+        HashMap<String,String> mapAll = new HashMap<String,String>();
+        mapAll.putAll(xpubs);
+        mapAll.putAll(bip49);
+        mapAll = MapUtil.getInstance().sortByValue(mapAll);
+        mapAll.putAll(MapUtil.getInstance().sortByValue(legacy));
 
         List<String> xpubList = new ArrayList<String>();
-        xpubList.addAll(xpubKeys);
-        xpubList.addAll(bip49Keys);
-        xpubList.addAll(legacyKeys);
+        xpubList.addAll(mapAll.keySet());
 
         return xpubList;
+    }
+
+    public HashMap<String,String> getAllMapSorted()    {
+
+        HashMap<String,String> mapAll = new HashMap<String,String>();
+        mapAll.putAll(xpubs);
+        mapAll.putAll(bip49);
+        mapAll = MapUtil.getInstance().sortByValue(mapAll);
+        mapAll.putAll(MapUtil.getInstance().sortByValue(legacy));
+
+        return mapAll;
     }
 
     public void parseJSON(JSONObject obj) {
@@ -344,7 +352,7 @@ public class SamouraiSentinel {
 
     public String getReceiveAddress()  {
 
-        final List<String> xpubList = getAllAddrs();
+        final List<String> xpubList = getAllAddrsSorted();
 
         String addr = null;
         ECKey ecKey = null;

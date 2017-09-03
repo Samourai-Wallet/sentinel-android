@@ -517,7 +517,7 @@ public class ReceiveActivity extends Activity {
 
     private void checkPrevUse() {
 
-        final List<String> xpubList = SamouraiSentinel.getInstance(ReceiveActivity.this).getAllAddrs();
+        final List<String> xpubList = SamouraiSentinel.getInstance(ReceiveActivity.this).getAllAddrsSorted();
 
         if(!xpubList.get(SamouraiSentinel.getInstance(ReceiveActivity.this).getCurrentSelectedAccount() - 1).startsWith("xpub"))    {
             return;
