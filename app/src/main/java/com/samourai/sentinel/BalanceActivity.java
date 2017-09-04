@@ -120,7 +120,6 @@ public class BalanceActivity extends Activity {
                 BalanceActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        displayBalance();
                         refreshTx(false);
                     }
                 });
@@ -274,9 +273,6 @@ public class BalanceActivity extends Activity {
         LocalBroadcastManager.getInstance(BalanceActivity.this).registerReceiver(receiver, filter);
 
         AppUtil.getInstance(BalanceActivity.this).checkTimeOut();
-
-        displayBalance();
-        refreshTx(false);
 
     }
 
@@ -557,7 +553,12 @@ public class BalanceActivity extends Activity {
                 int idx = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount();
 
                 List<String> _xpubs = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrsSorted();
-                APIFactory.getInstance(BalanceActivity.this).getXPUB(_xpubs.toArray(new String[_xpubs.size()]));
+                if(idx == 0)    {
+                    APIFactory.getInstance(BalanceActivity.this).getXPUB(_xpubs.toArray(new String[_xpubs.size()]));
+                }
+                else    {
+                    APIFactory.getInstance(BalanceActivity.this).getXPUB(new String[] { _xpubs.get(idx  - 1) } );
+                }
 
                 if(idx == 0)    {
                     txs = APIFactory.getInstance(BalanceActivity.this).getAllXpubTxs();
