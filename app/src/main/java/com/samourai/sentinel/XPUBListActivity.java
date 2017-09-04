@@ -63,6 +63,7 @@ import com.samourai.sentinel.util.Web;
 public class XPUBListActivity extends Activity {
 
     private final static int SCAN_XPUB = 2011;
+    private final static int INSERT_BIP49 = 2012;
 
     private SwipeMenuListView xpubList = null;
     private XPUBAdapter xpubAdapter = null;
@@ -259,6 +260,18 @@ public class XPUBListActivity extends Activity {
         }
         else if(resultCode == Activity.RESULT_CANCELED && requestCode == SCAN_XPUB)	{
             ;
+        }
+        else if(resultCode == Activity.RESULT_OK && requestCode == INSERT_BIP49)	{
+            String xpub = data.getStringExtra("xpub");
+            String label = data.getStringExtra("label");
+
+            updateXPUBs(xpub, label, false, true);
+            xpubs = getXPUBS();
+            xpubAdapter.notifyDataSetChanged();
+            Toast.makeText(XPUBListActivity.this, R.string.xpub_add_ok, Toast.LENGTH_SHORT).show();
+        }
+        else if(resultCode == Activity.RESULT_CANCELED && requestCode == INSERT_BIP49)	{
+            Toast.makeText(XPUBListActivity.this, R.string.xpub_add_ko, Toast.LENGTH_SHORT).show();
         }
         else {
             ;
@@ -466,58 +479,10 @@ public class XPUBListActivity extends Activity {
 
                                     dialog.dismiss();
 
-                                    Toast.makeText(XPUBListActivity.this, R.string.please_wait, Toast.LENGTH_SHORT).show();
-
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-
-                                            Looper.prepare();
-
-                                            String response = null;
-                                            try {
-                                                StringBuilder args = new StringBuilder();
-                                                args.append("xpub=");
-                                                args.append(xpub);
-                                                args.append("&type=restore");
-                                                args.append("&segwit=bip49");
-                                                response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
-
-                                                Log.d("XPUBActivity", "BIP49:" + response);
-
-                                                JSONObject obj = new JSONObject(response);
-                                                if(obj != null && obj.has("status") && obj.getString("status").equals("ok"))    {
-                                                    updateXPUBs(xpub, label, false, true);
-                                                    xpubs = getXPUBS();
-                                                    handler.post(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            xpubAdapter.notifyDataSetChanged();
-                                                            Toast.makeText(XPUBListActivity.this, R.string.xpub_add_ok, Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                }
-                                                else    {
-                                                    handler.post(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            Toast.makeText(XPUBListActivity.this, R.string.xpub_add_ko, Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                }
-
-                                            }
-                                            catch(Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                            finally {
-                                                ;
-                                            }
-
-                                            Looper.loop();
-
-                                        }
-                                    }).start();
+                                    Intent intent = new Intent(XPUBListActivity.this, InsertBIP49Activity.class);
+                                    intent.putExtra("xpub", xpub);
+                                    intent.putExtra("label", label);
+                                    startActivityForResult(intent, INSERT_BIP49);
 
                                 }
                             }).show();
