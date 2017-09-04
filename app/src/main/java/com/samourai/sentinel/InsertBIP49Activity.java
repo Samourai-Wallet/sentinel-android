@@ -73,7 +73,7 @@ public class InsertBIP49Activity extends Activity {
                 args.append("&segwit=bip49");
                 response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
 
-                Log.d("InitActivity", "BIP49:" + response);
+                Log.d("InsertBIP49Activity", "BIP49:" + response);
 
                 JSONObject obj = new JSONObject(response);
                 if(obj != null && obj.has("status") && obj.getString("status").equals("ok"))    {

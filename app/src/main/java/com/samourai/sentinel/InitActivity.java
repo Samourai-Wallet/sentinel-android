@@ -39,10 +39,8 @@ import java.nio.ByteBuffer;
 
 public class InitActivity extends Activity {
 
-    private ProgressDialog progress = null;
-    private Handler handler = null;
-
     private final static int SCAN_XPUB = 2011;
+    private final static int INSERT_BIP49 = 2012;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +93,22 @@ public class InitActivity extends Activity {
         else if(resultCode == Activity.RESULT_CANCELED && requestCode == SCAN_XPUB)	{
             ;
         }
+        else if(resultCode == Activity.RESULT_OK && requestCode == INSERT_BIP49)	{
+            String xpub = data.getStringExtra("xpub");
+            String label = data.getStringExtra("label");
+
+            updateXPUBs(xpub, label, false, true);
+            Log.d("InitActivity", "xpub inserted:" + xpub);
+            Log.d("InitActivity", "label inserted:" + label);
+            Toast.makeText(InitActivity.this, R.string.xpub_add_ok, Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(InitActivity.this, BalanceActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        else if(resultCode == Activity.RESULT_CANCELED && requestCode == INSERT_BIP49)	{
+            Toast.makeText(InitActivity.this, R.string.xpub_add_ko, Toast.LENGTH_SHORT).show();
+        }
         else {
             ;
         }
@@ -133,6 +147,8 @@ public class InitActivity extends Activity {
                 .setMessage(R.string.please_select)
                 .setPositiveButton(R.string.manual, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+
+                        dialog.dismiss();
 
                         final EditText xpub = new EditText(InitActivity.this);
                         xpub.setSingleLine(true);
@@ -189,11 +205,8 @@ public class InitActivity extends Activity {
         etLabel.setSingleLine(true);
         etLabel.setHint(getText(R.string.xpub_label));
 
-        handler = new Handler();
-
         new AlertDialog.Builder(InitActivity.this)
                 .setTitle(R.string.app_name)
-//                .setMessage(R.string.xpub_label)
                 .setView(etLabel)
                 .setCancelable(false)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -215,8 +228,11 @@ public class InitActivity extends Activity {
                                     .setCancelable(false)
                                     .setPositiveButton(R.string.bip32_44, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
+                                            dialog.dismiss();
+
                                             updateXPUBs(xpubStr, label, false, false);
                                             AppUtil.getInstance(InitActivity.this).restartApp(true);
+
                                         }
 
                                     }).setNegativeButton(R.string.trezor, new DialogInterface.OnClickListener() {
@@ -224,57 +240,10 @@ public class InitActivity extends Activity {
 
                                     dialog.dismiss();
 
-                                    Toast.makeText(InitActivity.this, R.string.please_wait, Toast.LENGTH_SHORT).show();
-
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-
-                                            Looper.prepare();
-
-                                            String response = null;
-                                            try {
-                                                StringBuilder args = new StringBuilder();
-                                                args.append("xpub=");
-                                                args.append(xpubStr);
-                                                args.append("&type=restore");
-                                                args.append("&segwit=bip49");
-                                                response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
-
-                                                Log.d("InitActivity", "BIP49:" + response);
-
-                                                JSONObject obj = new JSONObject(response);
-                                                if(obj != null && obj.has("status") && obj.getString("status").equals("ok"))    {
-                                                    updateXPUBs(xpubStr, label, false, true);
-                                                    handler.post(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            Toast.makeText(InitActivity.this, R.string.xpub_add_ok, Toast.LENGTH_SHORT).show();
-                                                            AppUtil.getInstance(InitActivity.this).restartApp();
-                                                        }
-                                                    });
-                                                }
-                                                else    {
-                                                    handler.post(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            Toast.makeText(InitActivity.this, R.string.xpub_add_ko, Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                }
-
-                                            }
-                                            catch(Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                            finally {
-                                                ;
-                                            }
-
-                                            Looper.loop();
-
-                                        }
-                                    }).start();
+                                    Intent intent = new Intent(InitActivity.this, InsertBIP49Activity.class);
+                                    intent.putExtra("xpub", xpubStr);
+                                    intent.putExtra("label", label);
+                                    startActivityForResult(intent, INSERT_BIP49);
 
                                 }
                             }).show();
@@ -286,7 +255,7 @@ public class InitActivity extends Activity {
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
-                ;
+                dialog.dismiss();
 
             }
         }).show();
@@ -353,74 +322,6 @@ public class InitActivity extends Activity {
             ioe.printStackTrace();
         } catch (JSONException je) {
             je.printStackTrace();
-        }
-
-    }
-
-    private class BIP49Task extends AsyncTask<String, Void, String> {
-
-        private Handler handler = null;
-
-        @Override
-        protected void onPreExecute() {
-            handler = new Handler();
-
-            ProgressDialog progress = new ProgressDialog(InitActivity.this);
-            progress.setCancelable(false);
-            progress.setTitle(R.string.app_name);
-            progress.setMessage(getString(R.string.please_wait));
-            progress.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            Looper.prepare();
-
-            String response = null;
-            try {
-                StringBuilder args = new StringBuilder();
-                args.append("xpub=");
-                args.append(params[0]);
-                args.append("&type=restore");
-                args.append("&segwit=bip49");
-                response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
-
-                Log.d("InitActivity", "BIP49:" + response);
-
-                JSONObject obj = new JSONObject(response);
-                if(obj != null && obj.has("status") && obj.getString("status").equals("ok"))    {
-                    updateXPUBs(params[0], params[1], false, true);
-                    if(progress != null && progress.isShowing())    {
-                        progress.dismiss();
-                        progress = null;
-                    }
-                    AppUtil.getInstance(InitActivity.this).restartApp(true);
-                }
-
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
-            finally {
-                ;
-            }
-
-            Looper.loop();
-
-            return "OK";
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if(progress != null && progress.isShowing())    {
-                progress.dismiss();
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            ;
         }
 
     }
