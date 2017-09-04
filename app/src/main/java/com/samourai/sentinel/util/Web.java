@@ -12,7 +12,7 @@ public class Web	{
     public static final String SAMOURAI_API2 = "https://api.samouraiwallet.com/v2/";
     public static final String LBC_EXCHANGE_URL = "https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/";
     public static final String BFX_EXCHANGE_URL = "https://api.bitfinex.com/v1/pubticker/btcusd";
-    public static final String _21CO_FEE_URL = "https://bitcoinfees.21.co/api/v1/fees/recommended";
+    public static final String BITCOIND_FEE_URL = "https://api.samourai.io/v2/fees";
 
     private static final int DefaultRequestRetry = 2;
     private static final int DefaultRequestTimeout = 60000;
