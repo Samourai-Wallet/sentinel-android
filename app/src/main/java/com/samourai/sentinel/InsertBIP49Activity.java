@@ -18,6 +18,7 @@ public class InsertBIP49Activity extends Activity {
 
     private ProgressDialog progress = null;
     private Handler handler = null;
+    private BIP49Task bip49Task = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,8 @@ public class InsertBIP49Activity extends Activity {
             label = extras.getString("label");
         }
 
-        new BIP49Task().execute(new String[] { xpub, label });
+        bip49Task = new BIP49Task();
+        bip49Task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, new String[] { xpub, label });
 
     }
 
@@ -61,8 +63,6 @@ public class InsertBIP49Activity extends Activity {
 
         @Override
         protected String doInBackground(String... params) {
-
-            Looper.prepare();
 
             String response = null;
             try {
@@ -105,8 +105,6 @@ public class InsertBIP49Activity extends Activity {
             finally {
                 ;
             }
-
-            Looper.loop();
 
             return "OK";
         }
