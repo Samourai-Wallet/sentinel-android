@@ -219,8 +219,8 @@
     <string name="please_wait_sending">Sending transaction, please wait.</string>
     <string name="pushtx_returns_null">Spend failed. Server returned null value.</string>
 
-    <string name="bip32_44">BIP32 Bread Wallet\nBIP44 Samourai</string>
-    <string name="trezor">BIP49\nTrezor/Ledger</string>
+    <string name="bip32_44">Bread Wallet BIP32\nSamourai BIP44</string>
+    <string name="trezor">Segwit BIP49\nTrezor/Ledger</string>
     <string name="prompt_xpub_type">Specify type of XPUB to ensure correct balance calculation and address derivation.</string>
     <string name="xpub_add_ok">XPUB added successfully</string>
     <string name="xpub_add_ko">XPUB add failed</string>
