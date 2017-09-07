@@ -357,6 +357,10 @@ public class APIFactory	{
 
             int ret = 0;
 
+            if(t1 == null || t2 == null)    {
+                return EQUAL;
+            }
+
             if(t1.getTS() > t2.getTS()) {
                 ret = BEFORE;
             }
