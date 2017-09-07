@@ -86,7 +86,6 @@ import net.sourceforge.zbar.Symbol;
 public class BalanceActivity extends Activity {
 
     private final static int SCAN_COLD_STORAGE = 2011;
-    private static final int SCAN_URI = 2077;
 
     private LinearLayout tvBalanceBar = null;
     private TextView tvBalanceAmount = null;
@@ -121,7 +120,6 @@ public class BalanceActivity extends Activity {
                 BalanceActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        displayBalance();
                         refreshTx(false);
                     }
                 });
@@ -275,9 +273,6 @@ public class BalanceActivity extends Activity {
         LocalBroadcastManager.getInstance(BalanceActivity.this).registerReceiver(receiver, filter);
 
         AppUtil.getInstance(BalanceActivity.this).checkTimeOut();
-
-        displayBalance();
-        refreshTx(false);
 
     }
 
@@ -557,10 +552,13 @@ public class BalanceActivity extends Activity {
 
                 int idx = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount();
 
-                List<String> _xpubs = new ArrayList<String>();
-                _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet());
-                _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet());
-                APIFactory.getInstance(BalanceActivity.this).getXPUB(_xpubs.toArray(new String[_xpubs.size()]));
+                List<String> _xpubs = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrsSorted();
+                if(idx == 0)    {
+                    APIFactory.getInstance(BalanceActivity.this).getXPUB(_xpubs.toArray(new String[_xpubs.size()]));
+                }
+                else    {
+                    APIFactory.getInstance(BalanceActivity.this).getXPUB(new String[] { _xpubs.get(idx  - 1) } );
+                }
 
                 if(idx == 0)    {
                     txs = APIFactory.getInstance(BalanceActivity.this).getAllXpubTxs();
@@ -576,7 +574,6 @@ public class BalanceActivity extends Activity {
 
                         for(int i = 0; i < hdw.getAccounts().size(); i++)   {
                             HD_WalletFactory.getInstance(BalanceActivity.this).get().getAccount(i).getReceive().setAddrIdx(AddressFactory.getInstance().getHighestTxReceiveIdx(i));
-//                            HD_WalletFactory.getInstance(BalanceActivity.this).get().getAccount(i).getChange().setAddrIdx(AddressFactory.getInstance().getHighestTxChangeIdx(i));
                         }
 
                     }
@@ -614,9 +611,7 @@ public class BalanceActivity extends Activity {
         int idx = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount();
         long balance = 0L;
 
-        List<String> _xpubs = new ArrayList<String>();
-        _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet());
-        _xpubs.addAll(SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet());
+        List<String> _xpubs = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrsSorted();
         if(idx == 0)    {
             balance = APIFactory.getInstance(BalanceActivity.this).getXpubBalance();
         }
@@ -894,11 +889,7 @@ public class BalanceActivity extends Activity {
 
     private void confirmAccountSelection(final boolean isSweep)	{
 
-        final Set<String> xpubKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet();
-        final Set<String> legacyKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet();
-        final List<String> xpubList = new ArrayList<String>();
-        xpubList.addAll(xpubKeys);
-        xpubList.addAll(legacyKeys);
+        final List<String> xpubList = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrsSorted();
 
         if(xpubList.size() == 1)    {
             SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(1);
@@ -909,8 +900,11 @@ public class BalanceActivity extends Activity {
 
         final String[] accounts = new String[xpubList.size()];
         for(int i = 0; i < xpubList.size(); i++)   {
-            if(xpubList.get(i).startsWith("xpub"))    {
+            if(xpubList.get(i).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i)))    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(i));
+            }
+            else if(xpubList.get(i).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
+                accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
             }
             else    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));
@@ -945,9 +939,7 @@ public class BalanceActivity extends Activity {
 
     private void restoreWatchOnly() {
 
-        final Set<String> xpubKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().keySet();
-        final List<String> xpubList = new ArrayList<String>();
-        xpubList.addAll(xpubKeys);
+        final List<String> xpubList = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrsSorted();
 
         final Handler handler = new Handler();
 
@@ -968,17 +960,24 @@ public class BalanceActivity extends Activity {
 
                 Looper.prepare();
 
-                if(xpubList.size() > 0)    {
+                List<String> _xpubs = new ArrayList<String>();
+                for(String xpub : xpubList)   {
+                    if(xpub.startsWith("xpub"))    {
+                        _xpubs.add(xpub);
+                    }
+                }
+
+                if(_xpubs.size() > 0)    {
                     try {
-                        String xpubs = StringUtils.join(xpubList.toArray(new String[xpubList.size()]), ":");
+                        String xpubs = StringUtils.join(_xpubs.toArray(new String[_xpubs.size()]), ":");
 //                        Log.i("BalanceActivity", xpubs);
-                        if(xpubKeys.size() > 0)    {
+                        if(_xpubs.size() > 0)    {
                             HD_Wallet hdw = HD_WalletFactory.getInstance(BalanceActivity.this).restoreWallet(xpubs, null, 1);
                             if(hdw != null) {
                                 List<HD_Account> accounts = hdw.getAccounts();
                                 for(int i = 0; i < accounts.size(); i++)   {
-                                    AddressFactory.getInstance().account2xpub().put(i, xpubList.get(i));
-                                    AddressFactory.getInstance().xpub2account().put(xpubList.get(i), i);
+                                    AddressFactory.getInstance().account2xpub().put(i, _xpubs.get(i));
+                                    AddressFactory.getInstance().xpub2account().put(_xpubs.get(i), i);
                                 }
                             }
                         }
@@ -995,6 +994,7 @@ public class BalanceActivity extends Activity {
                         afe.printStackTrace();
                     }
                     finally {
+                        ;
                     }
                 }
 
@@ -1003,18 +1003,17 @@ public class BalanceActivity extends Activity {
                     progress = null;
                 }
 
-                final Set<String> legacyKeys = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().keySet();
-                final List<String> legacyList = new ArrayList<String>();
-                xpubList.addAll(legacyKeys);
-
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
 
                         if(xpubList.size() == 1)    {
                             account_selections = new String[1];
-                            if(xpubList.get(0).startsWith("xpub"))    {
+                            if(xpubList.get(0).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(0)))    {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(0));
+                            }
+                            else if(xpubList.get(0).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(0)))   {
+                                account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(0));
                             }
                             else    {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(0));
@@ -1024,14 +1023,18 @@ public class BalanceActivity extends Activity {
                             account_selections = new String[xpubList.size() + 1];
                             account_selections[0] = BalanceActivity.this.getString(R.string.total_title);
                             for(int i = 0; i < xpubList.size(); i++)   {
-                                if(xpubList.get(i).startsWith("xpub"))    {
+                                if(xpubList.get(i).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i)))    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(i));
+                                }
+                                else if(xpubList.get(i).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
+                                    account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
                                 }
                                 else    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));
                                 }
                             }
                         }
+
                         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
                         }

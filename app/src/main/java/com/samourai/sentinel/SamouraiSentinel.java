@@ -1,13 +1,19 @@
 package com.samourai.sentinel;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 //import android.util.Log;
 
 import com.samourai.sentinel.crypto.AESUtil;
+import com.samourai.sentinel.segwit.SegwitAddress;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.CharSequenceX;
+import com.samourai.sentinel.util.MapUtil;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.params.MainNetParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,21 +28,21 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class SamouraiSentinel {
 
-    public final static int SAMOURAI_ACCOUNT = 0;
-    public final static int MIXING_ACCOUNT = 1;
-//    public final static int PUBLIC_ACCOUNT = 2;
-
-    public final static int NB_ACCOUNTS = 2;
-
     private static HashMap<String,String> xpubs = null;
     private static HashMap<String,String> legacy = null;
+    private static HashMap<String,String> bip49 = null;
     private static HashMap<String,Integer> highestReceiveIdx = null;
 
     private static SamouraiSentinel instance = null;
@@ -48,6 +54,10 @@ public class SamouraiSentinel {
     private static String strFilename = "sentinel.dat";
     private static String strTmpFilename = "sentinel.bak";
 
+    private static String strSentinelXPUB = "sentinel.xpub";
+    private static String strSentinelBIP49 = "sentinel.bip49";
+    private static String strSentinelLegacy = "sentinel.legacy";
+
     private SamouraiSentinel()    { ; }
 
     public static SamouraiSentinel getInstance(Context ctx)  {
@@ -56,6 +66,7 @@ public class SamouraiSentinel {
 
         if(instance == null)    {
             xpubs = new HashMap<String,String>();
+            bip49 = new HashMap<String,String>();
             legacy = new HashMap<String,String>();
             highestReceiveIdx = new HashMap<String,Integer>();
 
@@ -75,7 +86,34 @@ public class SamouraiSentinel {
 
     public HashMap<String,String> getXPUBs()    { return xpubs; }
 
+    public HashMap<String,String> getBIP49()    { return bip49; }
+
     public HashMap<String,String> getLegacy()    { return legacy; }
+
+    public List<String> getAllAddrsSorted()    {
+
+        HashMap<String,String> mapAll = new HashMap<String,String>();
+        mapAll.putAll(xpubs);
+        mapAll.putAll(bip49);
+        mapAll = MapUtil.getInstance().sortByValue(mapAll);
+        mapAll.putAll(MapUtil.getInstance().sortByValue(legacy));
+
+        List<String> xpubList = new ArrayList<String>();
+        xpubList.addAll(mapAll.keySet());
+
+        return xpubList;
+    }
+
+    public HashMap<String,String> getAllMapSorted()    {
+
+        HashMap<String,String> mapAll = new HashMap<String,String>();
+        mapAll.putAll(xpubs);
+        mapAll.putAll(bip49);
+        mapAll = MapUtil.getInstance().sortByValue(mapAll);
+        mapAll.putAll(MapUtil.getInstance().sortByValue(legacy));
+
+        return mapAll;
+    }
 
     public void parseJSON(JSONObject obj) {
 
@@ -94,6 +132,23 @@ public class SamouraiSentinel {
                         }
                         else    {
                             xpubs.put(key, _obj.getString(key));
+                        }
+                    }
+                }
+            }
+
+            if(obj != null && obj.has("bip49"))    {
+                JSONArray _bip49s = obj.getJSONArray("bip49");
+                for(int i = 0; i < _bip49s.length(); i++)   {
+                    JSONObject _obj = _bip49s.getJSONObject(i);
+                    Iterator it = _obj.keys();
+                    while (it.hasNext()) {
+                        String key = (String)it.next();
+                        if(key.equals("receiveIdx"))    {
+                            highestReceiveIdx.put(key, _obj.getInt(key));
+                        }
+                        else    {
+                            bip49.put(key, _obj.getString(key));
                         }
                     }
                 }
@@ -135,6 +190,15 @@ public class SamouraiSentinel {
             }
             obj.put("xpubs", _xpubs);
 
+            JSONArray _bip49s = new JSONArray();
+            for(String b49 : bip49.keySet()) {
+                JSONObject _obj = new JSONObject();
+                _obj.put(b49, bip49.get(b49));
+                _obj.put("receiveIdx", highestReceiveIdx.get(b49) == null ? 0 : highestReceiveIdx.get(b49));
+                _bip49s.put(_obj);
+            }
+            obj.put("bip49", _bip49s);
+
             JSONArray _addr = new JSONArray();
             for(String addr : legacy.keySet()) {
                 JSONObject _obj = new JSONObject();
@@ -163,8 +227,6 @@ public class SamouraiSentinel {
         File dir = context.getDir(dataDir, Context.MODE_PRIVATE);
         File newfile = new File(dir, strFilename);
         File tmpfile = new File(dir, strTmpFilename);
-        newfile.setWritable(true, true);
-        tmpfile.setWritable(true, true);
 
         // serialize to byte array.
         String jsonstr = jsonobj.toString(4);
@@ -182,12 +244,9 @@ public class SamouraiSentinel {
             data = jsonstr;
         }
 
-        Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpfile), "UTF-8"));
-        try {
-            out.write(data);
-        } finally {
-            out.close();
-        }
+        FileOutputStream fos = new FileOutputStream(tmpfile);
+        fos.write(data.getBytes());
+        fos.close();
 
         // rename tmp file
         if(tmpfile.renameTo(newfile)) {
@@ -198,22 +257,24 @@ public class SamouraiSentinel {
 //            mLogger.warn("rename to " + newfile.getPath() + " failed");
 //            Log.i("HD_WalletFactory", "rename to " + newfile.getPath() + " failed");
         }
+
+        saveToPrefs();
+
     }
 
     public synchronized JSONObject deserialize(CharSequenceX password) throws IOException, JSONException {
 
         File dir = context.getDir(dataDir, Context.MODE_PRIVATE);
         File file = new File(dir, strFilename);
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("");
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-        String str = null;
-
-        while((str = in.readLine()) != null) {
-            sb.append(str);
+        FileInputStream fis = new FileInputStream(file);
+        byte[] buffer = new byte[1024];
+        int n = 0;
+        while((n = fis.read(buffer)) != -1) {
+            sb.append(new String(buffer, 0, n));
         }
-
-        in.close();
+        fis.close();
 
         JSONObject node = null;
         if(password == null) {
@@ -236,20 +297,80 @@ public class SamouraiSentinel {
         return node;
     }
 
+    public void saveToPrefs()  {
+
+        SharedPreferences _xpub = context.getSharedPreferences(strSentinelXPUB, 0);
+        SharedPreferences.Editor xEditor = _xpub.edit();
+        for(String xpub : xpubs.keySet()) {
+            xEditor.putString(xpub, xpubs.get(xpub));
+        }
+        xEditor.commit();
+
+        SharedPreferences _bip49 = context.getSharedPreferences(strSentinelBIP49, 0);
+        SharedPreferences.Editor bEditor = _bip49.edit();
+        for(String b49 : bip49.keySet()) {
+            bEditor.putString(b49, bip49.get(b49));
+        }
+        bEditor.commit();
+
+        SharedPreferences _legacy = context.getSharedPreferences(strSentinelLegacy, 0);
+        SharedPreferences.Editor lEditor = _legacy.edit();
+        for(String leg : legacy.keySet()) {
+            lEditor.putString(leg, legacy.get(leg));
+        }
+        lEditor.commit();
+
+    }
+
+    public void restoreFromPrefs()  {
+
+        SharedPreferences xpub = context.getSharedPreferences(strSentinelXPUB, 0);
+        if(xpub != null)    {
+            Map<String, ?> allXPUB = xpub.getAll();
+            for (Map.Entry<String, ?> entry : allXPUB.entrySet()) {
+                SamouraiSentinel.getInstance(context).getXPUBs().put(entry.getKey(), entry.getValue().toString());
+            }
+        }
+
+        SharedPreferences bip49s = context.getSharedPreferences(strSentinelBIP49, 0);
+        if(bip49s != null)    {
+            Map<String, ?> all49 = bip49s.getAll();
+            for (Map.Entry<String, ?> entry : all49.entrySet()) {
+                SamouraiSentinel.getInstance(context).getBIP49().put(entry.getKey(), entry.getValue().toString());
+            }
+        }
+
+        SharedPreferences legacy = context.getSharedPreferences(strSentinelLegacy, 0);
+        if(legacy != null)    {
+            Map<String, ?> allLegacy = legacy.getAll();
+            for (Map.Entry<String, ?> entry : allLegacy.entrySet()) {
+                SamouraiSentinel.getInstance(context).getLegacy().put(entry.getKey(), entry.getValue().toString());
+            }
+        }
+
+    }
+
     public String getReceiveAddress()  {
 
-        final Set<String> xpubKeys = SamouraiSentinel.getInstance(context).getXPUBs().keySet();
-        final Set<String> legacyKeys = SamouraiSentinel.getInstance(context).getLegacy().keySet();
-        final List<String> xpubList = new ArrayList<String>();
-        xpubList.addAll(xpubKeys);
-        xpubList.addAll(legacyKeys);
+        final List<String> xpubList = getAllAddrsSorted();
 
         String addr = null;
+        ECKey ecKey = null;
 
         if(xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("xpub"))    {
             String xpub = xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1);
+            Log.d("SamouraiSentinel", "xpub:" + xpub);
             int account = AddressFactory.getInstance(context).xpub2account().get(xpub);
-            addr = AddressFactory.getInstance(context).get(AddressFactory.RECEIVE_CHAIN, account);
+            Log.d("SamouraiSentinel", "account:" + account);
+            if(SamouraiSentinel.getInstance(context).getBIP49().keySet().contains(xpub))    {
+                ecKey = AddressFactory.getInstance(context).getECKey(AddressFactory.RECEIVE_CHAIN, account);
+                SegwitAddress segwitAddress = new SegwitAddress(ecKey.getPubKey(), MainNetParams.get());
+                addr = segwitAddress.getAddressAsString();
+                Log.d("SamouraiSentinel", "addr:" + addr);
+            }
+            else    {
+                addr = AddressFactory.getInstance(context).get(AddressFactory.RECEIVE_CHAIN, account);
+            }
         }
         else    {
             addr = xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1);

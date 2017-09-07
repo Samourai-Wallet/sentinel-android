@@ -8,8 +8,8 @@ android {
         applicationId "com.samourai.sentinel"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 19
-        versionName "2.3.1"
+        versionCode 22
+        versionName "2.4"
         multiDexEnabled true
     }
     buildTypes {

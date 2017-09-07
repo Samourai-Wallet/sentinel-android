@@ -5,7 +5,6 @@ package com.samourai.sentinel.hd;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.crypto.DeterministicKey;
-import com.samourai.sentinel.api.APIFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;

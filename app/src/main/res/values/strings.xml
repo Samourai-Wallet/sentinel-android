@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="version_name">2.3.1</string>
+    <string name="version_name">2.4</string>
     <string name="app_name">Sentinel</string>
 
     <string name="new_version_message">Welcome to Sentinel\n\nSentinel is your deposit only bitcoin wallet. Sentinel cannot send bitcoin. Scan any XPUB and Sentinel will keep watch, alerting you of any new incoming transactions and allowing you to create new addresses so you can receive bitcoin on your mobile device.\n\nSentinel is the easiest and most secure way to keep track and receive payments to your cold storage wallet.\n\nSentinel can\'t send bitcoin out of your wallet, and your private keys are never communicated with Sentinel in any way.</string>
@@ -203,7 +203,8 @@
     <string name="choose_email_client">Choose an Email client:</string>
 
     <string name="bip32_account">BIP32 account</string>
-    <string name="bip44_account">BIP44 account</string>
+    <string name="bip44_account">BIP44/49 account</string>
+    <string name="bip49_account">BIP49 account</string>
     <string name="unsupported_depth">Unsupported XPUB format</string>
     <string name="base58_error">Unrecognized format</string>
     <string name="invalid_entry">Invalid XPUB or bitcoin address</string>
@@ -217,5 +218,22 @@
     <string name="cannot_find_unspents">Unspents list is empty</string>
     <string name="please_wait_sending">Sending transaction, please wait.</string>
     <string name="pushtx_returns_null">Spend failed. Server returned null value.</string>
+
+    <string name="bip32_44">Bread Wallet BIP32\nSamourai BIP44</string>
+    <string name="trezor">Segwit BIP49\nTrezor/Ledger</string>
+    <string name="prompt_xpub_type">Specify type of XPUB to ensure correct balance calculation and address derivation.</string>
+    <string name="xpub_add_ok">XPUB added successfully</string>
+    <string name="xpub_add_ko">XPUB add failed</string>
+
+    <string name="select_bitcoin_address1">Bitcoin Address</string>
+    <string name="select_bitcoin_address2">single bitcoin address</string>
+
+    <string name="select_bip44_xpub1">Bitcoin Wallet</string>
+    <string name="select_bip44_xpub2">entire bitcoin wallet via XPUB</string>
+
+    <string name="select_bip49_xpub1">Segwit Wallet</string>
+    <string name="select_bip49_xpub2">Segwit XPUB from Trezor or Ledger</string>
+
+    <string name="track_new">Track new...</string>
 
 </resources>
