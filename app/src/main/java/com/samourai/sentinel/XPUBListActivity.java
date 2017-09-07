@@ -62,9 +62,6 @@ import com.samourai.sentinel.util.Web;
 
 public class XPUBListActivity extends Activity {
 
-    private final static int SCAN_XPUB = 2011;
-    private final static int INSERT_BIP49 = 2012;
-
     private SwipeMenuListView xpubList = null;
     private XPUBAdapter xpubAdapter = null;
 
@@ -73,8 +70,6 @@ public class XPUBListActivity extends Activity {
     private FloatingActionButton actionXPUB = null;
 
     private boolean walletChanged = false;
-
-    private Handler handler = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,51 +229,12 @@ public class XPUBListActivity extends Activity {
         actionXPUB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                initDialog();
+                Intent intent = new Intent(XPUBListActivity.this, InsertActivity.class);
+                startActivity(intent);
             }
         });
 
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if(resultCode == Activity.RESULT_OK && requestCode == SCAN_XPUB)	{
-
-            if(data != null && data.getStringExtra(ZBarConstants.SCAN_RESULT) != null)	{
-                String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT);
-
-                if(strResult.startsWith("bitcoin:"))    {
-                    strResult = strResult.substring(8);
-                }
-                if(strResult.indexOf("?") != -1)   {
-                    strResult = strResult.substring(0, strResult.indexOf("?"));
-                }
-
-                addXPUB(strResult);
-            }
-        }
-        else if(resultCode == Activity.RESULT_CANCELED && requestCode == SCAN_XPUB)	{
-            ;
-        }
-        else if(resultCode == Activity.RESULT_OK && requestCode == INSERT_BIP49)	{
-            String xpub = data.getStringExtra("xpub");
-            String label = data.getStringExtra("label");
-
-            updateXPUBs(xpub, label, false, true);
-            xpubs = getXPUBS();
-            xpubAdapter.notifyDataSetChanged();
-            Toast.makeText(XPUBListActivity.this, R.string.xpub_add_ok, Toast.LENGTH_SHORT).show();
-        }
-        else if(resultCode == Activity.RESULT_CANCELED && requestCode == INSERT_BIP49)	{
-            Toast.makeText(XPUBListActivity.this, R.string.xpub_add_ko, Toast.LENGTH_SHORT).show();
-        }
-        else {
-            ;
-        }
-
-    }
-
 
     @Override
     public void onResume() {
@@ -287,7 +243,6 @@ public class XPUBListActivity extends Activity {
         AppUtil.getInstance(XPUBListActivity.this).checkTimeOut();
 
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -335,170 +290,6 @@ public class XPUBListActivity extends Activity {
         }
 
         return ret;
-    }
-
-    private void initDialog()	{
-
-        AccessFactory.getInstance(XPUBListActivity.this).setIsLoggedIn(false);
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.watchlist_title)
-                .setMessage(R.string.watchlist_message)
-                .setPositiveButton(R.string.manual, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        final EditText xpub = new EditText(XPUBListActivity.this);
-                        xpub.setSingleLine(true);
-
-                        new AlertDialog.Builder(XPUBListActivity.this)
-                                .setTitle(R.string.watchlist_title)
-                                .setMessage(R.string.enter_xpub)
-                                .setView(xpub)
-                                .setCancelable(false)
-                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                                        dialog.dismiss();
-
-                                        String xpubStr = xpub.getText().toString().trim();
-
-                                        if (xpubStr != null && xpubStr.length() > 0) {
-                                            addXPUB(xpubStr);
-                                        }
-
-                                    }
-
-                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-
-                                dialog.dismiss();
-
-                            }
-                        }).show();
-
-                    }
-                })
-                .setNegativeButton(R.string.scan, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        dialog.dismiss();
-
-                        doScan();
-
-                    }
-                }).show();
-
-    }
-
-    private void doScan() {
-        Intent intent = new Intent(XPUBListActivity.this, ZBarScannerActivity.class);
-        intent.putExtra(ZBarConstants.SCAN_MODES, new int[]{Symbol.QRCODE});
-        startActivityForResult(intent, SCAN_XPUB);
-    }
-
-    private void addXPUB(final String xpub) {
-
-        if(SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().containsKey(xpub))    {
-            return;
-        }
-
-        if(FormatsUtil.getInstance().isValidXpub(xpub)) {
-
-            try {
-                // get depth
-                byte[] xpubBytes = Base58.decodeChecked(xpub);
-                ByteBuffer bb = ByteBuffer.wrap(xpubBytes);
-                bb.getInt();
-                // depth:
-                byte depth = bb.get();
-                switch(depth)    {
-                    // BIP32 account
-                    case 1:
-                        Toast.makeText(XPUBListActivity.this, R.string.bip32_account, Toast.LENGTH_SHORT).show();
-                        break;
-                    // BIP44 account
-                    case 3:
-                        Toast.makeText(XPUBListActivity.this, R.string.bip44_account, Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        // unknown
-                        Toast.makeText(XPUBListActivity.this, XPUBListActivity.this.getText(R.string.unknown_xpub) + ":" + depth, Toast.LENGTH_SHORT).show();
-                }
-            }
-            catch(AddressFormatException afe) {
-                Toast.makeText(XPUBListActivity.this, R.string.base58_error, Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-        }
-        else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub)) {
-            ;
-        }
-        else {
-            Toast.makeText(XPUBListActivity.this, R.string.invalid_entry, Toast.LENGTH_SHORT).show();
-        }
-
-        handler = new Handler();
-
-        final EditText etLabel = new EditText(XPUBListActivity.this);
-        etLabel.setSingleLine(true);
-        etLabel.setHint(getText(R.string.xpub_label));
-
-        new AlertDialog.Builder(XPUBListActivity.this)
-                .setTitle(R.string.app_name)
-                .setView(etLabel)
-                .setCancelable(false)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        dialog.dismiss();
-
-                        final String label = etLabel.getText().toString().trim();
-
-                        if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub))    {
-                            updateXPUBs(xpub, label, false, false);
-                            xpubs = getXPUBS();
-                            xpubAdapter.notifyDataSetChanged();
-                        }
-                        else    {
-
-                            new AlertDialog.Builder(XPUBListActivity.this)
-                                    .setTitle(R.string.app_name)
-                                    .setMessage(R.string.prompt_xpub_type)
-                                    .setCancelable(false)
-                                    .setPositiveButton(R.string.bip32_44, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            dialog.dismiss();
-                                            updateXPUBs(xpub, label, false, false);
-                                            xpubs = getXPUBS();
-                                            xpubAdapter.notifyDataSetChanged();
-                                        }
-
-                                    }).setNegativeButton(R.string.trezor, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-
-                                    dialog.dismiss();
-
-                                    Intent intent = new Intent(XPUBListActivity.this, InsertBIP49Activity.class);
-                                    intent.putExtra("xpub", xpub);
-                                    intent.putExtra("label", label);
-                                    startActivityForResult(intent, INSERT_BIP49);
-
-                                }
-                            }).show();
-
-                        }
-
-                    }
-
-                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-
-                dialog.dismiss();
-
-            }
-        }).show();
-
     }
 
     private void updateXPUBs(String xpub, String label, boolean delete, boolean isBIP49)   {

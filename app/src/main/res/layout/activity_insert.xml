@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:background="@color/primary"
+    >
+
+    <!-- -->
+    <LinearLayout
+        android:id="@+id/address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        >
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="fitXY"
+            android:background="@drawable/xpub_type_selector"
+            android:src="@drawable/ic_bitcoin"
+            android:layout_marginRight="20dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/select_bitcoin_address1"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/select_bitcoin_address2"
+                android:textSize="16sp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- -->
+    <LinearLayout
+        android:id="@+id/bip44"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        >
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="fitXY"
+            android:background="@drawable/xpub_type_selector"
+            android:src="@drawable/ic_xpub"
+            android:layout_marginRight="20dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/select_bip44_xpub1"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/select_bip44_xpub2"
+                android:textSize="16sp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- -->
+    <LinearLayout
+        android:id="@+id/bip49"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        >
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="fitXY"
+            android:background="@drawable/xpub_type_selector"
+            android:src="@drawable/ic_segwit"
+            android:layout_marginRight="20dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/select_bip49_xpub1"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/select_bip49_xpub2"
+                android:textSize="16sp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
