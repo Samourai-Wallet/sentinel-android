@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.samourai.sentinel.util.AppUtil;
+import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.Web;
 
 import org.json.JSONException;
@@ -85,6 +86,13 @@ public class InsertBIP49Activity extends Activity {
                     }
 
                     SamouraiSentinel.getInstance(InsertBIP49Activity.this).getBIP49().put(params[0], params[1]);
+                    try {
+                        SamouraiSentinel.getInstance(InsertBIP49Activity.this).serialize(SamouraiSentinel.getInstance(InsertBIP49Activity.this).toJSON(), null);
+                    } catch (IOException ioe) {
+                        ioe.printStackTrace();
+                    } catch (JSONException je) {
+                        je.printStackTrace();
+                    }
 
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("xpub", params[0]);
