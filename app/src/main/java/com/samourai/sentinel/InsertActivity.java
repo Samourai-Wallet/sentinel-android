@@ -108,7 +108,7 @@ public class InsertActivity extends Activity {
             String xpub = data.getStringExtra("xpub");
             String label = data.getStringExtra("label");
 
-            updateXPUBs(xpub, label, false, true);
+            updateXPUBs(xpub, label, true);
             Log.d("InitActivity", "xpub inserted:" + xpub);
             Log.d("InitActivity", "label inserted:" + label);
             Toast.makeText(InsertActivity.this, R.string.xpub_add_ok, Toast.LENGTH_SHORT).show();
@@ -205,7 +205,7 @@ public class InsertActivity extends Activity {
                         final String label = etLabel.getText().toString().trim();
 
                         if(FormatsUtil.getInstance().isValidBitcoinAddress(xpubStr))    {
-                            updateXPUBs(xpubStr, label, false, false);
+                            updateXPUBs(xpubStr, label, false);
                             Intent intent = new Intent(InsertActivity.this, BalanceActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
@@ -219,7 +219,7 @@ public class InsertActivity extends Activity {
                                 startActivityForResult(intent, INSERT_BIP49);
                             }
                             else    {
-                                updateXPUBs(xpubStr, label, false, false);
+                                updateXPUBs(xpubStr, label, false);
                                 Intent intent = new Intent(InsertActivity.this, BalanceActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -239,7 +239,7 @@ public class InsertActivity extends Activity {
 
     }
 
-    private void updateXPUBs(String xpub, String label, boolean delete, boolean isBIP49)   {
+    private void updateXPUBs(String xpub, String label, boolean isBIP49)   {
 
         if (label == null || label.length() < 1) {
             label = getString(R.string.new_account);
