@@ -11,7 +11,10 @@ import android.util.Log;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.Web;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class InsertBIP49Activity extends Activity {
 
@@ -80,6 +83,8 @@ public class InsertBIP49Activity extends Activity {
                         progress.dismiss();
                         progress = null;
                     }
+
+                    SamouraiSentinel.getInstance(InsertBIP49Activity.this).getBIP49().put(params[0], params[1]);
 
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("xpub", params[0]);
