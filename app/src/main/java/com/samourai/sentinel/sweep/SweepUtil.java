@@ -13,7 +13,7 @@ import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.spongycastle.util.encoders.Hex;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.util.HashMap;

@@ -47,8 +47,7 @@ dependencies {
     compile 'commons-io:commons-io:2.5'
     compile 'com.google.guava:guava:16.0.1'
     compile 'org.apache.commons:commons-lang3:3.3'
-    compile 'com.madgag.spongycastle:core:1.54.0.0'
-    compile 'com.madgag.spongycastle:prov:1.54.0.0'
+    compile 'org.bouncycastle:bcprov-jdk15on:1.55'
     compile 'net.i2p.android.ext:floatingactionbutton:1.9.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile('com.google.zxing:core:3.3.0') {
