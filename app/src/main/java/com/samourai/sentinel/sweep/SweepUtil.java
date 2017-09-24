@@ -23,6 +23,7 @@ import org.bitcoinj.params.MainNetParams;
 
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.api.APIFactory;
+import com.samourai.sentinel.segwit.SegwitAddress;
 
 public class SweepUtil  {
 
@@ -42,7 +43,7 @@ public class SweepUtil  {
         return instance;
     }
 
-    public void sweep(final PrivKeyReader privKeyReader, final String strReceiveAddress)  {
+    public void sweep(final PrivKeyReader privKeyReader, final String strReceiveAddress, final boolean isBIP49)  {
 
         new Thread(new Runnable() {
             @Override
@@ -57,7 +58,14 @@ public class SweepUtil  {
                         return;
                     }
 
-                    String address = privKeyReader.getKey().toAddress(MainNetParams.get()).toString();
+                    String address = null;
+                    if(isBIP49)    {
+                        address = new SegwitAddress(privKeyReader.getKey(), MainNetParams.get()).getAddressAsString();
+                    }
+                    else    {
+                        address = privKeyReader.getKey().toAddress(MainNetParams.get()).toString();
+                    }
+
                     UTXO utxo = APIFactory.getInstance(context).getUnspentOutputsForSweep(address);
                     if(utxo != null && utxo.getOutpoints().size() > 0)    {
 
@@ -68,7 +76,13 @@ public class SweepUtil  {
                         }
 
                         FeeUtil.getInstance().setSuggestedFee(FeeUtil.getInstance().getNormalFee());
-                        final BigInteger fee = FeeUtil.getInstance().estimatedFee(outpoints.size(), 1);
+                        BigInteger fee = null;
+                        if(isBIP49)    {
+                            fee = FeeUtil.getInstance().estimatedFeeSegwit(0, outpoints.size(), 1);
+                        }
+                        else    {
+                            fee = FeeUtil.getInstance().estimatedFee(outpoints.size(), 1);
+                        }
 
                         final long amount = total_value - fee.longValue();
                         Log.d("SweepUtil", "Total value:" + total_value);
@@ -141,6 +155,7 @@ public class SweepUtil  {
                     }
                     else    {
                         Toast.makeText(context, R.string.cannot_find_unspents, Toast.LENGTH_SHORT).show();
+                        sweep(privKeyReader, strReceiveAddress, true);
                     }
 
                 }

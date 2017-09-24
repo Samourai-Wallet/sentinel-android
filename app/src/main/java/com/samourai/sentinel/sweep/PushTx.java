@@ -27,7 +27,7 @@ public class PushTx {
         try {
             String response = null;
 
-            response = Web.postURL(Web.SAMOURAI_API + "v1/pushtx", "tx=" + hexString);
+            response = Web.postURL(Web.SAMOURAI_API + "v2/pushtx/", "tx=" + hexString);
 
             return response;
         }

@@ -46,7 +46,6 @@ dependencies {
     compile 'commons-codec:commons-codec:1.4'
     compile 'commons-io:commons-io:2.5'
     compile 'com.google.guava:guava:16.0.1'
-    compile 'org.bitcoinj:bitcoinj-core:0.14.4'
     compile 'org.apache.commons:commons-lang3:3.3'
     compile 'com.madgag.spongycastle:core:1.54.0.0'
     compile 'com.madgag.spongycastle:prov:1.54.0.0'
