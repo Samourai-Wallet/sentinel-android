@@ -43,7 +43,7 @@ public class SweepUtil  {
         return instance;
     }
 
-    public void sweep(final PrivKeyReader privKeyReader, final String strReceiveAddress, final boolean isBIP49)  {
+    public void sweep(final PrivKeyReader privKeyReader, final String strReceiveAddress, final boolean sweepBIP49)  {
 
         new Thread(new Runnable() {
             @Override
@@ -59,7 +59,7 @@ public class SweepUtil  {
                     }
 
                     String address = null;
-                    if(isBIP49)    {
+                    if(sweepBIP49)    {
                         address = new SegwitAddress(privKeyReader.getKey(), MainNetParams.get()).getAddressAsString();
                     }
                     else    {
@@ -77,7 +77,7 @@ public class SweepUtil  {
 
                         FeeUtil.getInstance().setSuggestedFee(FeeUtil.getInstance().getNormalFee());
                         BigInteger fee = null;
-                        if(isBIP49)    {
+                        if(sweepBIP49)    {
                             fee = FeeUtil.getInstance().estimatedFeeSegwit(0, outpoints.size(), 1);
                         }
                         else    {
