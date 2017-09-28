@@ -469,7 +469,7 @@ public class ReceiveActivity extends Activity {
             }
 
             long lamount = (long)(amount * 1e8);
-            if(!bamount.equals(BigInteger.ZERO)) {
+            if(lamount > 0L) {
                 ivQR.setImageBitmap(generateQRCode(BitcoinURI.convertToBitcoinURI(Address.fromBase58(MainNetParams.get(), addr), Coin.valueOf(lamount), null, null)));
             }
             else {
