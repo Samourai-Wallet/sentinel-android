@@ -1,10 +1,12 @@
 package com.samourai.sentinel.sweep;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 import android.util.Log;
@@ -13,7 +15,7 @@ import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.spongycastle.util.encoders.Hex;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ import org.bitcoinj.params.MainNetParams;
 
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.api.APIFactory;
+import com.samourai.sentinel.segwit.SegwitAddress;
 
 public class SweepUtil  {
 
@@ -42,7 +45,7 @@ public class SweepUtil  {
         return instance;
     }
 
-    public void sweep(final PrivKeyReader privKeyReader, final String strReceiveAddress)  {
+    public void sweep(final PrivKeyReader privKeyReader, final String strReceiveAddress, final boolean sweepBIP49)  {
 
         new Thread(new Runnable() {
             @Override
@@ -57,7 +60,14 @@ public class SweepUtil  {
                         return;
                     }
 
-                    String address = privKeyReader.getKey().toAddress(MainNetParams.get()).toString();
+                    String address = null;
+                    if(sweepBIP49)    {
+                        address = new SegwitAddress(privKeyReader.getKey(), MainNetParams.get()).getAddressAsString();
+                    }
+                    else    {
+                        address = privKeyReader.getKey().toAddress(MainNetParams.get()).toString();
+                    }
+
                     UTXO utxo = APIFactory.getInstance(context).getUnspentOutputsForSweep(address);
                     if(utxo != null && utxo.getOutpoints().size() > 0)    {
 
@@ -68,7 +78,13 @@ public class SweepUtil  {
                         }
 
                         FeeUtil.getInstance().setSuggestedFee(FeeUtil.getInstance().getNormalFee());
-                        final BigInteger fee = FeeUtil.getInstance().estimatedFee(outpoints.size(), 1);
+                        BigInteger fee = null;
+                        if(sweepBIP49)    {
+                            fee = FeeUtil.getInstance().estimatedFeeSegwit(0, outpoints.size(), 1);
+                        }
+                        else    {
+                            fee = FeeUtil.getInstance().estimatedFee(outpoints.size(), 1);
+                        }
 
                         final long amount = total_value - fee.longValue();
                         Log.d("SweepUtil", "Total value:" + total_value);
@@ -78,20 +94,14 @@ public class SweepUtil  {
 
                         String message = "Sweep " + Coin.valueOf(amount).toPlainString() + " from " + address + " (fee:" + Coin.valueOf(fee.longValue()).toPlainString() + ")?";
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setTitle(R.string.app_name);
-                        builder.setMessage(message);
-                        builder.setCancelable(false);
-                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        new AlertDialog.Builder(context)
+                        .setTitle(R.string.app_name)
+                        .setMessage(message)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog, int whichButton) {
 
                                 Log.d("SweepUtil", "start sweep");
-
-                                final ProgressDialog progress = new ProgressDialog(context);
-                                progress.setCancelable(false);
-                                progress.setTitle(R.string.app_name);
-                                progress.setMessage(context.getString(R.string.please_wait_sending));
-                                progress.show();
 
                                 final HashMap<String, BigInteger> receivers = new HashMap<String, BigInteger>();
                                 receivers.put(strReceiveAddress, BigInteger.valueOf(amount));
@@ -122,25 +132,21 @@ public class SweepUtil  {
                                 catch(JSONException je) {
                                     Toast.makeText(context, "pushTx:" + je.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
-//
-                                if(progress != null && progress.isShowing())    {
-                                    progress.dismiss();
-                                }
+
+                                dialog.dismiss();
 
                             }
-                        });
-                        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog, int whichButton) {
-                                ;
+                                dialog.dismiss();
                             }
-                        });
-
-                        AlertDialog alert = builder.create();
-                        alert.show();
+                        }).show();
 
                     }
                     else    {
-                        Toast.makeText(context, R.string.cannot_find_unspents, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, R.string.cannot_find_unspents, Toast.LENGTH_SHORT).show();
+                        sweep(privKeyReader, strReceiveAddress, true);
                     }
 
                 }

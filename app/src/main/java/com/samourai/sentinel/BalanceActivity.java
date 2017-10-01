@@ -736,6 +736,8 @@ public class BalanceActivity extends Activity {
                 .setPositiveButton(R.string.enter_privkey, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
+                        dialog.dismiss();
+
                         final EditText privkey = new EditText(BalanceActivity.this);
                         privkey.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
@@ -746,6 +748,8 @@ public class BalanceActivity extends Activity {
                                 .setCancelable(false)
                                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        dialog.dismiss();
 
                                         final String strPrivKey = privkey.getText().toString();
 
@@ -769,6 +773,8 @@ public class BalanceActivity extends Activity {
 
                 }).setNegativeButton(R.string.scan, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+
+                        dialog.dismiss();
 
                         doSweepViaScan();
 
@@ -813,6 +819,8 @@ public class BalanceActivity extends Activity {
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
 
+                                dialog.dismiss();
+
                                 String password = password38.getText().toString();
 
                                 ProgressDialog progress = new ProgressDialog(BalanceActivity.this);
@@ -852,13 +860,15 @@ public class BalanceActivity extends Activity {
                                 if(keyDecoded)    {
                                     String strReceiveAddress = SamouraiSentinel.getInstance(BalanceActivity.this).getReceiveAddress();
                                     if(strReceiveAddress != null)    {
-                                        SweepUtil.getInstance(BalanceActivity.this).sweep(pvr, strReceiveAddress);
+                                        SweepUtil.getInstance(BalanceActivity.this).sweep(pvr, strReceiveAddress, false);
                                     }
                                 }
 
                             }
                         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+
+                                dialog.dismiss();
 
                                 Toast.makeText(BalanceActivity.this, R.string.bip38_pw_error, Toast.LENGTH_SHORT).show();
 
@@ -873,7 +883,7 @@ public class BalanceActivity extends Activity {
                 String strReceiveAddress = SamouraiSentinel.getInstance(BalanceActivity.this).getReceiveAddress();
                 Log.d("BalanceActivity", "receive address:" + strReceiveAddress);
                 if(strReceiveAddress != null)    {
-                    SweepUtil.getInstance(BalanceActivity.this).sweep(privKeyReader, strReceiveAddress);
+                    SweepUtil.getInstance(BalanceActivity.this).sweep(privKeyReader, strReceiveAddress, false);
                 }
             }
             else    {

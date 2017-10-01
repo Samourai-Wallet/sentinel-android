@@ -5,19 +5,21 @@ import android.widget.Toast;
 
 import com.samourai.sentinel.hd.HD_WalletFactory;
 
+import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.DumpedPrivateKey;
 import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.ScriptException;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutput;
+import org.bitcoinj.core.ScriptException;
+import org.bitcoinj.core.TransactionWitness;
 import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
-import org.spongycastle.util.encoders.Hex;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.samourai.sentinel.R;
+import com.samourai.sentinel.segwit.SegwitAddress;
 
 public class SendFactory	{
 
@@ -197,21 +200,49 @@ public class SendFactory	{
             connectedOutput = input.getOutpoint().getConnectedOutput();
             scriptPubKey = connectedOutput.getScriptPubKey();
 
-            if(key != null && key.hasPrivKey() || key.isEncrypted()) {
-                sig = transaction.calculateSignature(i, key, connectedPubKeyScript, Transaction.SigHash.ALL, false);
-            }
-            else {
-                sig = TransactionSignature.dummy();   // watch only ?
-            }
+            String address = new Script(connectedPubKeyScript).getToAddress(MainNetParams.get()).toString();
+            if(Address.fromBase58(MainNetParams.get(), address).isP2SHAddress())    {
 
-            if(scriptPubKey.isSentToAddress()) {
-                input.setScriptSig(ScriptBuilder.createInputScript(sig, key));
+                final SegwitAddress p2shp2wpkh = new SegwitAddress(key.getPubKey(), MainNetParams.get());
+                System.out.println("pubKey:" + Hex.toHexString(key.getPubKey()));
+//                final Script scriptPubKey = p2shp2wpkh.segWitOutputScript();
+//                System.out.println("scriptPubKey:" + Hex.toHexString(scriptPubKey.getProgram()));
+                System.out.println("to address from script:" + scriptPubKey.getToAddress(MainNetParams.get()).toString());
+                final Script redeemScript = p2shp2wpkh.segWitRedeemScript();
+                System.out.println("redeem script:" + Hex.toHexString(redeemScript.getProgram()));
+                final Script scriptCode = redeemScript.scriptCode();
+                System.out.println("script code:" + Hex.toHexString(scriptCode.getProgram()));
+
+                sig = transaction.calculateWitnessSignature(i, key, scriptCode, connectedOutput.getValue(), Transaction.SigHash.ALL, false);
+                final TransactionWitness witness = new TransactionWitness(2);
+                witness.setPush(0, sig.encodeToBitcoin());
+                witness.setPush(1, key.getPubKey());
+                transaction.setWitness(i, witness);
+
+                final ScriptBuilder sigScript = new ScriptBuilder();
+                sigScript.data(redeemScript.getProgram());
+                transaction.getInput(i).setScriptSig(sigScript.build());
+
+                transaction.getInput(i).getScriptSig().correctlySpends(transaction, i, scriptPubKey, connectedOutput.getValue(), Script.ALL_VERIFY_FLAGS);
+
             }
-            else if(scriptPubKey.isSentToRawPubKey()) {
-                input.setScriptSig(ScriptBuilder.createInputScript(sig));
-            }
-            else {
-                throw new RuntimeException("Unknown script type: " + scriptPubKey);
+            else    {
+                if(key != null && key.hasPrivKey() || key.isEncrypted()) {
+                    sig = transaction.calculateSignature(i, key, connectedPubKeyScript, Transaction.SigHash.ALL, false);
+                }
+                else {
+                    sig = TransactionSignature.dummy();   // watch only ?
+                }
+
+                if(scriptPubKey.isSentToAddress()) {
+                    input.setScriptSig(ScriptBuilder.createInputScript(sig, key));
+                }
+                else if(scriptPubKey.isSentToRawPubKey()) {
+                    input.setScriptSig(ScriptBuilder.createInputScript(sig));
+                }
+                else {
+                    throw new RuntimeException("Unknown script type: " + scriptPubKey);
+                }
             }
 
         }

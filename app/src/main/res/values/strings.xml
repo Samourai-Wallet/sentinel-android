@@ -1,33 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="version_name">2.4.1</string>
+    <string name="version_name">2.5.1</string>
     <string name="app_name">Sentinel</string>
 
     <string name="new_version_message">Welcome to Sentinel\n\nSentinel is your deposit only bitcoin wallet. Sentinel cannot send bitcoin. Scan any XPUB and Sentinel will keep watch, alerting you of any new incoming transactions and allowing you to create new addresses so you can receive bitcoin on your mobile device.\n\nSentinel is the easiest and most secure way to keep track and receive payments to your cold storage wallet.\n\nSentinel can\'t send bitcoin out of your wallet, and your private keys are never communicated with Sentinel in any way.</string>
 
-    <string name="alpha_create_wallet">This is an alpha product and things may go wrong, please write the following 12 words down and keep them safe. As long as you have these 12 words and the passphrase you just created you will never lose access to your funds.</string>
-    <string name="alpha_create_confirm_backup">I\'ve written down my recovery words</string>
-
-    <string name="creating_wallet">Creating wallet. Please wait...</string>
-    <string name="restoring_wallet">Restoring wallet. Please wait...</string>
-    <string name="syncing">Syncing with network. Please wait...</string>
     <string name="decrypting_bip38">Decrypting BIP38 password. Please wait...</string>
 
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
     <string name="action_send">Send</string>
     <string name="action_stealth_send">Stealth send</string>
     <string name="action_receive">Receive</string>
     <string name="action_tx">Transactions</string>
-    <string name="action_xpub">Your XPUB</string>
     <string name="action_settings">Settings</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="about_us">About Sentinel</string>
     <string name="about_title">About us</string>
 
@@ -35,57 +23,26 @@
     <string name="cancel">Cancel</string>
 
     <string name="options_cat_prefs">Preferences</string>
-    <string name="options_cat_stealth">Stealth settings</string>
-    <string name="options_cat_remote">Remote settings</string>
     <string name="options_cat_wallet">Your wallet</string>
     <string name="options_cat_other">Sentinel</string>
 
-    <string name="options_mnemonic">Show mnemonic</string>
-    <string name="options_mnemonic2">Show mnemonic for this wallet.</string>
-    <string name="options_hexseed">Show hex seed</string>
-    <string name="options_hexseed2">Show hex seed for this wallet.</string>
-    <string name="options_passphrase">Show BIP39 passphrase</string>
-    <string name="options_passphrase2">Show BIP39 passphrase for this wallet.</string>
-    <string name="options_xpub">Show XPUB</string>
-    <string name="options_xpub2">Show extended key for this wallet account (can be copied to clipboard).</string>
-    <string name="options_wipe">Wipe wallet</string>
-    <string name="options_wipe2">Wipe this wallet from device.</string>
     <string name="options_units">Units</string>
     <string name="options_units2">Bitcoin units to display (default BTC).</string>
-    <string name="options_stealth_display">Stealth launcher</string>
-    <string name="options_stealth_display2">Remove all traces of Sentinel from the launcher and home screen. To open your wallet dial **YOUR_PIN_CODE# from the phone dialer. Do you want to define a pin code?</string>
-    <string name="options_remote_commands">Remote commands</string>
-    <string name="options_remote_commands2">Allow stealth remote commands via SMS.</string>
     <string name="options_currency">Street price</string>
     <string name="options_currency2">The fiat price from localbitcoins.com.</string>
     <string name="options_blockexplorer">Block explorer</string>
     <string name="options_blockexplorer2">The block explorer used to view transaction details.</string>
-    <string name="options_sim_switch">SIM switch defense</string>
-    <string name="options_sim_switch2">Send SMS to trusted mobile number when the SIM card is changed.</string>
-    <string name="options_use_telno">Use trusted mobile number for remote</string>
-    <string name="options_use_telno2">Only allow remote commands sent from your trusted mobile phone number.</string>
-    <string name="options_alert_telno">Trusted number</string>
-    <string name="options_alert_telno2">A trusted mobile number that you can restrict remote access to (use int\'l format without spacing ex.: +447385555555).</string>
-    <string name="options_hash">APK hash</string>
-    <string name="options_hash2">Get SHA-256 hash of this installed APK file (can be copied to clipboard).</string>
     <string name="options_export">Export wallet</string>
     <string name="options_export2">Export wallet and metadata.</string>
     <string name="options_restore">Restore wallet</string>
     <string name="options_restore2">Restore wallet and metadata from backup.</string>
 
-    <string name="select_currency">Select currency</string>
-
     <string name="timeline_today">Today</string>
     <string name="timeline_yesterday">Yesterday</string>
     <string name="timeline_older">Older</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="tx_receive">You received</string>
-    <string name="tx_sent">You sent</string>
     <string name="you_received">You received</string>
     <string name="you_sent">You sent</string>
-    <string name="send">Send</string>
-    <string name="receive">Receive</string>
 
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="send_payment_code">Send payment code</string>
@@ -94,67 +51,38 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
-    <string name="sim_warning">Your Samourai Wallet device now has a different SIM card corresponding to incoming number of this text message.</string>
-
     <string name="pin_5_8">Please create a PIN code between 5 and 8 characters. You will need this PIN to access Sentinel on this device.</string>
     <string name="pin_5_8_confirm">Please confirm 5-8 digit PIN code</string>
     <string name="pin_error">Pin code error</string>
     <string name="no_internet">No Internet connectivity. Please try again.</string>
     <string name="bip38_pw">BIP38 password</string>
     <string name="bip38_pw_error">BIP38 password error</string>
-    <string name="bip39_safe">BIP39 Passphrase: Please create a unique passphrase and keep it safe. You will not need this passphrase to access your wallet on this device, but you will need it if you wish to recover or import your wallet later.</string>
-    <string name="bip39_must">Samourai Wallets must use a BIP39 passphrase. Please try again.</string>
     <string name="please_select">Please select...</string>
-    <string name="create_wallet">Create wallet</string>
-    <string name="restore_wallet">Restore wallet</string>
-    <string name="bip39_passphrase">BIP39 passphrase</string>
-    <string name="mnemonic_hex">Mnemonic or hex seed</string>
     <string name="pin_enter">Enter PIN code</string>
     <string name="please_wait">Please wait...</string>
-    <string name="random_key_error">Random key error</string>
-    <string name="login_error">Login failed</string>
-    <string name="wallet_created_ok">Wallet created OK.</string>
-    <string name="wallet_created_ko">Error creating wallet.</string>
-    <string name="wallet_restored_ok">Wallet restored OK.</string>
     <string name="wallet_restored_ko">Error restoring wallet.</string>
-
-    <string name="sweep_address_for">Sweep address for</string>
-    <string name="sweep_ok">Address swept OK</string>
-    <string name="sweep_ko">Sweep address failed</string>
 
     <string name="address_used_previously">This receive address has been used previously.</string>
 
-    <string name="send_or_receive">Send or receive?</string>
-    <string name="scan_or_manual">Scan QR code or enter manually?</string>
     <string name="scan">Scan</string>
     <string name="manual">Manual</string>
-    <string name="amount_to_send">Amount to send</string>
-    <string name="send_to">Send to (BTC address)</string>
-    <string name="scan_error">Scan error</string>
 
     <string name="tx_ok">Transaction sent</string>
-    <string name="tx_ko">Transaction failed</string>
-    <string name="to">to</string>
 
-    <string name="insufficient_funds">Insufficient funds</string>
-    <string name="invalid_tx_attempt">Invalid transaction attempt</string>
     <string name="tx_length_error">Samourai does not handle transactions over 100KB in size. Please try splitting your transaction.</string>
     <string name="invalid_amount">Invalid amount</string>
 
     <string name="receive_address_to_clipboard">Copy this receive address to the clipboard? If copied, it may be visible to other applications.</string>
     <string name="receive_address_to_share">Share this receive address? If shared, it may be read to other applications.</string>
     <string name="sure_to_delete">Are you sure you want to delete this entry?</string>
-    <string name="wallet_erased">Wallet erased from device.</string>
 
     <string name="enter_xpub">Enter XPUB or bitcoin address.</string>
     <string name="xpub_error">There was an error creating a wallet from your XPUBs/bitcoin addresses. Please try again.</string>
-    <string name="xpub_absent">There are no XPUBs/bitcoin addresses for creating a wallet. Go to settings to configure Sentinel.</string>
 
     <string name="create_pin">Create PIN code</string>
     <string name="confirm_pin">Confirm PIN code</string>
     <string name="entering_stealth">Applying PIN code. Please wait.</string>
 
-    <string name="error_entering_stealth">Error entering app via stealth launch. If the error persists, reinstall Sentinel.</string>
     <string name="error_activating_stealth">Error activating stealth launch. If the error persists, reinstall Sentinel.</string>
 
     <string name="options_scramble_pin">Scramble PIN entry</string>
@@ -162,28 +90,12 @@
     <string name="options_pin">User PIN code</string>
     <string name="options_pin2">User PIN code to enter Sentinel.</string>
 
-    <string name="shapeshift">ShapeShift</string>
-    <string name="xpub">XPUB or bitcoin address</string>
     <string name="watchlist">Watchlist</string>
     <string name="deposit">Deposit</string>
 
-    <string name="bitfinex_fiat">USD used for Bitfinex fiat price.</string>
     <string name="xpub_label">Label</string>
     <string name="new_account">New account</string>
 
-    <string name="getting_market_info">Getting latest ShapeShift market info. Please wait.</string>
-    <string name="getting_trade_info">Getting latest ShapeShift info for this trade. Please wait.</string>
-    <string name="error_getting_market_info">Error getting latest ShapeShift market info.</string>
-    <string name="error_getting_trade_info">Error getting trade info.</string>
-    <string name="send_address_to_clipboard">Copy this send address to the clipboard? If copied, it may be visible to other applications.</string>
-    <string name="select_cryptocurrency">select a cryptocurrency</string>
-    <string name="limit">Limit:</string>
-    <string name="minimum">Minimum:</string>
-
-    <string name="select_account">You must select an account</string>
-
-    <string name="watchlist_title">Add new</string>
-    <string name="watchlist_message">Add a new XPUB or bitcoin address to begin tracking. Please select...</string>
     <string name="total_title">Total</string>
     <string name="deposit_into">Deposit into...</string>
 
@@ -194,8 +106,6 @@
     <string name="export_to_email">Export to email</string>
     <string name="error_password">The proposed passwords do not match. Please try again.</string>
     <string name="encryption_error">There was an error while encrypting your wallet backup. Please try again.</string>
-    <string name="import_backup">From backup</string>
-    <string name="import_mnemonic">Mnemonic/seed</string>
     <string name="encrypted_backup">Encrypted wallet data</string>
     <string name="decryption_error">There was an error while decrypting your wallet backup. Please try again.</string>
     <string name="restore_wallet_from_backup">Restore wallet from backup</string>
@@ -205,7 +115,6 @@
     <string name="bip32_account">BIP32 account</string>
     <string name="bip44_account">BIP44/49 account</string>
     <string name="bip49_account">BIP49 account</string>
-    <string name="unsupported_depth">Unsupported XPUB format</string>
     <string name="base58_error">Unrecognized format</string>
     <string name="invalid_entry">Invalid XPUB or bitcoin address</string>
 
@@ -219,9 +128,6 @@
     <string name="please_wait_sending">Sending transaction, please wait.</string>
     <string name="pushtx_returns_null">Spend failed. Server returned null value.</string>
 
-    <string name="bip32_44">Bread Wallet BIP32\nSamourai BIP44</string>
-    <string name="trezor">Segwit BIP49\nTrezor/Ledger</string>
-    <string name="prompt_xpub_type">Specify type of XPUB to ensure correct balance calculation and address derivation.</string>
     <string name="xpub_add_ok">XPUB added successfully</string>
     <string name="xpub_add_ko">XPUB add failed</string>
 

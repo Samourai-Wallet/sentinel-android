@@ -2,7 +2,7 @@ package com.samourai.sentinel.sweep;
 
 import android.util.Base64;
 
-import org.spongycastle.util.encoders.Hex;
+import org.bouncycastle.util.encoders.Hex;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bitcoinj.core.Base58;
