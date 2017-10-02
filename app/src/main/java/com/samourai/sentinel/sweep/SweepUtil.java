@@ -1,12 +1,8 @@
 package com.samourai.sentinel.sweep;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 import android.util.Log;
@@ -25,7 +21,7 @@ import org.bitcoinj.params.MainNetParams;
 
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.api.APIFactory;
-import com.samourai.sentinel.segwit.SegwitAddress;
+import com.samourai.sentinel.segwit.P2SH_P2WPKH;
 
 public class SweepUtil  {
 
@@ -62,7 +58,7 @@ public class SweepUtil  {
 
                     String address = null;
                     if(sweepBIP49)    {
-                        address = new SegwitAddress(privKeyReader.getKey(), MainNetParams.get()).getAddressAsString();
+                        address = new P2SH_P2WPKH(privKeyReader.getKey(), MainNetParams.get()).getAddressAsString();
                     }
                     else    {
                         address = privKeyReader.getKey().toAddress(MainNetParams.get()).toString();

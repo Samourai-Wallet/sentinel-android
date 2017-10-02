@@ -6,7 +6,7 @@ import android.util.Log;
 //import android.util.Log;
 
 import com.samourai.sentinel.crypto.AESUtil;
-import com.samourai.sentinel.segwit.SegwitAddress;
+import com.samourai.sentinel.segwit.P2SH_P2WPKH;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.CharSequenceX;
 import com.samourai.sentinel.util.MapUtil;
@@ -18,25 +18,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class SamouraiSentinel {
 
@@ -364,8 +354,8 @@ public class SamouraiSentinel {
             Log.d("SamouraiSentinel", "account:" + account);
             if(SamouraiSentinel.getInstance(context).getBIP49().keySet().contains(xpub))    {
                 ecKey = AddressFactory.getInstance(context).getECKey(AddressFactory.RECEIVE_CHAIN, account);
-                SegwitAddress segwitAddress = new SegwitAddress(ecKey.getPubKey(), MainNetParams.get());
-                addr = segwitAddress.getAddressAsString();
+                P2SH_P2WPKH p2sh_p2wpkh = new P2SH_P2WPKH(ecKey.getPubKey(), MainNetParams.get());
+                addr = p2sh_p2wpkh.getAddressAsString();
                 Log.d("SamouraiSentinel", "addr:" + addr);
             }
             else    {
