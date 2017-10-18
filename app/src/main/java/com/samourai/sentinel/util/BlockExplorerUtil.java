@@ -2,8 +2,8 @@ package com.samourai.sentinel.util;
 
 public class BlockExplorerUtil {
 
-    private static CharSequence[] blockExplorers = { "Smartbit", "UASF Explorer" };
-    private static CharSequence[] blockExplorerUrls = { "https://www.smartbit.com.au/tx/", "https://uasf-explorer.satoshiportal.com/tx/" };
+    private static CharSequence[] blockExplorers = { "Smartbit", "UASF Explorer", "Blockchain Reader (Yogh)" };
+    private static CharSequence[] blockExplorerUrls = { "https://www.smartbit.com.au/tx/", "https://uasf-explorer.satoshiportal.com/tx/", "http://srv1.yogh.io/#tx:id:" };
 
     private static BlockExplorerUtil instance = null;
 
