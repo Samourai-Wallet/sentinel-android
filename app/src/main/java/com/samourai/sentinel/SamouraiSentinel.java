@@ -340,6 +340,25 @@ public class SamouraiSentinel {
 
     }
 
+    public void deleteFromPrefs(String xpub)  {
+
+        SharedPreferences _xpub = context.getSharedPreferences(strSentinelXPUB, 0);
+        SharedPreferences.Editor xEditor = _xpub.edit();
+        xEditor.remove(xpub);
+        xEditor.commit();
+
+        SharedPreferences _bip49 = context.getSharedPreferences(strSentinelBIP49, 0);
+        SharedPreferences.Editor bEditor = _bip49.edit();
+        bEditor.remove(xpub);
+        bEditor.commit();
+
+        SharedPreferences _legacy = context.getSharedPreferences(strSentinelLegacy, 0);
+        SharedPreferences.Editor lEditor = _legacy.edit();
+        lEditor.remove(xpub);
+        lEditor.commit();
+
+    }
+
     public String getReceiveAddress()  {
 
         final List<String> xpubList = getAllAddrsSorted();

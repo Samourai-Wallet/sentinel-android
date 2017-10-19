@@ -305,6 +305,8 @@ public class XPUBListActivity extends Activity {
             else {
                 ;
             }
+
+            SamouraiSentinel.getInstance(XPUBListActivity.this).deleteFromPrefs(xpub);
         }
         else    {
             if (label == null || label.length() < 1) {
