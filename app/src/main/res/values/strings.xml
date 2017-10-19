@@ -135,10 +135,10 @@
     <string name="select_bitcoin_address2">single bitcoin address</string>
 
     <string name="select_bip44_xpub1">Bitcoin Wallet</string>
-    <string name="select_bip44_xpub2">entire bitcoin wallet via XPUB</string>
+    <string name="select_bip44_xpub2">bitcoin wallet via XPUB (BIP44)</string>
 
-    <string name="select_bip49_xpub1">Segwit Wallet</string>
-    <string name="select_bip49_xpub2">Segwit XPUB from Trezor or Ledger</string>
+    <string name="select_bip49_xpub1">Segwit Bitcoin Wallet</string>
+    <string name="select_bip49_xpub2">bitcoin wallet via Segwit XPUB (BIP49)</string>
 
     <string name="track_new">Track new...</string>
 
