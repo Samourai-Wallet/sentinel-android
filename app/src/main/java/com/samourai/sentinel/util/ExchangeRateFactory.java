@@ -44,7 +44,7 @@ public class ExchangeRateFactory	{
 
     private static String[] exchangeLabels = {
             "LocalBitcoins.com",
-            "BTC-e",
+            "WEX (ex-'BTC-e')",
             "Bitfinex",
     };
 
