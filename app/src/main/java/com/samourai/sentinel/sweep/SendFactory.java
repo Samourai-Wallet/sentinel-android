@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.samourai.sentinel.R;
-import com.samourai.sentinel.segwit.SegwitAddress;
+import com.samourai.sentinel.segwit.P2SH_P2WPKH;
 
 public class SendFactory	{
 
@@ -203,7 +203,7 @@ public class SendFactory	{
             String address = new Script(connectedPubKeyScript).getToAddress(MainNetParams.get()).toString();
             if(Address.fromBase58(MainNetParams.get(), address).isP2SHAddress())    {
 
-                final SegwitAddress p2shp2wpkh = new SegwitAddress(key.getPubKey(), MainNetParams.get());
+                final P2SH_P2WPKH p2shp2wpkh = new P2SH_P2WPKH(key.getPubKey(), MainNetParams.get());
                 System.out.println("pubKey:" + Hex.toHexString(key.getPubKey()));
 //                final Script scriptPubKey = p2shp2wpkh.segWitOutputScript();
 //                System.out.println("scriptPubKey:" + Hex.toHexString(scriptPubKey.getProgram()));
