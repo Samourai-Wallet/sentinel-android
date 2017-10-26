@@ -66,8 +66,6 @@ import java.util.Set;
 
 public class ReceiveActivity extends Activity {
 
-    private Locale locale = null;
-
     private static Display display = null;
     private static int imgWidth = 0;
 
@@ -127,8 +125,6 @@ public class ReceiveActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive);
 
-        locale = Locale.getDefault();
-
         ReceiveActivity.this.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
         display = (ReceiveActivity.this).getWindowManager().getDefaultDisplay();
@@ -184,7 +180,7 @@ public class ReceiveActivity extends Activity {
             }
         });
 
-        DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.getDefault());
+        DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
         DecimalFormatSymbols symbols=format.getDecimalFormatSymbols();
         defaultSeparator = Character.toString(symbols.getDecimalSeparator());
 
@@ -205,7 +201,7 @@ public class ReceiveActivity extends Activity {
 
                 int unit = PrefsUtil.getInstance(ReceiveActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
                 int max_len = 8;
-                NumberFormat btcFormat = NumberFormat.getInstance(Locale.getDefault());
+                NumberFormat btcFormat = NumberFormat.getInstance(Locale.US);
                 switch (unit) {
                     case MonetaryUtil.MICRO_BTC:
                         max_len = 2;
@@ -277,7 +273,7 @@ public class ReceiveActivity extends Activity {
                 edAmountBTC.removeTextChangedListener(textWatcherBTC);
 
                 int max_len = 2;
-                NumberFormat fiatFormat = NumberFormat.getInstance(Locale.getDefault());
+                NumberFormat fiatFormat = NumberFormat.getInstance(Locale.US);
                 fiatFormat.setMaximumFractionDigits(max_len + 1);
                 fiatFormat.setMinimumFractionDigits(0);
 
@@ -454,7 +450,7 @@ public class ReceiveActivity extends Activity {
 
         BigInteger bamount = null;
         try {
-            double amount = NumberFormat.getInstance(locale).parse(edAmountBTC.getText().toString()).doubleValue();
+            double amount = NumberFormat.getInstance(Locale.US).parse(edAmountBTC.getText().toString()).doubleValue();
 
             int unit = PrefsUtil.getInstance(ReceiveActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
             switch (unit) {
