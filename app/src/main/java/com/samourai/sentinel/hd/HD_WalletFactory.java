@@ -61,7 +61,7 @@ public class HD_WalletFactory	{
 
         NetworkParameters params = MainNetParams.get();
 
-        if(data.startsWith("xpub")) {
+        if(data.startsWith("xpub") || data.startsWith("ypub")) {
             String[] xpub = data.split(":");
 //            Log.i("HD_WalletFactory", "xpubs:" + xpub.length);
             hdw = new HD_Wallet(params, xpub);
