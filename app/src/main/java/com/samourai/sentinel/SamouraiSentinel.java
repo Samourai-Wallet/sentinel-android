@@ -366,7 +366,8 @@ public class SamouraiSentinel {
         String addr = null;
         ECKey ecKey = null;
 
-        if(xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("xpub"))    {
+        if(xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("xpub") ||
+                xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("ypub"))    {
             String xpub = xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1);
             Log.d("SamouraiSentinel", "xpub:" + xpub);
             int account = AddressFactory.getInstance(context).xpub2account().get(xpub);

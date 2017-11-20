@@ -89,7 +89,7 @@ public class InsertActivity extends Activity {
 
             if(data != null && data.getStringExtra(ZBarConstants.SCAN_RESULT) != null)	{
 
-                String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT);
+                String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT).trim();
 
                 if(strResult.startsWith("bitcoin:"))    {
                     strResult = strResult.substring(8);
@@ -212,7 +212,7 @@ public class InsertActivity extends Activity {
                         }
                         else    {
 
-                            if(type == TYPE_SEGWIT_XPUB)    {
+                            if(type == TYPE_SEGWIT_XPUB || xpubStr.startsWith("ypub"))    {
                                 Intent intent = new Intent(InsertActivity.this, InsertBIP49Activity.class);
                                 intent.putExtra("xpub", xpubStr);
                                 intent.putExtra("label", label);

@@ -295,7 +295,7 @@ public class XPUBListActivity extends Activity {
     private void updateXPUBs(String xpub, String label, boolean delete, boolean isBIP49)   {
 
         if(delete)    {
-            if(xpub.startsWith("xpub")) {
+            if(xpub.startsWith("xpub") || xpub.startsWith("ypub")) {
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().remove(xpub);
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().remove(xpub);
             }
@@ -344,7 +344,7 @@ public class XPUBListActivity extends Activity {
                 return;
             }
 
-            if(xpub.startsWith("xpub")) {
+            if(xpub.startsWith("xpub") || xpub.startsWith("ypub")) {
                 if(isBIP49)    {
                     SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().put(xpub, label);
                 }
@@ -416,8 +416,8 @@ public class XPUBListActivity extends Activity {
             final SpannableStringBuilder strFirst = new SpannableStringBuilder(xpubs.get(position).first + strAmount);
             strFirst.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, strFirst.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             ((TextView)view.findViewById(android.R.id.text1)).setText(strFirst);
-            if(xpubs.get(position).second.startsWith("xpub"))    {
-                ((TextView)view.findViewById(android.R.id.text2)).setText("xpub..." + xpubs.get(position).second.substring(xpubs.get(position).second.length() - 3));
+            if(xpubs.get(position).second.startsWith("xpub") || xpubs.get(position).second.startsWith("ypub"))    {
+                ((TextView)view.findViewById(android.R.id.text2)).setText(xpubs.get(position).second.substring(0, 4) + "..." + xpubs.get(position).second.substring(xpubs.get(position).second.length() - 3));
             }
             else    {
                 ((TextView)view.findViewById(android.R.id.text2)).setText(xpubs.get(position).second);
