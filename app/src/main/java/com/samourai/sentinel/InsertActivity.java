@@ -89,7 +89,7 @@ public class InsertActivity extends Activity {
 
             if(data != null && data.getStringExtra(ZBarConstants.SCAN_RESULT) != null)	{
 
-                String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT);
+                String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT).trim();
 
                 if(strResult.startsWith("bitcoin:"))    {
                     strResult = strResult.substring(8);
