@@ -212,7 +212,7 @@ public class InsertActivity extends Activity {
                         }
                         else    {
 
-                            if(type == TYPE_SEGWIT_XPUB)    {
+                            if(type == TYPE_SEGWIT_XPUB || xpubStr.startsWith("ypub"))    {
                                 Intent intent = new Intent(InsertActivity.this, InsertBIP49Activity.class);
                                 intent.putExtra("xpub", xpubStr);
                                 intent.putExtra("label", label);
