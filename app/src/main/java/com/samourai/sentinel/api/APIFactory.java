@@ -125,7 +125,7 @@ public class APIFactory	{
                     }
                     if(addrObj.has("final_balance") && addrObj.has("address"))  {
                         xpub_amounts.put((String)addrObj.get("address"), addrObj.getLong("final_balance"));
-                        if(((String)addrObj.get("address")).startsWith("xpub"))    {
+                        if(((String)addrObj.get("address")).startsWith("xpub") || ((String)addrObj.get("address")).startsWith("ypub"))    {
                             AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("account_index"));
                             AddressFactory.getInstance().setHighestTxChangeIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("change_index"));
                         }
