@@ -27,10 +27,6 @@ public class SettingsActivity extends PreferenceActivity	{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            setTheme(android.R.style.Theme_Holo);
-        }
-
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_name);
         addPreferencesFromResource(R.xml.settings);

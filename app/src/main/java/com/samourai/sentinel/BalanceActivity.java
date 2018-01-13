@@ -1034,12 +1034,7 @@ public class BalanceActivity extends Activity {
                             }
                         }
 
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
-                        }
-                        else    {
-                            adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.spinner_dropdown, account_selections);
-                        }
+                        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
                         getActionBar().setListNavigationCallbacks(adapter, navigationListener);
                         adapter.notifyDataSetChanged();
                         if(account_selections.length == 1)    {
