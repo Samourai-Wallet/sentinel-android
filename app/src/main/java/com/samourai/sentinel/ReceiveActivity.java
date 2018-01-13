@@ -547,12 +547,14 @@ public class ReceiveActivity extends Activity {
                                 }
 
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                canRefresh = false;
+                                _menu.findItem(R.id.action_refresh).setVisible(false);
                             }
                         }
                     });
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    canRefresh = false;
+                    _menu.findItem(R.id.action_refresh).setVisible(false);
                 }
             }
         }).start();
