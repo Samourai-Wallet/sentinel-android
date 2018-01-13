@@ -56,14 +56,6 @@ public class SettingsActivity extends PreferenceActivity	{
             }
         });
 
-        Preference unitsPref = (Preference) findPreference("units");
-        unitsPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                getUnits();
-                return true;
-            }
-        });
-
         Preference explorersPref = (Preference) findPreference("explorer");
         explorersPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -149,25 +141,6 @@ public class SettingsActivity extends PreferenceActivity	{
         super.onResume();
 
         AppUtil.getInstance(SettingsActivity.this).checkTimeOut();
-
-    }
-
-
-    private void getUnits()	{
-
-        final CharSequence[] units = MonetaryUtil.getInstance().getBTCUnits();
-        final int sel = PrefsUtil.getInstance(SettingsActivity.this).getValue(PrefsUtil.BTC_UNITS, 0);
-
-        new AlertDialog.Builder(SettingsActivity.this)
-                .setTitle("Select displayable Bitcoin units")
-//                .setCancelable(false)
-                .setSingleChoiceItems(units, sel, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.BTC_UNITS, which);
-                                dialog.dismiss();
-                            }
-                        }
-                ).show();
 
     }
 

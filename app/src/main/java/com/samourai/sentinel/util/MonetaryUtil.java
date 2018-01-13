@@ -6,12 +6,6 @@ import java.util.Locale;
 
 public class MonetaryUtil {
 
-//    private static CharSequence[] btcUnits = { "BTC", "mBTC", "µBTC" };
-    private static CharSequence[] btcUnits = { "BTC", "mBTC", "bits" };
-    public static final int UNIT_BTC = 0;
-    public static final int MILLI_BTC = 1;
-    public static final int MICRO_BTC = 2;
-
     private static MonetaryUtil instance = null;
 	private static NumberFormat btcFormat = null;
 	private static NumberFormat fiatFormat = null;
@@ -44,8 +38,8 @@ public class MonetaryUtil {
 		return fiatFormat;
 	}
 
-    public CharSequence[] getBTCUnits() {
-        return btcUnits;
+    public String getBTCUnits() {
+        return "BTC";
     }
 
 }
