@@ -8,8 +8,6 @@
 
     <string name="decrypting_bip38">Puretaan BIP38-salattua salasanaa. Odota...</string>
 
-    <string name="navigation_drawer_open">Avaa navigointipaneeli</string>
-    <string name="navigation_drawer_close">Sulje navigointipaneeli</string>
     <string name="action_send">Lähetä</string>
     <string name="action_stealth_send">Lähetä näkymättömästi</string>
     <string name="action_receive">Vastaanota</string>
@@ -26,8 +24,6 @@
     <string name="options_cat_wallet">Lompakko</string>
     <string name="options_cat_other">Sentinel</string>
 
-    <string name="options_units">Yksiköt</string>
-    <string name="options_units2">Näytettävä Bitcoin-yksikkö (oletus BTC).</string>
     <string name="options_currency">Kurssi</string>
     <string name="options_currency2">Valuuttakurssi lähteestä localbitcoins.com.</string>
     <string name="options_blockexplorer">Lohkoketjun seuranta</string>
@@ -124,8 +120,6 @@
     <string name="enter_privkey">Syötä privaattiavain</string>
     <string name="cannot_recognize_privkey">Privaattiavainta ei tunnistettu</string>
     <string name="cannot_sweep_privkey">Virhe tuotaessa privaattiavainta</string>
-    <string name="cannot_find_unspents">Kohteella ei ole käyttämätöntä valuuttaa</string>
-    <string name="please_wait_sending">Lähetetään transaktiota, odota.</string>
     <string name="pushtx_returns_null">Lähetys epäonnistui. Palvelinvirhe.</string>
 
     <string name="xpub_add_ok">XPUB lisätty onnistuneesti</string>

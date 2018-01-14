@@ -8,8 +8,6 @@
 
     <string name="decrypting_bip38">Decrypting BIP38 password. Please wait...</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_send">Send</string>
     <string name="action_stealth_send">Stealth send</string>
     <string name="action_receive">Receive</string>
@@ -26,8 +24,6 @@
     <string name="options_cat_wallet">Your wallet</string>
     <string name="options_cat_other">Sentinel</string>
 
-    <string name="options_units">Units</string>
-    <string name="options_units2">Bitcoin units to display (default BTC).</string>
     <string name="options_currency">Street price</string>
     <string name="options_currency2">The fiat price from localbitcoins.com.</string>
     <string name="options_blockexplorer">Block explorer</string>
@@ -124,8 +120,6 @@
     <string name="enter_privkey">Enter private key</string>
     <string name="cannot_recognize_privkey">Cannot recognize private key</string>
     <string name="cannot_sweep_privkey">Error sweeping private key</string>
-    <string name="cannot_find_unspents">Unspents list is empty</string>
-    <string name="please_wait_sending">Sending transaction, please wait.</string>
     <string name="pushtx_returns_null">Spend failed. Server returned null value.</string>
 
     <string name="xpub_add_ok">XPUB added successfully</string>
