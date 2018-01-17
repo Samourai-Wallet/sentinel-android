@@ -184,7 +184,9 @@ public class PinEntryActivity extends Activity {
                 
                 if(userInput.toString().length() > 0) {
                     userInput.deleteCharAt(userInput.length() - 1);
-                    vibrator.vibrate(55);
+                    if(PrefsUtil.getInstance(PinEntryActivity.this).getValue(PrefsUtil.HAPTIC_PIN, false) == true)    {
+                        vibrator.vibrate(55);
+                    }
                 }
                 displayUserInput();
 
@@ -196,7 +198,9 @@ public class PinEntryActivity extends Activity {
             public boolean onLongClick(View view) {
                 if(userInput.toString().length() > 0) {
                     userInput.setLength(0);
-                    vibrator.vibrate(55);
+                    if(PrefsUtil.getInstance(PinEntryActivity.this).getValue(PrefsUtil.HAPTIC_PIN, false) == true)    {
+                        vibrator.vibrate(55);
+                    }
                 }
                 displayUserInput();
                 return false;
@@ -206,9 +210,11 @@ public class PinEntryActivity extends Activity {
     }
 
     public void OnNumberPadClick(View view) {
-               vibrator.vibrate(55);
-               userInput.append(((Button) view).getText().toString());
-               displayUserInput();
+        if(PrefsUtil.getInstance(PinEntryActivity.this).getValue(PrefsUtil.HAPTIC_PIN, false) == true)    {
+            vibrator.vibrate(55);
+        }
+        userInput.append(((Button) view).getText().toString());
+        displayUserInput();
     }
 
     private void displayUserInput() {

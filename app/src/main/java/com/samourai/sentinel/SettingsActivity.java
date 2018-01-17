@@ -70,9 +70,12 @@ public class SettingsActivity extends PreferenceActivity	{
 
         final CheckBoxPreference cbPref1 = (CheckBoxPreference) findPreference("pin");
         final CheckBoxPreference cbPref2 = (CheckBoxPreference) findPreference("scramblePin");
+        final CheckBoxPreference cbPref3 = (CheckBoxPreference) findPreference("haptic");
         if(!cbPref1.isChecked())    {
             cbPref2.setChecked(false);
             cbPref2.setEnabled(false);
+            cbPref3.setChecked(false);
+            cbPref3.setEnabled(false);
         }
         cbPref1.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -81,10 +84,13 @@ public class SettingsActivity extends PreferenceActivity	{
                     PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.PIN_HASH, "");
                     cbPref2.setChecked(false);
                     cbPref2.setEnabled(false);
+                    cbPref3.setChecked(false);
+                    cbPref3.setEnabled(false);
                     PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.SCRAMBLE_PIN, false);
                 }
                 else	{
                     cbPref2.setEnabled(true);
+                    cbPref3.setEnabled(true);
                     Intent intent = new Intent(SettingsActivity.this, PinEntryActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("create", true);
@@ -103,6 +109,20 @@ public class SettingsActivity extends PreferenceActivity	{
                 }
                 else	{
                     PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.SCRAMBLE_PIN, true);
+                }
+
+                return true;
+            }
+        });
+
+        cbPref3.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+                if(cbPref3.isChecked())	{
+                    PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.HAPTIC_PIN, false);
+                }
+                else	{
+                    PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.HAPTIC_PIN, true);
                 }
 
                 return true;

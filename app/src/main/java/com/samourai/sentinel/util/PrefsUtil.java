@@ -17,6 +17,7 @@ public class PrefsUtil {
     public static final String PIN_HASH = "pinHash";
     public static final String XPUB = "xpub";
     public static final String SCRAMBLE_PIN = "scramblePin";
+	public static final String HAPTIC_PIN = "hapticPin";
 
 	private static Context context = null;
 	private static PrefsUtil instance = null;
