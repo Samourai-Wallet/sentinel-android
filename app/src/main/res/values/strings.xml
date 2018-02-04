@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="version_name">2.6</string>
+    <string name="version_name">2.7.1</string>
     <string name="app_name">Sentinel</string>
 
     <string name="new_version_message">Welcome to Sentinel\n\nSentinel is your deposit only bitcoin wallet. Sentinel cannot send bitcoin. Scan any XPUB and Sentinel will keep watch, alerting you of any new incoming transactions and allowing you to create new addresses so you can receive bitcoin on your mobile device.\n\nSentinel is the easiest and most secure way to keep track and receive payments to your cold storage wallet.\n\nSentinel can\'t send bitcoin out of your wallet, and your private keys are never communicated with Sentinel in any way.</string>
 
     <string name="decrypting_bip38">Decrypting BIP38 password. Please wait...</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_send">Send</string>
     <string name="action_stealth_send">Stealth send</string>
     <string name="action_receive">Receive</string>
@@ -26,8 +24,6 @@
     <string name="options_cat_wallet">Your wallet</string>
     <string name="options_cat_other">Sentinel</string>
 
-    <string name="options_units">Units</string>
-    <string name="options_units2">Bitcoin units to display (default BTC).</string>
     <string name="options_currency">Street price</string>
     <string name="options_currency2">The fiat price from localbitcoins.com.</string>
     <string name="options_blockexplorer">Block explorer</string>
@@ -36,6 +32,8 @@
     <string name="options_export2">Export wallet and metadata.</string>
     <string name="options_restore">Restore wallet</string>
     <string name="options_restore2">Restore wallet and metadata from backup.</string>
+    <string name="options_haptic">Haptic PIN entry</string>
+    <string name="options_haptic_2">Vibrate each digit on PIN code entry.</string>
 
     <string name="timeline_today">Today</string>
     <string name="timeline_yesterday">Yesterday</string>
@@ -124,8 +122,6 @@
     <string name="enter_privkey">Enter private key</string>
     <string name="cannot_recognize_privkey">Cannot recognize private key</string>
     <string name="cannot_sweep_privkey">Error sweeping private key</string>
-    <string name="cannot_find_unspents">Unspents list is empty</string>
-    <string name="please_wait_sending">Sending transaction, please wait.</string>
     <string name="pushtx_returns_null">Spend failed. Server returned null value.</string>
 
     <string name="xpub_add_ok">XPUB added successfully</string>

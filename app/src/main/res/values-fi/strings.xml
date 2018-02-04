@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="version_name">2.5.4</string>
+    <string name="app_name">Sentinel</string>
+
+    <string name="new_version_message">Tervetuloa käyttämään Sentinel-sovellusta\n\nSentineliä voi käyttää vain Bitcoinien vastaanottamiseen. Skannaa mikä tahansa XPUB seurataksesi lompakkoa sekä luodaksesi uusia osoitteita Bitcoinin vastaanottamiseen laitteen avulla.\n\nSentinel on helpoin ja turvallisin tapa seurata ja vastaanottaa maksuja offline-lompakkoon. Sentinelillä ei voi suorittaa maksuja, ja privaattiavaimia ei koskaan lähetetä laitteesta eteenpäin.</string>
+
+    <string name="decrypting_bip38">Puretaan BIP38-salattua salasanaa. Odota...</string>
+
+    <string name="action_send">Lähetä</string>
+    <string name="action_stealth_send">Lähetä näkymättömästi</string>
+    <string name="action_receive">Vastaanota</string>
+    <string name="action_tx">Transaktiot</string>
+    <string name="action_settings">Asetukset</string>
+
+    <string name="about_us">Tietoja sovelluksesta</string>
+    <string name="about_title">Tietoja meistä</string>
+
+    <string name="ok">Ok</string>
+    <string name="cancel">Peruuta</string>
+
+    <string name="options_cat_prefs">Asetukset</string>
+    <string name="options_cat_wallet">Lompakko</string>
+    <string name="options_cat_other">Sentinel</string>
+
+    <string name="options_currency">Kurssi</string>
+    <string name="options_currency2">Valuuttakurssi lähteestä localbitcoins.com.</string>
+    <string name="options_blockexplorer">Lohkoketjun seuranta</string>
+    <string name="options_blockexplorer2">Lohkoketjun transaktioiden seuraamisen lähde.</string>
+    <string name="options_export">Vie lompakko</string>
+    <string name="options_export2">Vie lompakko ja metadata.</string>
+    <string name="options_restore">Tuo lompakko</string>
+    <string name="options_restore2">Tuo lompakko ja metadata varmuuskopiosta.</string>
+
+    <string name="timeline_today">Tänään</string>
+    <string name="timeline_yesterday">Eilen</string>
+    <string name="timeline_older">Vanhemmat</string>
+
+    <string name="you_received">Vastaanotit</string>
+    <string name="you_sent">Lähetit</string>
+
+    <string name="copied_to_clipboard">Kopioitu leikepöydälle</string>
+    <string name="send_payment_code">Lähetä maksukoodi</string>
+
+    <string name="ask_you_sure_exit">Haluatko sulkea sovelluksen?</string>
+    <string name="yes">Kyllä</string>
+    <string name="no">Ei</string>
+
+    <string name="pin_5_8">Luo PIN-koodi (pituus 5-8 merkkiä). Tarvitset tätä sovelluksen käyttöön jatkossa nykyisellä laitteella.</string>
+    <string name="pin_5_8_confirm">Vahvista PIN-koodi.</string>
+    <string name="pin_error">Vahvistusvirhe</string>
+    <string name="no_internet">Ei internet-yhteyttä. Yritä uudelleen.</string>
+    <string name="bip38_pw">BIP38-salasana</string>
+    <string name="bip38_pw_error">BIP38-salasanan validointivirhe</string>
+    <string name="please_select">Valitse...</string>
+    <string name="pin_enter">Syötä PIN-koodi</string>
+    <string name="please_wait">Odota...</string>
+    <string name="wallet_restored_ko">Virhe tuotaessa lompakkoa.</string>
+
+    <string name="address_used_previously">Tätä osoitetta on käytetty vastaanottamiseen aikaisemmin.</string>
+
+    <string name="scan">Skannaa</string>
+    <string name="manual">Manuaalinen</string>
+
+    <string name="tx_ok">Transaktio lähetetty</string>
+
+    <string name="tx_length_error">Samourai ei toimita transaktioita, joiden koko ylittää 100KB. Ole hyvä ja syötä transaktio pienemmissä osissa.</string>
+    <string name="invalid_amount">Virheellinen määrä</string>
+
+    <string name="receive_address_to_clipboard">Kopioi tämä vastaanotto-osoite leikepöydälle? Kopioituna osoite voi näkyä muille sovelluksille laitteella.</string>
+    <string name="receive_address_to_share">Jaa vastaanotto-osoite? Jaettuna osoite voi näkyä muille sovelluksille laitteella.</string>
+    <string name="sure_to_delete">Haluatko varmasti poistaa tiedon?</string>
+
+    <string name="enter_xpub">Syötä XPUB tai Bitcoin-osoite.</string>
+    <string name="xpub_error">Virhe luotaessa lompakkoa XPUB/Bitcoin-osoitteella. Yritä uudelleen.</string>
+
+    <string name="create_pin">Luo PIN-koodi</string>
+    <string name="confirm_pin">Vahvista PIN-koodi</string>
+    <string name="entering_stealth">Vahvistetaan PIN-koodia. Odota.</string>
+
+    <string name="error_activating_stealth">Virhe aktivoidessa näkymätöntä tilaa. Jos ongelma jatkuu, asenna Sentinel uudelleen.</string>
+
+    <string name="options_scramble_pin">Sekoita PIN-koodin syöttö</string>
+    <string name="options_scramble_pin2">Käytä sekoitettua PIN-koodin syöttönäppäimistöä tunnistautumiseen.</string>
+    <string name="options_pin">Käyttäjän PIN-koodi</string>
+    <string name="options_pin2">Käyttäjän PIN-koodi kirjautumiseen.</string>
+
+    <string name="watchlist">Seurantalista</string>
+    <string name="deposit">Vastaanota</string>
+
+    <string name="xpub_label">Tunniste</string>
+    <string name="new_account">Uusi käyttäjätili</string>
+
+    <string name="total_title">Yhteensä</string>
+    <string name="deposit_into">Vastaanota kohteeseen...</string>
+
+    <string name="password">Salasana</string>
+    <string name="confirm_password">Vahvista salasana</string>
+    <string name="invalid_password">Salasanassa täytyy olla vähintään 6 merkkiä.</string>
+    <string name="export_to_clipboard">Vie leikepöydälle</string>
+    <string name="export_to_email">Vie sähköpostiin</string>
+    <string name="error_password">Salasanat eivät vastaa. Yritä uudelleen.</string>
+    <string name="encryption_error">Virhe salattaessa lompakon varmuuskopiota. Yritä uudelleen.</string>
+    <string name="encrypted_backup">Salattu lompakon data</string>
+    <string name="decryption_error">Virhe purettaessa lompakon varmuuskopion salausta. Yritä uudelleen.</string>
+    <string name="restore_wallet_from_backup">Tuo lompakko varmuuskopiosta</string>
+
+    <string name="choose_email_client">Valitse sähköpostiohjelma:</string>
+
+    <string name="bip32_account">BIP32-tili</string>
+    <string name="bip44_account">BIP44/49-tili</string>
+    <string name="bip49_account">BIP49-tili</string>
+    <string name="base58_error">Tunnistamaton formaatti</string>
+    <string name="invalid_entry">Virheellinen XPUB- tai Bitcoin-osoite</string>
+
+    <string name="unknown_xpub">XPUB syvyys</string>
+
+    <string name="action_sweep">Tuo privaattiavain</string>
+    <string name="enter_privkey">Syötä privaattiavain</string>
+    <string name="cannot_recognize_privkey">Privaattiavainta ei tunnistettu</string>
+    <string name="cannot_sweep_privkey">Virhe tuotaessa privaattiavainta</string>
+    <string name="pushtx_returns_null">Lähetys epäonnistui. Palvelinvirhe.</string>
+
+    <string name="xpub_add_ok">XPUB lisätty onnistuneesti</string>
+    <string name="xpub_add_ko">XPUB-lisäys epäonnistui</string>
+
+    <string name="select_bitcoin_address1">Bitcoin-osoite</string>
+    <string name="select_bitcoin_address2">Yksittäinen Bitcoin-osoite</string>
+
+    <string name="select_bip44_xpub1">Bitcoin-lompakko</string>
+    <string name="select_bip44_xpub2">Bitcoin-lompakko käyttäen XPUB (BIP44)</string>
+
+    <string name="select_bip49_xpub1">Segwit Bitcoin-lompakko</string>
+    <string name="select_bip49_xpub2">Bitcoin-lompakko käyttäen Segwit XPUB (BIP49)</string>
+
+    <string name="track_new">Seuraa uutta...</string>
+
+</resources>

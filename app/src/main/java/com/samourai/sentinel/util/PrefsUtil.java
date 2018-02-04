@@ -7,9 +7,6 @@ import android.preference.PreferenceManager;
 
 public class PrefsUtil {
 
-	public static final String GUID = "guid";
-    public static final String BTC_UNITS = "btcUnits";
-    public static final String ICON_HIDDEN = "iconHidden";
     public static final String CURRENT_FIAT = "currentFiat";
     public static final String CURRENT_FIAT_SEL = "currentFiatSel";
 	public static final String CURRENT_EXCHANGE = "currentExchange";
@@ -20,6 +17,7 @@ public class PrefsUtil {
     public static final String PIN_HASH = "pinHash";
     public static final String XPUB = "xpub";
     public static final String SCRAMBLE_PIN = "scramblePin";
+	public static final String HAPTIC_PIN = "hapticPin";
 
 	private static Context context = null;
 	private static PrefsUtil instance = null;

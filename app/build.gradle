@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "com.samourai.sentinel"
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 21
-        versionCode 30
-        versionName "2.6"
+        versionCode 32
+        versionName "2.7.1"
         multiDexEnabled true
     }
     buildTypes {

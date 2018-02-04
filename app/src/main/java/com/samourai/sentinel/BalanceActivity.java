@@ -646,25 +646,14 @@ public class BalanceActivity extends Activity {
         df.setMinimumFractionDigits(1);
         df.setMaximumFractionDigits(8);
 
-        int unit = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
-        switch(unit) {
-            case MonetaryUtil.MICRO_BTC:
-                strAmount = df.format(((double)(value * 1000000L)) / 1e8);
-                break;
-            case MonetaryUtil.MILLI_BTC:
-                strAmount = df.format(((double)(value * 1000L)) / 1e8);
-                break;
-            default:
-                strAmount = Coin.valueOf(value).toPlainString();
-                break;
-        }
+        strAmount = Coin.valueOf(value).toPlainString();
 
         return strAmount;
     }
 
     public String getDisplayUnits() {
 
-        return (String) MonetaryUtil.getInstance().getBTCUnits()[PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC)];
+        return MonetaryUtil.getInstance().getBTCUnits();
 
     }
 
@@ -1045,12 +1034,7 @@ public class BalanceActivity extends Activity {
                             }
                         }
 
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
-                        }
-                        else    {
-                            adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.spinner_dropdown, account_selections);
-                        }
+                        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
                         getActionBar().setListNavigationCallbacks(adapter, navigationListener);
                         adapter.notifyDataSetChanged();
                         if(account_selections.length == 1)    {
@@ -1081,31 +1065,14 @@ public class BalanceActivity extends Activity {
 
     private String getBTCDisplayAmount(long value) {
 
-        String strAmount = null;
-        DecimalFormat df = new DecimalFormat("#");
-        df.setMinimumIntegerDigits(1);
-        df.setMinimumFractionDigits(1);
-        df.setMaximumFractionDigits(8);
-
-        int unit = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC);
-        switch(unit) {
-            case MonetaryUtil.MICRO_BTC:
-                strAmount = df.format(((double)(value * 1000000L)) / 1e8);
-                break;
-            case MonetaryUtil.MILLI_BTC:
-                strAmount = df.format(((double)(value * 1000L)) / 1e8);
-                break;
-            default:
-                strAmount = Coin.valueOf(value).toPlainString();
-                break;
-        }
+        String strAmount = Coin.valueOf(value).toPlainString();
 
         return strAmount;
     }
 
     private String getBTCDisplayUnits() {
 
-        return (String) MonetaryUtil.getInstance().getBTCUnits()[PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BTC_UNITS, MonetaryUtil.UNIT_BTC)];
+        return MonetaryUtil.getInstance().getBTCUnits();
 
     }
 

@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -54,11 +56,16 @@ public class PinEntryActivity extends Activity {
     private String strPassphrase = null;
 
     private ProgressDialog progress = null;
+    private Vibrator vibrator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grid);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
+        vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
 
         userInput = new StringBuilder();
         keypad = new ScrambledPin();
@@ -125,86 +132,6 @@ public class PinEntryActivity extends Activity {
         tsend = (ImageButton)findViewById(R.id.tsend);
         tback = (ImageButton)findViewById(R.id.tback);
 
-        ta.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInput.append(ta.getText().toString());
-                displayUserInput();
-            }
-        });
-
-        tb.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInput.append(tb.getText().toString());
-                displayUserInput();
-            }
-        });
-
-        tc.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInput.append(tc.getText().toString());
-                displayUserInput();
-            }
-        });
-
-        td.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInput.append(td.getText().toString());
-                displayUserInput();
-            }
-        });
-
-        te.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInput.append(te.getText().toString());
-                displayUserInput();
-            }
-        });
-
-        tf.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInput.append(tf.getText().toString());
-                displayUserInput();
-            }
-        });
-
-        tg.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInput.append(tg.getText().toString());
-                displayUserInput();
-            }
-        });
-
-        th.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInput.append(th.getText().toString());
-                displayUserInput();
-            }
-        });
-
-        ti.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInput.append(ti.getText().toString());
-                displayUserInput();
-            }
-        });
-
-        tj.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInput.append(tj.getText().toString());
-                displayUserInput();
-            }
-        });
-
         tsend.setVisibility(View.INVISIBLE);
         tsend.setOnClickListener(new OnClickListener() {
             @Override
@@ -257,12 +184,37 @@ public class PinEntryActivity extends Activity {
                 
                 if(userInput.toString().length() > 0) {
                     userInput.deleteCharAt(userInput.length() - 1);
+                    if(PrefsUtil.getInstance(PinEntryActivity.this).getValue(PrefsUtil.HAPTIC_PIN, false) == true)    {
+                        vibrator.vibrate(55);
+                    }
                 }
                 displayUserInput();
 
             }
         });
 
+        tback.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(userInput.toString().length() > 0) {
+                    userInput.setLength(0);
+                    if(PrefsUtil.getInstance(PinEntryActivity.this).getValue(PrefsUtil.HAPTIC_PIN, false) == true)    {
+                        vibrator.vibrate(55);
+                    }
+                }
+                displayUserInput();
+                return false;
+            }
+        });
+
+    }
+
+    public void OnNumberPadClick(View view) {
+        if(PrefsUtil.getInstance(PinEntryActivity.this).getValue(PrefsUtil.HAPTIC_PIN, false) == true)    {
+            vibrator.vibrate(55);
+        }
+        userInput.append(((Button) view).getText().toString());
+        displayUserInput();
     }
 
     private void displayUserInput() {

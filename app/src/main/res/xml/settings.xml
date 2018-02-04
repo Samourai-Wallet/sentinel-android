@@ -6,11 +6,6 @@
         android:key="cat1">
 
                 <Preference
-                    android:title="@string/options_units"
-                    android:summary="@string/options_units2"
-                    android:key="units"
-                    />
-                <Preference
                     android:title="@string/options_currency"
                     android:summary="@string/options_currency2"
                     android:key="fiat"
@@ -49,12 +44,18 @@
                     android:defaultValue="false"
                     android:key="pin"
                     />
-                <CheckBoxPreference
-                    android:title="@string/options_scramble_pin"
-                    android:summary="@string/options_scramble_pin2"
-                    android:defaultValue="false"
-                    android:key="scramblePin"
-                    />
+        <CheckBoxPreference
+            android:title="@string/options_scramble_pin"
+            android:summary="@string/options_scramble_pin2"
+            android:defaultValue="false"
+            android:key="scramblePin"
+            />
+        <CheckBoxPreference
+            android:title="@string/options_haptic"
+            android:summary="@string/options_haptic_2"
+            android:defaultValue="false"
+            android:key="haptic"
+            />
     </PreferenceCategory>
 
     <PreferenceCategory
