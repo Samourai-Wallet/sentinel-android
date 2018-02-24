@@ -892,9 +892,13 @@ public class BalanceActivity extends Activity {
 
         if(xpubList.size() == 1)    {
             SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(1);
-            Intent intent = new Intent(BalanceActivity.this, ReceiveActivity.class);
-            startActivity(intent);
-            return;
+            if(isSweep)    {
+                doSweep();
+            }
+            else    {
+                Intent intent = new Intent(BalanceActivity.this, ReceiveActivity.class);
+                startActivity(intent);
+            }
         }
 
         final String[] accounts = new String[xpubList.size()];
