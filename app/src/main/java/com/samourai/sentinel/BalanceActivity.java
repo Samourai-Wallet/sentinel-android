@@ -894,10 +894,12 @@ public class BalanceActivity extends Activity {
             SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(1);
             if(isSweep)    {
                 doSweep();
+                return;
             }
             else    {
                 Intent intent = new Intent(BalanceActivity.this, ReceiveActivity.class);
                 startActivity(intent);
+                return;
             }
         }
 
