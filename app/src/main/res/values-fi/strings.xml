@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Sentinel</string>
-
     <string name="new_version_message">Tervetuloa käyttämään Sentinel-sovellusta\n\nSentineliä voi käyttää vain Bitcoinien vastaanottamiseen. Skannaa mikä tahansa XPUB seurataksesi lompakkoa sekä luodaksesi uusia osoitteita Bitcoinin vastaanottamiseen laitteen avulla.\n\nSentinel on helpoin ja turvallisin tapa seurata ja vastaanottaa maksuja offline-lompakkoon. Sentinelillä ei voi suorittaa maksuja, ja privaattiavaimia ei koskaan lähetetä laitteesta eteenpäin.</string>
 
     <string name="decrypting_bip38">Puretaan BIP38-salattua salasanaa. Odota...</string>

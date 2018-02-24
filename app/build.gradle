@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 21
     buildToolsVersion '25.0.0'
-
+    flavorDimensions "versionCode"
     defaultConfig {
         applicationId "com.samourai.sentinel"
         minSdkVersion 21
@@ -36,10 +36,28 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
+    productFlavors {
+        production {
+            minSdkVersion 21
+            applicationId 'com.samourai.sentinel'
+            targetSdkVersion 21
+            versionCode 32
+            versionName '2.7.1'
+            resValue "string", "app_name", "Sentinel"
+        }
+        staging {
+            minSdkVersion 21
+            applicationId 'com.samourai.sentinel.staging'
+            targetSdkVersion 21
+            versionCode 32
+            versionName '2.7.1'
+            resValue "string", "app_name", "Sentinel Staging"
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.baoyz.swipemenulistview:library:1.2.1'
     compile 'com.neovisionaries:nv-websocket-client:1.9'
