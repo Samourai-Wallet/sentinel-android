@@ -14,7 +14,10 @@ import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
 
+import com.samourai.sentinel.MainActivity2;
 import com.samourai.sentinel.R;
+import com.samourai.sentinel.util.MonetaryUtil;
+import com.samourai.sentinel.util.NotificationsFactory;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
 import org.json.JSONArray;
@@ -220,13 +223,13 @@ public class WebSocketHandler {
 
                                         String title = context.getString(R.string.app_name);
                                         if (total_value > 0L) {
-//                                            String marquee = context.getString(R.string.received_bitcoin) + " " + MonetaryUtil.getInstance().getBTCFormat().format((double) total_value / 1e8) + " BTC";
-//                                            String text = marquee;
+                                            String marquee = context.getString(R.string.received_bitcoin) + " " + MonetaryUtil.getInstance().getBTCFormat().format((double) total_value / 1e8) + " BTC";
+                                            String text = marquee;
                                             if (total_value > 0) {
 //                                                text += " from " + in_addr;
                                             }
 
-//                                            NotificationsFactory.getInstance(context).setNotification(title, marquee, text, R.drawable.ic_launcher, MainActivity2.class, 1000);
+                                            NotificationsFactory.getInstance(context).setNotification(title, marquee, text, R.drawable.ic_launcher, MainActivity2.class, 1000);
                                         }
 
                                         updateBalance(isRBF ? hash : null);
