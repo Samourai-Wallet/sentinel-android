@@ -870,8 +870,8 @@ public class BalanceActivity extends Activity {
             }
             else if(privKeyReader != null)	{
                 String strReceiveAddress = SamouraiSentinel.getInstance(BalanceActivity.this).getReceiveAddress();
-                Log.d("BalanceActivity", "receive address:" + strReceiveAddress);
                 if(strReceiveAddress != null)    {
+                    Log.d("BalanceActivity", "receive address:" + strReceiveAddress);
                     SweepUtil.getInstance(BalanceActivity.this).sweep(privKeyReader, strReceiveAddress, false);
                 }
             }
