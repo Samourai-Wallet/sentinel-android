@@ -849,7 +849,7 @@ public class BalanceActivity extends Activity {
                                 if(keyDecoded)    {
                                     String strReceiveAddress = SamouraiSentinel.getInstance(BalanceActivity.this).getReceiveAddress();
                                     if(strReceiveAddress != null)    {
-                                        SweepUtil.getInstance(BalanceActivity.this).sweep(pvr, strReceiveAddress, false);
+                                        SweepUtil.getInstance(BalanceActivity.this).sweep(pvr, strReceiveAddress, SweepUtil.TYPE_P2PKH);
                                     }
                                 }
 
@@ -872,7 +872,7 @@ public class BalanceActivity extends Activity {
                 String strReceiveAddress = SamouraiSentinel.getInstance(BalanceActivity.this).getReceiveAddress();
                 if(strReceiveAddress != null)    {
                     Log.d("BalanceActivity", "receive address:" + strReceiveAddress);
-                    SweepUtil.getInstance(BalanceActivity.this).sweep(privKeyReader, strReceiveAddress, false);
+                    SweepUtil.getInstance(BalanceActivity.this).sweep(privKeyReader, strReceiveAddress, SweepUtil.TYPE_P2PKH);
                 }
             }
             else    {

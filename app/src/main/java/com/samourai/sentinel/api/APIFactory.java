@@ -5,6 +5,7 @@ import android.util.Log;
 //import android.util.Log;
 
 import com.samourai.sentinel.SamouraiSentinel;
+import com.samourai.sentinel.segwit.bech32.Bech32Util;
 import com.samourai.sentinel.sweep.FeeUtil;
 import com.samourai.sentinel.sweep.MyTransactionOutPoint;
 import com.samourai.sentinel.sweep.SuggestedFee;
@@ -320,6 +321,14 @@ public class APIFactory	{
 
                     try {
                         String address = new Script(scriptBytes).getToAddress(MainNetParams.get()).toString();
+
+                        if(Bech32Util.getInstance().isBech32Script(script))    {
+                            address = Bech32Util.getInstance().getAddressFromScript(script);
+                            Log.d("address parsed:", address);
+                        }
+                        else    {
+                            address = new Script(scriptBytes).getToAddress(MainNetParams.get()).toString();
+                        }
 
                         // Construct the output
                         MyTransactionOutPoint outPoint = new MyTransactionOutPoint(txHash, txOutputN, value, scriptBytes, address);
