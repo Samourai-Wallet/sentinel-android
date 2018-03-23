@@ -32,6 +32,7 @@ import java.util.Map;
 
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.segwit.P2SH_P2WPKH;
+import com.samourai.sentinel.util.FormatsUtil;
 
 public class SendFactory	{
 
@@ -201,7 +202,7 @@ public class SendFactory	{
             scriptPubKey = connectedOutput.getScriptPubKey();
 
             String address = new Script(connectedPubKeyScript).getToAddress(MainNetParams.get()).toString();
-            if(Address.fromBase58(MainNetParams.get(), address).isP2SHAddress())    {
+            if(FormatsUtil.getInstance().isValidBech32(address) || Address.fromBase58(MainNetParams.get(), address).isP2SHAddress())    {
 
                 final P2SH_P2WPKH p2shp2wpkh = new P2SH_P2WPKH(key.getPubKey(), MainNetParams.get());
                 System.out.println("pubKey:" + Hex.toHexString(key.getPubKey()));
@@ -219,11 +220,12 @@ public class SendFactory	{
                 witness.setPush(1, key.getPubKey());
                 transaction.setWitness(i, witness);
 
-                final ScriptBuilder sigScript = new ScriptBuilder();
-                sigScript.data(redeemScript.getProgram());
-                transaction.getInput(i).setScriptSig(sigScript.build());
-
-                transaction.getInput(i).getScriptSig().correctlySpends(transaction, i, scriptPubKey, connectedOutput.getValue(), Script.ALL_VERIFY_FLAGS);
+                if(!FormatsUtil.getInstance().isValidBech32(address) && Address.fromBase58(MainNetParams.get(), address).isP2SHAddress())    {
+                    final ScriptBuilder sigScript = new ScriptBuilder();
+                    sigScript.data(redeemScript.getProgram());
+                    transaction.getInput(i).setScriptSig(sigScript.build());
+                    transaction.getInput(i).getScriptSig().correctlySpends(transaction, i, scriptPubKey, connectedOutput.getValue(), Script.ALL_VERIFY_FLAGS);
+                }
 
             }
             else    {
