@@ -32,6 +32,7 @@ import java.util.Map;
 
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.segwit.P2SH_P2WPKH;
+import com.samourai.sentinel.segwit.bech32.Bech32Util;
 import com.samourai.sentinel.util.FormatsUtil;
 
 public class SendFactory	{
@@ -201,7 +202,20 @@ public class SendFactory	{
             connectedOutput = input.getOutpoint().getConnectedOutput();
             scriptPubKey = connectedOutput.getScriptPubKey();
 
-            String address = new Script(connectedPubKeyScript).getToAddress(MainNetParams.get()).toString();
+            String script = Hex.toHexString(connectedPubKeyScript);
+            String address = null;
+            if(Bech32Util.getInstance().isBech32Script(script))    {
+                try {
+                    address = Bech32Util.getInstance().getAddressFromScript(script);
+                }
+                catch(Exception e) {
+                    ;
+                }
+            }
+            else    {
+                address = new Script(connectedPubKeyScript).getToAddress(MainNetParams.get()).toString();
+            }
+
             if(FormatsUtil.getInstance().isValidBech32(address) || Address.fromBase58(MainNetParams.get(), address).isP2SHAddress())    {
 
                 final P2SH_P2WPKH p2shp2wpkh = new P2SH_P2WPKH(key.getPubKey(), MainNetParams.get());

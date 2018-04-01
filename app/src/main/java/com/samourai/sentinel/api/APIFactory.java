@@ -276,6 +276,7 @@ public class APIFactory	{
             StringBuilder args = new StringBuilder();
             args.append("active=");
             args.append(address);
+            Log.d("APIFactory", "unspents call:" + args.toString());
             response = Web.postURL(Web.SAMOURAI_API2 + "unspent?", args.toString());
 
             return parseUnspentOutputsForSweep(response);
@@ -289,6 +290,8 @@ public class APIFactory	{
     }
 
     private synchronized UTXO parseUnspentOutputsForSweep(String unspents)   {
+
+        Log.d("APIFactory", "unspents:" + unspents);
 
         UTXO utxo = null;
 
@@ -320,8 +323,7 @@ public class APIFactory	{
                     int confirmations = ((Number)outDict.get("confirmations")).intValue();
 
                     try {
-                        String address = new Script(scriptBytes).getToAddress(MainNetParams.get()).toString();
-
+                        String address = null;
                         if(Bech32Util.getInstance().isBech32Script(script))    {
                             address = Bech32Util.getInstance().getAddressFromScript(script);
                             Log.d("address parsed:", address);

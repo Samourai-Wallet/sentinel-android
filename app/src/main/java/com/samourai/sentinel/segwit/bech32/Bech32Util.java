@@ -1,5 +1,6 @@
 package com.samourai.sentinel.segwit.bech32;
 
+import org.bitcoinj.params.TestNet3Params;
 import org.bouncycastle.util.encoders.Hex;
 
 public class Bech32Util {
@@ -33,7 +34,7 @@ public class Bech32Util {
 
         String hrp = null;
 
-        return Bech32Segwit.encode(hrp, (byte)0x00, Hex.decode(script.substring(4).getBytes()));
+        return Bech32Segwit.encode("bc", (byte)0x00, Hex.decode(script.substring(4).getBytes()));
     }
 
 }
