@@ -72,7 +72,7 @@ public class APIFactory	{
                 url.append(xpubs[i]);
 //                Log.i("APIFactory", "XPUB:" + url.toString());
                 String response = Web.getURL(url.toString());
-//                Log.i("APIFactory", "XPUB response:" + response);
+                Log.i("APIFactory", "XPUB response:" + response);
                 try {
                     jsonObject = new JSONObject(response);
                     xpub_txs.put(xpubs[i], new ArrayList<Tx>());
@@ -126,9 +126,21 @@ public class APIFactory	{
                     }
                     if(addrObj.has("final_balance") && addrObj.has("address"))  {
                         xpub_amounts.put((String)addrObj.get("address"), addrObj.getLong("final_balance"));
-                        if(((String)addrObj.get("address")).startsWith("xpub") || ((String)addrObj.get("address")).startsWith("ypub"))    {
-                            AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("account_index"));
-                            AddressFactory.getInstance().setHighestTxChangeIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("change_index"));
+                        if(((String)addrObj.get("address")).startsWith("xpub") || ((String)addrObj.get("address")).startsWith("ypub") || ((String)addrObj.get("address")).startsWith("zpub"))    {
+                            if(AddressFactory.getInstance().xpub2account().containsKey((String) addrObj.get("address")))    {
+                                if(addrObj.has("account_index"))    {
+                                    AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("account_index"));
+                                }
+                                else    {
+                                    AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), 0);
+                                }
+                                if(addrObj.has("change_index"))    {
+                                    AddressFactory.getInstance().setHighestTxChangeIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("change_index"));
+                                }
+                                else    {
+                                    AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), 0);
+                                }
+                            }
                         }
                     }
                 }

@@ -110,6 +110,7 @@
     <string name="bip32_account">BIP32 account</string>
     <string name="bip44_account">BIP44/49 account</string>
     <string name="bip49_account">BIP49 account</string>
+    <string name="bip84_account">BIP84 account</string>
     <string name="base58_error">Unrecognized format</string>
     <string name="invalid_entry">Invalid XPUB or bitcoin address</string>
 
@@ -131,9 +132,12 @@
     <string name="select_bip44_xpub2">bitcoin wallet via XPUB (BIP44)</string>
 
     <string name="select_bip49_xpub1">Segwit Bitcoin Wallet</string>
-    <string name="select_bip49_xpub2">bitcoin wallet via Segwit XPUB (BIP49)</string>
+    <string name="select_bip49_xpub2">bitcoin wallet via Segwit XPUB (BIP49/84)</string>
 
     <string name="track_new">Track new...</string>
     <string name="received_bitcoin">Received Bitcoin</string>
+
+    <string name="bitcoin_address">bitcoin address</string>
+    <string name="bech32_address">bech32 bitcoin address</string>
 
 </resources>

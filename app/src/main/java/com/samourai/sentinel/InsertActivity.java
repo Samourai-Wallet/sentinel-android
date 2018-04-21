@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -18,7 +16,6 @@ import android.widget.Toast;
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import com.samourai.sentinel.access.AccessFactory;
-import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.FormatsUtil;
 
 import net.sourceforge.zbar.Symbol;
@@ -33,7 +30,7 @@ import java.nio.ByteBuffer;
 public class InsertActivity extends Activity {
 
     private final static int SCAN_XPUB = 2011;
-    private final static int INSERT_BIP49 = 2012;
+    private final static int INSERT_SEGWIT = 2012;
 
     public final static int TYPE_BITCOIN_ADDRESS = 0;
     public final static int TYPE_LEGACY_XPUB = 1;
@@ -70,8 +67,8 @@ public class InsertActivity extends Activity {
             }
         });
 
-        LinearLayout bip49Layout = (LinearLayout)findViewById(R.id.bip49);
-        bip49Layout.setOnTouchListener(new View.OnTouchListener() {
+        LinearLayout bipSegwitLayout = (LinearLayout)findViewById(R.id.bip49_84);
+        bipSegwitLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 storedType = TYPE_SEGWIT_XPUB;
@@ -104,20 +101,22 @@ public class InsertActivity extends Activity {
         else if(resultCode == Activity.RESULT_CANCELED && requestCode == SCAN_XPUB)	{
             ;
         }
-        else if(resultCode == Activity.RESULT_OK && requestCode == INSERT_BIP49)	{
+        else if(resultCode == Activity.RESULT_OK && requestCode == INSERT_SEGWIT)	{
             String xpub = data.getStringExtra("xpub");
             String label = data.getStringExtra("label");
+            String purpose = data.getStringExtra("purpose");
 
-            updateXPUBs(xpub, label, true);
+            updateXPUBs(xpub, label, purpose);
             Log.d("InitActivity", "xpub inserted:" + xpub);
             Log.d("InitActivity", "label inserted:" + label);
+            Log.d("InitActivity", "purpose inserted:" + purpose);
             Toast.makeText(InsertActivity.this, R.string.xpub_add_ok, Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(InsertActivity.this, BalanceActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
-        else if(resultCode == Activity.RESULT_CANCELED && requestCode == INSERT_BIP49)	{
+        else if(resultCode == Activity.RESULT_CANCELED && requestCode == INSERT_SEGWIT)	{
             Toast.makeText(InsertActivity.this, R.string.xpub_add_ko, Toast.LENGTH_SHORT).show();
         }
         else {
@@ -205,21 +204,36 @@ public class InsertActivity extends Activity {
                         final String label = etLabel.getText().toString().trim();
 
                         if(FormatsUtil.getInstance().isValidBitcoinAddress(xpubStr))    {
-                            updateXPUBs(xpubStr, label, false);
+                            updateXPUBs(xpubStr, label, null);
                             Intent intent = new Intent(InsertActivity.this, BalanceActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
                         else    {
 
-                            if(type == TYPE_SEGWIT_XPUB || xpubStr.startsWith("ypub"))    {
-                                Intent intent = new Intent(InsertActivity.this, InsertBIP49Activity.class);
+                            if(type == TYPE_SEGWIT_XPUB && xpubStr.startsWith("xpub"))    {
+                                Intent intent = new Intent(InsertActivity.this, InsertSegwitActivity.class);
                                 intent.putExtra("xpub", xpubStr);
                                 intent.putExtra("label", label);
-                                startActivityForResult(intent, INSERT_BIP49);
+                                intent.putExtra("purpose", "49");
+                                startActivityForResult(intent, INSERT_SEGWIT);
+                            }
+                            else if(xpubStr.startsWith("ypub"))    {
+                                Intent intent = new Intent(InsertActivity.this, InsertSegwitActivity.class);
+                                intent.putExtra("xpub", xpubStr);
+                                intent.putExtra("label", label);
+                                intent.putExtra("purpose", "49");
+                                startActivityForResult(intent, INSERT_SEGWIT);
+                            }
+                            else if(xpubStr.startsWith("zpub"))    {
+                                Intent intent = new Intent(InsertActivity.this, InsertSegwitActivity.class);
+                                intent.putExtra("xpub", xpubStr);
+                                intent.putExtra("label", label);
+                                intent.putExtra("purpose", "84");
+                                startActivityForResult(intent, INSERT_SEGWIT);
                             }
                             else    {
-                                updateXPUBs(xpubStr, label, false);
+                                updateXPUBs(xpubStr, label, "44");
                                 Intent intent = new Intent(InsertActivity.this, BalanceActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -239,7 +253,7 @@ public class InsertActivity extends Activity {
 
     }
 
-    private void updateXPUBs(String xpub, String label, boolean isBIP49)   {
+    private void updateXPUBs(String xpub, String label, String purpose)   {
 
         if (label == null || label.length() < 1) {
             label = getString(R.string.new_account);
@@ -261,8 +275,11 @@ public class InsertActivity extends Activity {
                         break;
                     // BIP44 account
                     case 3:
-                        if(isBIP49)    {
+                        if(purpose.equals("49"))    {
                             Toast.makeText(InsertActivity.this, R.string.bip49_account, Toast.LENGTH_SHORT).show();
+                        }
+                        else if(purpose.equals("84"))    {
+                            Toast.makeText(InsertActivity.this, R.string.bip84_account, Toast.LENGTH_SHORT).show();
                         }
                         else    {
                             Toast.makeText(InsertActivity.this, R.string.bip44_account, Toast.LENGTH_SHORT).show();
@@ -278,8 +295,11 @@ public class InsertActivity extends Activity {
                 return;
             }
 
-            if(isBIP49)    {
+            if(purpose.equals("49"))    {
                 SamouraiSentinel.getInstance(InsertActivity.this).getBIP49().put(xpub, label);
+            }
+            if(purpose.equals("84"))    {
+                SamouraiSentinel.getInstance(InsertActivity.this).getBIP84().put(xpub, label);
             }
             else    {
                 SamouraiSentinel.getInstance(InsertActivity.this).getXPUBs().put(xpub, label);

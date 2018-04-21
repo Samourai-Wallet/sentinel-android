@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.samourai.sentinel.util.AppUtil;
-import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.Web;
 
 import org.json.JSONException;
@@ -17,11 +16,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class InsertBIP49Activity extends Activity {
+public class InsertSegwitActivity extends Activity {
 
     private ProgressDialog progress = null;
     private Handler handler = null;
-    private BIP49Task bip49Task = null;
+    private SegwitTask segwitTask = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,15 +28,17 @@ public class InsertBIP49Activity extends Activity {
 
         String xpub = null;
         String label = null;
+        String purpose = null;
 
         Bundle extras = getIntent().getExtras();
         if(extras != null && extras.containsKey("xpub"))	{
             xpub = extras.getString("xpub");
             label = extras.getString("label");
+            purpose = extras.getString("purpose");
         }
 
-        bip49Task = new BIP49Task();
-        bip49Task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, new String[] { xpub, label });
+        segwitTask = new SegwitTask();
+        segwitTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, new String[] { xpub, purpose, label });
 
     }
 
@@ -45,11 +46,11 @@ public class InsertBIP49Activity extends Activity {
     public void onResume() {
         super.onResume();
 
-        AppUtil.getInstance(InsertBIP49Activity.this).checkTimeOut();
+        AppUtil.getInstance(InsertSegwitActivity.this).checkTimeOut();
 
     }
 
-    private class BIP49Task extends AsyncTask<String, Void, String> {
+    private class SegwitTask extends AsyncTask<String, Void, String> {
 
         private Handler handler = null;
 
@@ -57,7 +58,7 @@ public class InsertBIP49Activity extends Activity {
         protected void onPreExecute() {
             handler = new Handler();
 
-            progress = new ProgressDialog(InsertBIP49Activity.this);
+            progress = new ProgressDialog(InsertSegwitActivity.this);
             progress.setCancelable(false);
             progress.setTitle(R.string.app_name);
             progress.setMessage(getString(R.string.please_wait));
@@ -73,10 +74,11 @@ public class InsertBIP49Activity extends Activity {
                 args.append("xpub=");
                 args.append(params[0]);
                 args.append("&type=restore");
-                args.append("&segwit=bip49");
+                args.append("&segwit=bip" + params[1]);
+                Log.d("InsertSegwitActivity", "Segwit:" + args.toString());
                 response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
 
-                Log.d("InsertBIP49Activity", "BIP49:" + response);
+                Log.d("InsertSegwitActivity", "Segwit:" + response);
 
                 JSONObject obj = new JSONObject(response);
                 if(obj != null && obj.has("status") && obj.getString("status").equals("ok"))    {
@@ -85,9 +87,15 @@ public class InsertBIP49Activity extends Activity {
                         progress = null;
                     }
 
-                    SamouraiSentinel.getInstance(InsertBIP49Activity.this).getBIP49().put(params[0], params[1]);
+                    if(params[1].equals("84"))    {
+                        SamouraiSentinel.getInstance(InsertSegwitActivity.this).getBIP84().put(params[0], params[2]);
+                    }
+                    else    {
+                        SamouraiSentinel.getInstance(InsertSegwitActivity.this).getBIP49().put(params[0], params[2]);
+                    }
+
                     try {
-                        SamouraiSentinel.getInstance(InsertBIP49Activity.this).serialize(SamouraiSentinel.getInstance(InsertBIP49Activity.this).toJSON(), null);
+                        SamouraiSentinel.getInstance(InsertSegwitActivity.this).serialize(SamouraiSentinel.getInstance(InsertSegwitActivity.this).toJSON(), null);
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
                     } catch (JSONException je) {
@@ -96,15 +104,16 @@ public class InsertBIP49Activity extends Activity {
 
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("xpub", params[0]);
-                    resultIntent.putExtra("label", params[1]);
+                    resultIntent.putExtra("purpose", params[1]);
+                    resultIntent.putExtra("label", params[2]);
                     setResult(Activity.RESULT_OK, resultIntent);
-                    InsertBIP49Activity.this.finish();
+                    InsertSegwitActivity.this.finish();
 
                 }
                 else    {
                     Intent resultIntent = new Intent();
                     setResult(Activity.RESULT_CANCELED, resultIntent);
-                    InsertBIP49Activity.this.finish();
+                    InsertSegwitActivity.this.finish();
                 }
 
             }
@@ -112,7 +121,7 @@ public class InsertBIP49Activity extends Activity {
                 e.printStackTrace();
                 Intent resultIntent = new Intent();
                 setResult(Activity.RESULT_CANCELED, resultIntent);
-                InsertBIP49Activity.this.finish();
+                InsertSegwitActivity.this.finish();
             }
             finally {
                 ;

@@ -911,6 +911,9 @@ public class BalanceActivity extends Activity {
             else if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
             }
+            else if(xpubList.get(i).startsWith("zpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i)))    {
+                accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(i));
+            }
             else    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));
             }
@@ -967,7 +970,7 @@ public class BalanceActivity extends Activity {
 
                 List<String> _xpubs = new ArrayList<String>();
                 for(String xpub : xpubList)   {
-                    if(xpub.startsWith("xpub") || xpub.startsWith("ypub"))    {
+                    if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub"))    {
                         _xpubs.add(xpub);
                     }
                 }
@@ -1020,6 +1023,9 @@ public class BalanceActivity extends Activity {
                             else if((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("ypub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(0)))   {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(0));
                             }
+                            else if(xpubList.get(0).startsWith("zpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(0)))   {
+                                account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(0));
+                            }
                             else    {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(0));
                             }
@@ -1033,6 +1039,9 @@ public class BalanceActivity extends Activity {
                                 }
                                 else if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
+                                }
+                                else if((xpubList.get(i).startsWith("zpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i)))    {
+                                    account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(i));
                                 }
                                 else    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));

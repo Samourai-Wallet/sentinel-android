@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.samourai.sentinel.crypto.AESUtil;
 import com.samourai.sentinel.segwit.P2SH_P2WPKH;
+import com.samourai.sentinel.segwit.SegwitAddress;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.CharSequenceX;
 import com.samourai.sentinel.util.MapUtil;
@@ -33,6 +34,7 @@ public class SamouraiSentinel {
     private static HashMap<String,String> xpubs = null;
     private static HashMap<String,String> legacy = null;
     private static HashMap<String,String> bip49 = null;
+    private static HashMap<String,String> bip84 = null;
     private static HashMap<String,Integer> highestReceiveIdx = null;
 
     private static SamouraiSentinel instance = null;
@@ -46,6 +48,7 @@ public class SamouraiSentinel {
 
     private static String strSentinelXPUB = "sentinel.xpub";
     private static String strSentinelBIP49 = "sentinel.bip49";
+    private static String strSentinelBIP84 = "sentinel.bip84";
     private static String strSentinelLegacy = "sentinel.legacy";
 
     private SamouraiSentinel()    { ; }
@@ -57,6 +60,7 @@ public class SamouraiSentinel {
         if(instance == null)    {
             xpubs = new HashMap<String,String>();
             bip49 = new HashMap<String,String>();
+            bip84 = new HashMap<String,String>();
             legacy = new HashMap<String,String>();
             highestReceiveIdx = new HashMap<String,Integer>();
 
@@ -78,6 +82,8 @@ public class SamouraiSentinel {
 
     public HashMap<String,String> getBIP49()    { return bip49; }
 
+    public HashMap<String,String> getBIP84()    { return bip84; }
+
     public HashMap<String,String> getLegacy()    { return legacy; }
 
     public List<String> getAllAddrsSorted()    {
@@ -85,6 +91,7 @@ public class SamouraiSentinel {
         HashMap<String,String> mapAll = new HashMap<String,String>();
         mapAll.putAll(xpubs);
         mapAll.putAll(bip49);
+        mapAll.putAll(bip84);
         mapAll = MapUtil.getInstance().sortByValue(mapAll);
         mapAll.putAll(MapUtil.getInstance().sortByValue(legacy));
 
@@ -99,6 +106,7 @@ public class SamouraiSentinel {
         HashMap<String,String> mapAll = new HashMap<String,String>();
         mapAll.putAll(xpubs);
         mapAll.putAll(bip49);
+        mapAll.putAll(bip84);
         mapAll = MapUtil.getInstance().sortByValue(mapAll);
         mapAll.putAll(MapUtil.getInstance().sortByValue(legacy));
 
@@ -139,6 +147,23 @@ public class SamouraiSentinel {
                         }
                         else    {
                             bip49.put(key, _obj.getString(key));
+                        }
+                    }
+                }
+            }
+
+            if(obj != null && obj.has("bip84"))    {
+                JSONArray _bip84s = obj.getJSONArray("bip84");
+                for(int i = 0; i < _bip84s.length(); i++)   {
+                    JSONObject _obj = _bip84s.getJSONObject(i);
+                    Iterator it = _obj.keys();
+                    while (it.hasNext()) {
+                        String key = (String)it.next();
+                        if(key.equals("receiveIdx"))    {
+                            highestReceiveIdx.put(key, _obj.getInt(key));
+                        }
+                        else    {
+                            bip84.put(key, _obj.getString(key));
                         }
                     }
                 }
@@ -188,6 +213,15 @@ public class SamouraiSentinel {
                 _bip49s.put(_obj);
             }
             obj.put("bip49", _bip49s);
+
+            JSONArray _bip84s = new JSONArray();
+            for(String b84 : bip84.keySet()) {
+                JSONObject _obj = new JSONObject();
+                _obj.put(b84, bip84.get(b84));
+                _obj.put("receiveIdx", highestReceiveIdx.get(b84) == null ? 0 : highestReceiveIdx.get(b84));
+                _bip84s.put(_obj);
+            }
+            obj.put("bip84", _bip84s);
 
             JSONArray _addr = new JSONArray();
             for(String addr : legacy.keySet()) {
@@ -303,6 +337,13 @@ public class SamouraiSentinel {
         }
         bEditor.commit();
 
+        SharedPreferences _bip84 = context.getSharedPreferences(strSentinelBIP84, 0);
+        SharedPreferences.Editor zEditor = _bip84.edit();
+        for(String b84 : bip84.keySet()) {
+            zEditor.putString(b84, bip84.get(b84));
+        }
+        zEditor.commit();
+
         SharedPreferences _legacy = context.getSharedPreferences(strSentinelLegacy, 0);
         SharedPreferences.Editor lEditor = _legacy.edit();
         for(String leg : legacy.keySet()) {
@@ -330,6 +371,14 @@ public class SamouraiSentinel {
             }
         }
 
+        SharedPreferences bip84s = context.getSharedPreferences(strSentinelBIP84, 0);
+        if(bip84s != null)    {
+            Map<String, ?> all84 = bip84s.getAll();
+            for (Map.Entry<String, ?> entry : all84.entrySet()) {
+                SamouraiSentinel.getInstance(context).getBIP84().put(entry.getKey(), entry.getValue().toString());
+            }
+        }
+
         SharedPreferences legacy = context.getSharedPreferences(strSentinelLegacy, 0);
         if(legacy != null)    {
             Map<String, ?> allLegacy = legacy.getAll();
@@ -352,6 +401,11 @@ public class SamouraiSentinel {
         bEditor.remove(xpub);
         bEditor.commit();
 
+        SharedPreferences _bip84 = context.getSharedPreferences(strSentinelBIP84, 0);
+        SharedPreferences.Editor zEditor = _bip84.edit();
+        zEditor.remove(xpub);
+        zEditor.commit();
+
         SharedPreferences _legacy = context.getSharedPreferences(strSentinelLegacy, 0);
         SharedPreferences.Editor lEditor = _legacy.edit();
         lEditor.remove(xpub);
@@ -367,7 +421,9 @@ public class SamouraiSentinel {
         ECKey ecKey = null;
 
         if(xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("xpub") ||
-                xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("ypub"))    {
+                xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("ypub") ||
+                xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("zpub")
+                )    {
             String xpub = xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1);
             Log.d("SamouraiSentinel", "xpub:" + xpub);
             int account = AddressFactory.getInstance(context).xpub2account().get(xpub);
@@ -376,6 +432,12 @@ public class SamouraiSentinel {
                 ecKey = AddressFactory.getInstance(context).getECKey(AddressFactory.RECEIVE_CHAIN, account);
                 P2SH_P2WPKH p2sh_p2wpkh = new P2SH_P2WPKH(ecKey.getPubKey(), MainNetParams.get());
                 addr = p2sh_p2wpkh.getAddressAsString();
+                Log.d("SamouraiSentinel", "addr:" + addr);
+            }
+            else if(SamouraiSentinel.getInstance(context).getBIP84().keySet().contains(xpub))    {
+                ecKey = AddressFactory.getInstance(context).getECKey(AddressFactory.RECEIVE_CHAIN, account);
+                SegwitAddress segwitAddress = new SegwitAddress(ecKey.getPubKey(), MainNetParams.get());
+                addr = segwitAddress.getBech32AsString();
                 Log.d("SamouraiSentinel", "addr:" + addr);
             }
             else    {
