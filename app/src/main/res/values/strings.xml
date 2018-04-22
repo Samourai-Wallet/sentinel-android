@@ -22,7 +22,7 @@
     <string name="options_cat_other">Sentinel</string>
 
     <string name="options_currency">Street price</string>
-    <string name="options_currency2">The fiat price from localbitcoins.com.</string>
+    <string name="options_currency2">The fiat price from a selected exchange.</string>
     <string name="options_blockexplorer">Block explorer</string>
     <string name="options_blockexplorer2">The block explorer used to view transaction details.</string>
     <string name="options_export">Export wallet</string>
