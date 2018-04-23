@@ -132,7 +132,7 @@
     <string name="select_bip44_xpub2">bitcoin wallet via XPUB (BIP44)</string>
 
     <string name="select_bip49_xpub1">Segwit Bitcoin Wallet</string>
-    <string name="select_bip49_xpub2">bitcoin wallet via Segwit XPUB (BIP49/84)</string>
+    <string name="select_bip49_xpub2">bitcoin wallet via Segwit YPUB/ZPUB (BIP49/84)</string>
 
     <string name="track_new">Track new...</string>
     <string name="received_bitcoin">Received Bitcoin</string>
