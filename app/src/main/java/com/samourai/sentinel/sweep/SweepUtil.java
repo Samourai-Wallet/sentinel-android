@@ -22,11 +22,24 @@ import org.bitcoinj.params.MainNetParams;
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.segwit.P2SH_P2WPKH;
+import com.samourai.sentinel.segwit.SegwitAddress;
 
 public class SweepUtil  {
 
+    public static int TYPE_P2PKH = 0;
+    public static int TYPE_P2SH_P2WPKH = 1;
+    public static int TYPE_P2WPKH = 2;
+
     private static Context context = null;
     private static SweepUtil instance = null;
+
+    private static UTXO utxoP2PKH = null;
+    private static UTXO utxoP2SH_P2WPKH = null;
+    private static UTXO utxoP2WPKH = null;
+
+    private static String addressP2PKH = null;
+    private static String addressP2SH_P2WPKH = null;
+    private static String addressP2WPKH = null;
 
     private SweepUtil() { ; }
 
@@ -41,7 +54,7 @@ public class SweepUtil  {
         return instance;
     }
 
-    public void sweep(final PrivKeyReader privKeyReader, final String strReceiveAddress, final boolean sweepBIP49)  {
+    public void sweep(final PrivKeyReader privKeyReader, final String strReceiveAddress, final int type)  {
 
         new Thread(new Runnable() {
             @Override
@@ -57,14 +70,32 @@ public class SweepUtil  {
                     }
 
                     String address = null;
-                    if(sweepBIP49)    {
-                        address = new P2SH_P2WPKH(privKeyReader.getKey(), MainNetParams.get()).getAddressAsString();
+                    UTXO utxo = null;
+
+                    if(type == TYPE_P2SH_P2WPKH)    {
+                        utxo = utxoP2SH_P2WPKH;
+                        address = addressP2SH_P2WPKH;
+                    }
+                    else if(type == TYPE_P2WPKH)    {
+                        utxo = utxoP2WPKH;
+                        address = addressP2WPKH;
                     }
                     else    {
-                        address = privKeyReader.getKey().toAddress(MainNetParams.get()).toString();
+                        addressP2PKH = privKeyReader.getKey().toAddress(MainNetParams.get()).toString();
+                        Log.d("SweepUtil", "address derived P2PKH:" + addressP2PKH);
+                        addressP2SH_P2WPKH = new P2SH_P2WPKH(privKeyReader.getKey(), MainNetParams.get()).getAddressAsString();
+                        Log.d("SweepUtil", "address derived P2SH_P2WPKH:" + addressP2SH_P2WPKH);
+                        addressP2WPKH = new SegwitAddress(privKeyReader.getKey(), MainNetParams.get()).getBech32AsString();
+                        Log.d("SweepUtil", "address derived P2WPKH:" + addressP2WPKH);
+
+                        utxoP2PKH = APIFactory.getInstance(context).getUnspentOutputsForSweep(addressP2PKH);
+                        utxoP2SH_P2WPKH = APIFactory.getInstance(context).getUnspentOutputsForSweep(addressP2SH_P2WPKH);
+                        utxoP2WPKH = APIFactory.getInstance(context).getUnspentOutputsForSweep(addressP2WPKH);
+
+                        utxo = utxoP2PKH;
+                        address = addressP2PKH;
                     }
 
-                    UTXO utxo = APIFactory.getInstance(context).getUnspentOutputsForSweep(address);
                     if(utxo != null && utxo.getOutpoints().size() > 0)    {
 
                         long total_value = 0L;
@@ -74,9 +105,12 @@ public class SweepUtil  {
                         }
 
                         FeeUtil.getInstance().setSuggestedFee(FeeUtil.getInstance().getNormalFee());
-                        BigInteger fee = null;
-                        if(sweepBIP49)    {
+                        final BigInteger fee;
+                        if(type == TYPE_P2SH_P2WPKH)    {
                             fee = FeeUtil.getInstance().estimatedFeeSegwit(0, outpoints.size(), 1);
+                        }
+                        else if(type == TYPE_P2PKH)    {
+                            fee = FeeUtil.getInstance().estimatedFeeSegwit(0, 0, outpoints.size(), 1);
                         }
                         else    {
                             fee = FeeUtil.getInstance().estimatedFee(outpoints.size(), 1);
@@ -140,9 +174,14 @@ public class SweepUtil  {
                         }).show();
 
                     }
-                    else    {
-//                        Toast.makeText(context, R.string.cannot_find_unspents, Toast.LENGTH_SHORT).show();
-                        sweep(privKeyReader, strReceiveAddress, true);
+                    else if(type == TYPE_P2SH_P2WPKH)    {
+                        sweep(privKeyReader, strReceiveAddress, TYPE_P2WPKH);
+                    }
+                    else if(type == TYPE_P2PKH)    {
+                        sweep(privKeyReader, strReceiveAddress, TYPE_P2SH_P2WPKH);
+                    }
+                    else if(type == TYPE_P2WPKH)    {
+                        ;
                     }
 
                 }

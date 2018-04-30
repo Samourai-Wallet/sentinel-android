@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '25.0.0'
-
+    buildToolsVersion '27.0.3'
+    flavorDimensions "versionCode"
     defaultConfig {
         applicationId "com.samourai.sentinel"
         minSdkVersion 21
         targetSdkVersion 21
-        versionCode 32
-        versionName "2.7.1"
+        versionCode 36
+        versionName '3.01'
         multiDexEnabled true
     }
     buildTypes {
@@ -36,10 +36,30 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
+    productFlavors {
+        production {
+            minSdkVersion 21
+            applicationId 'com.samourai.sentinel'
+            targetSdkVersion 21
+            versionCode 36
+            versionName '3.01'
+            resValue "string", "app_name", "Sentinel"
+            resValue "string", "version_name", "3.01"
+        }
+        staging {
+            minSdkVersion 21
+            applicationId 'com.samourai.sentinel.staging'
+            targetSdkVersion 21
+            versionCode 36
+            versionName '3.01'
+            resValue "string", "app_name", "Sentinel Staging"
+            resValue "string", "version_name", "3.01"
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.baoyz.swipemenulistview:library:1.2.1'
     compile 'com.neovisionaries:nv-websocket-client:1.9'
@@ -54,4 +74,5 @@ dependencies {
     compile('com.google.zxing:core:3.3.0') {
         transitive = true
     }
+    compile 'com.yanzhenjie.zbar:camera:1.0.0'
 }

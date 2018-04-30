@@ -105,7 +105,17 @@ public class XPUBListActivity extends Activity {
                                         dialog.dismiss();
 
                                         String xpub = xpubs.get(position).second;
-                                        updateXPUBs(xpub, null, true, false);
+                                        int purpose = 44;
+                                        if(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().keySet().contains(xpub))    {
+                                            purpose = 49;
+                                        }
+                                        else if(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP84().keySet().contains(xpub))    {
+                                            purpose = 84;
+                                        }
+                                        else    {
+                                            purpose = 44;
+                                        }
+                                        updateXPUBs(xpub, null, true, purpose);
                                         xpubs = getXPUBS();
                                         if(xpubs.size() == 0)    {
                                             PrefsUtil.getInstance(XPUBListActivity.this).setValue(PrefsUtil.XPUB, "");
@@ -154,11 +164,17 @@ public class XPUBListActivity extends Activity {
 
                                         String label = etLabel.getText().toString().trim();
                                         String xpub = xpubs.get(position).second;
-                                        boolean isBIP49 = false;
+                                        int purpose = 44;
                                         if(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().keySet().contains(xpub))    {
-                                            isBIP49 = true;
+                                            purpose = 49;
                                         }
-                                        updateXPUBs(xpub, label, false, isBIP49);
+                                        else if(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP84().keySet().contains(xpub))    {
+                                            purpose = 84;
+                                        }
+                                        else    {
+                                            purpose = 44;
+                                        }
+                                        updateXPUBs(xpub, label, false, purpose);
                                         xpubs = getXPUBS();
                                         xpubAdapter.notifyDataSetChanged();
 
@@ -272,12 +288,16 @@ public class XPUBListActivity extends Activity {
         HashMap<String,String> map = SamouraiSentinel.getInstance(XPUBListActivity.this).getAllMapSorted();
         Set<String> keys = map.keySet();
         for(String key : keys)   {
-            if(SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().keySet().contains(key))    {
-                pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().get(key), key);
+            if(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().keySet().contains(key))    {
+                pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().get(key), key);
                 ret.add(pair);
             }
-            else if(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().keySet().contains(key))    {
-                pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().get(key), key);
+            else if(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP84().keySet().contains(key))    {
+                pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP84().get(key), key);
+                ret.add(pair);
+            }
+            else if(SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().keySet().contains(key))    {
+                pair = new Pair<String,String>(SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().get(key), key);
                 ret.add(pair);
             }
             else if(SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().keySet().contains(key))    {
@@ -292,12 +312,13 @@ public class XPUBListActivity extends Activity {
         return ret;
     }
 
-    private void updateXPUBs(String xpub, String label, boolean delete, boolean isBIP49)   {
+    private void updateXPUBs(String xpub, String label, boolean delete, int purpose)   {
 
         if(delete)    {
-            if(xpub.startsWith("xpub") || xpub.startsWith("ypub")) {
+            if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub")) {
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().remove(xpub);
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().remove(xpub);
+                SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP84().remove(xpub);
             }
             else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub)) {
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().remove(xpub);
@@ -313,46 +334,60 @@ public class XPUBListActivity extends Activity {
                 label = getString(R.string.new_account);
             }
 
-            try {
-                // get depth
-                byte[] xpubBytes = Base58.decodeChecked(xpub);
-                ByteBuffer bb = ByteBuffer.wrap(xpubBytes);
-                bb.getInt();
-                // depth:
-                byte depth = bb.get();
-                switch(depth)    {
-                    // BIP32 account
-                    case 1:
-                        Toast.makeText(XPUBListActivity.this, R.string.bip32_account, Toast.LENGTH_SHORT).show();
-                        break;
-                    // BIP44 account
-                    case 3:
-                        if(isBIP49)    {
-                            Toast.makeText(XPUBListActivity.this, R.string.bip49_account, Toast.LENGTH_SHORT).show();
-                        }
-                        else    {
-                            Toast.makeText(XPUBListActivity.this, R.string.bip44_account, Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                    default:
-                        // unknown
-                        Toast.makeText(XPUBListActivity.this, XPUBListActivity.this.getText(R.string.unknown_xpub) + ":" + depth, Toast.LENGTH_SHORT).show();
+            if(FormatsUtil.getInstance().isValidBech32(xpub))    {
+                Toast.makeText(XPUBListActivity.this, R.string.bech32_address, Toast.LENGTH_SHORT).show();
+            }
+            else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub))   {
+                Toast.makeText(XPUBListActivity.this, R.string.bitcoin_address, Toast.LENGTH_SHORT).show();
+            }
+            else    {
+                try {
+                    // get depth
+                    byte[] xpubBytes = Base58.decodeChecked(xpub);
+                    ByteBuffer bb = ByteBuffer.wrap(xpubBytes);
+                    bb.getInt();
+                    // depth:
+                    byte depth = bb.get();
+                    switch(depth)    {
+                        // BIP32 account
+                        case 1:
+                            Toast.makeText(XPUBListActivity.this, R.string.bip32_account, Toast.LENGTH_SHORT).show();
+                            break;
+                        // BIP44 account
+                        case 3:
+                            if(purpose == 49)    {
+                                Toast.makeText(XPUBListActivity.this, R.string.bip49_account, Toast.LENGTH_SHORT).show();
+                            }
+                            else if(purpose == 84)    {
+                                Toast.makeText(XPUBListActivity.this, R.string.bip84_account, Toast.LENGTH_SHORT).show();
+                            }
+                            else    {
+                                Toast.makeText(XPUBListActivity.this, R.string.bip44_account, Toast.LENGTH_SHORT).show();
+                            }
+                            break;
+                        default:
+                            // unknown
+                            Toast.makeText(XPUBListActivity.this, XPUBListActivity.this.getText(R.string.unknown_xpub) + ":" + depth, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                catch(AddressFormatException afe) {
+                    Toast.makeText(XPUBListActivity.this, R.string.base58_error, Toast.LENGTH_SHORT).show();
+                    return;
                 }
             }
-            catch(AddressFormatException afe) {
-                Toast.makeText(XPUBListActivity.this, R.string.base58_error, Toast.LENGTH_SHORT).show();
-                return;
-            }
 
-            if(xpub.startsWith("xpub") || xpub.startsWith("ypub")) {
-                if(isBIP49)    {
+            if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub")) {
+                if(purpose == 49 || xpub.startsWith("ypub"))    {
                     SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().put(xpub, label);
+                }
+                else if(purpose == 84 || xpub.startsWith("zpub"))    {
+                    SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP84().put(xpub, label);
                 }
                 else    {
                     SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().put(xpub, label);
                 }
             }
-            else if(FormatsUtil.getInstance().isValidBitcoinAddress(xpub)) {
+            else if(FormatsUtil.getInstance().isValidBech32(xpub) || FormatsUtil.getInstance().isValidBitcoinAddress(xpub))    {
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getLegacy().put(xpub, label);
             }
             else {
@@ -416,7 +451,7 @@ public class XPUBListActivity extends Activity {
             final SpannableStringBuilder strFirst = new SpannableStringBuilder(xpubs.get(position).first + strAmount);
             strFirst.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, strFirst.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             ((TextView)view.findViewById(android.R.id.text1)).setText(strFirst);
-            if(xpubs.get(position).second.startsWith("xpub") || xpubs.get(position).second.startsWith("ypub"))    {
+            if(xpubs.get(position).second.startsWith("xpub") || xpubs.get(position).second.startsWith("ypub") || xpubs.get(position).second.startsWith("zpub"))    {
                 ((TextView)view.findViewById(android.R.id.text2)).setText(xpubs.get(position).second.substring(0, 4) + "..." + xpubs.get(position).second.substring(xpubs.get(position).second.length() - 3));
             }
             else    {

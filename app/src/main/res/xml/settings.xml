@@ -31,13 +31,6 @@
                     android:summary="@string/options_restore2"
                     android:key="restore"
                     />
-<!--
-                <Preference
-                    android:title="@string/options_xpub"
-                    android:summary="@string/options_xpub2"
-                    android:key="xpub"
-                    />
--->
         <CheckBoxPreference
                     android:title="@string/options_pin"
                     android:summary="@string/options_pin2"

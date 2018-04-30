@@ -5,6 +5,7 @@ import android.util.Log;
 //import android.util.Log;
 
 import com.samourai.sentinel.SamouraiSentinel;
+import com.samourai.sentinel.segwit.bech32.Bech32Util;
 import com.samourai.sentinel.sweep.FeeUtil;
 import com.samourai.sentinel.sweep.MyTransactionOutPoint;
 import com.samourai.sentinel.sweep.SuggestedFee;
@@ -71,7 +72,7 @@ public class APIFactory	{
                 url.append(xpubs[i]);
 //                Log.i("APIFactory", "XPUB:" + url.toString());
                 String response = Web.getURL(url.toString());
-//                Log.i("APIFactory", "XPUB response:" + response);
+                Log.i("APIFactory", "XPUB response:" + response);
                 try {
                     jsonObject = new JSONObject(response);
                     xpub_txs.put(xpubs[i], new ArrayList<Tx>());
@@ -125,9 +126,21 @@ public class APIFactory	{
                     }
                     if(addrObj.has("final_balance") && addrObj.has("address"))  {
                         xpub_amounts.put((String)addrObj.get("address"), addrObj.getLong("final_balance"));
-                        if(((String)addrObj.get("address")).startsWith("xpub") || ((String)addrObj.get("address")).startsWith("ypub"))    {
-                            AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("account_index"));
-                            AddressFactory.getInstance().setHighestTxChangeIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("change_index"));
+                        if(((String)addrObj.get("address")).startsWith("xpub") || ((String)addrObj.get("address")).startsWith("ypub") || ((String)addrObj.get("address")).startsWith("zpub"))    {
+                            if(AddressFactory.getInstance().xpub2account().containsKey((String) addrObj.get("address")))    {
+                                if(addrObj.has("account_index"))    {
+                                    AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("account_index"));
+                                }
+                                else    {
+                                    AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), 0);
+                                }
+                                if(addrObj.has("change_index"))    {
+                                    AddressFactory.getInstance().setHighestTxChangeIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("change_index"));
+                                }
+                                else    {
+                                    AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), 0);
+                                }
+                            }
                         }
                     }
                 }
@@ -275,6 +288,7 @@ public class APIFactory	{
             StringBuilder args = new StringBuilder();
             args.append("active=");
             args.append(address);
+            Log.d("APIFactory", "unspents call:" + args.toString());
             response = Web.postURL(Web.SAMOURAI_API2 + "unspent?", args.toString());
 
             return parseUnspentOutputsForSweep(response);
@@ -288,6 +302,8 @@ public class APIFactory	{
     }
 
     private synchronized UTXO parseUnspentOutputsForSweep(String unspents)   {
+
+        Log.d("APIFactory", "unspents:" + unspents);
 
         UTXO utxo = null;
 
@@ -319,7 +335,14 @@ public class APIFactory	{
                     int confirmations = ((Number)outDict.get("confirmations")).intValue();
 
                     try {
-                        String address = new Script(scriptBytes).getToAddress(MainNetParams.get()).toString();
+                        String address = null;
+                        if(Bech32Util.getInstance().isBech32Script(script))    {
+                            address = Bech32Util.getInstance().getAddressFromScript(script);
+                            Log.d("address parsed:", address);
+                        }
+                        else    {
+                            address = new Script(scriptBytes).getToAddress(MainNetParams.get()).toString();
+                        }
 
                         // Construct the output
                         MyTransactionOutPoint outPoint = new MyTransactionOutPoint(txHash, txOutputN, value, scriptBytes, address);

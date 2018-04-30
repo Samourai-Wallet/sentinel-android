@@ -849,7 +849,7 @@ public class BalanceActivity extends Activity {
                                 if(keyDecoded)    {
                                     String strReceiveAddress = SamouraiSentinel.getInstance(BalanceActivity.this).getReceiveAddress();
                                     if(strReceiveAddress != null)    {
-                                        SweepUtil.getInstance(BalanceActivity.this).sweep(pvr, strReceiveAddress, false);
+                                        SweepUtil.getInstance(BalanceActivity.this).sweep(pvr, strReceiveAddress, SweepUtil.TYPE_P2PKH);
                                     }
                                 }
 
@@ -870,9 +870,9 @@ public class BalanceActivity extends Activity {
             }
             else if(privKeyReader != null)	{
                 String strReceiveAddress = SamouraiSentinel.getInstance(BalanceActivity.this).getReceiveAddress();
-                Log.d("BalanceActivity", "receive address:" + strReceiveAddress);
                 if(strReceiveAddress != null)    {
-                    SweepUtil.getInstance(BalanceActivity.this).sweep(privKeyReader, strReceiveAddress, false);
+                    Log.d("BalanceActivity", "receive address:" + strReceiveAddress);
+                    SweepUtil.getInstance(BalanceActivity.this).sweep(privKeyReader, strReceiveAddress, SweepUtil.TYPE_P2PKH);
                 }
             }
             else    {
@@ -892,9 +892,15 @@ public class BalanceActivity extends Activity {
 
         if(xpubList.size() == 1)    {
             SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(1);
-            Intent intent = new Intent(BalanceActivity.this, ReceiveActivity.class);
-            startActivity(intent);
-            return;
+            if(isSweep)    {
+                doSweep();
+                return;
+            }
+            else    {
+                Intent intent = new Intent(BalanceActivity.this, ReceiveActivity.class);
+                startActivity(intent);
+                return;
+            }
         }
 
         final String[] accounts = new String[xpubList.size()];
@@ -904,6 +910,9 @@ public class BalanceActivity extends Activity {
             }
             else if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
+            }
+            else if(xpubList.get(i).startsWith("zpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i)))    {
+                accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(i));
             }
             else    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));
@@ -961,7 +970,7 @@ public class BalanceActivity extends Activity {
 
                 List<String> _xpubs = new ArrayList<String>();
                 for(String xpub : xpubList)   {
-                    if(xpub.startsWith("xpub") || xpub.startsWith("ypub"))    {
+                    if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub"))    {
                         _xpubs.add(xpub);
                     }
                 }
@@ -1014,6 +1023,9 @@ public class BalanceActivity extends Activity {
                             else if((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("ypub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(0)))   {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(0));
                             }
+                            else if(xpubList.get(0).startsWith("zpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(0)))   {
+                                account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(0));
+                            }
                             else    {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(0));
                             }
@@ -1027,6 +1039,9 @@ public class BalanceActivity extends Activity {
                                 }
                                 else if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
+                                }
+                                else if((xpubList.get(i).startsWith("zpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i)))    {
+                                    account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(i));
                                 }
                                 else    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="version_name">2.7.1</string>
-    <string name="app_name">Sentinel</string>
-
     <string name="new_version_message">Welcome to Sentinel\n\nSentinel is your deposit only bitcoin wallet. Sentinel cannot send bitcoin. Scan any XPUB and Sentinel will keep watch, alerting you of any new incoming transactions and allowing you to create new addresses so you can receive bitcoin on your mobile device.\n\nSentinel is the easiest and most secure way to keep track and receive payments to your cold storage wallet.\n\nSentinel can\'t send bitcoin out of your wallet, and your private keys are never communicated with Sentinel in any way.</string>
 
     <string name="decrypting_bip38">Decrypting BIP38 password. Please wait...</string>
@@ -25,7 +22,7 @@
     <string name="options_cat_other">Sentinel</string>
 
     <string name="options_currency">Street price</string>
-    <string name="options_currency2">The fiat price from localbitcoins.com.</string>
+    <string name="options_currency2">The fiat price from a selected exchange.</string>
     <string name="options_blockexplorer">Block explorer</string>
     <string name="options_blockexplorer2">The block explorer used to view transaction details.</string>
     <string name="options_export">Export wallet</string>
@@ -113,6 +110,7 @@
     <string name="bip32_account">BIP32 account</string>
     <string name="bip44_account">BIP44/49 account</string>
     <string name="bip49_account">BIP49 account</string>
+    <string name="bip84_account">BIP84 account</string>
     <string name="base58_error">Unrecognized format</string>
     <string name="invalid_entry">Invalid XPUB or bitcoin address</string>
 
@@ -134,8 +132,12 @@
     <string name="select_bip44_xpub2">bitcoin wallet via XPUB (BIP44)</string>
 
     <string name="select_bip49_xpub1">Segwit Bitcoin Wallet</string>
-    <string name="select_bip49_xpub2">bitcoin wallet via Segwit XPUB (BIP49)</string>
+    <string name="select_bip49_xpub2">bitcoin wallet via Segwit YPUB/ZPUB (BIP49/84)</string>
 
     <string name="track_new">Track new...</string>
+    <string name="received_bitcoin">Received Bitcoin</string>
+
+    <string name="bitcoin_address">bitcoin address</string>
+    <string name="bech32_address">bech32 bitcoin address</string>
 
 </resources>

@@ -49,7 +49,7 @@ public class HD_Account {
 
         ByteBuffer bb = ByteBuffer.wrap(xpubBytes);
         int magic = bb.getInt();
-        if(magic != 0x0488B21E && magic != 0x049D7CB2)   {
+        if(magic != 0x0488B21E && magic != 0x049D7CB2 && magic != 0x04B24746)   {
             throw new AddressFormatException("invalid xpub version");
         }
 
