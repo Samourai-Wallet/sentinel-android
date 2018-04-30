@@ -18,7 +18,7 @@ Sentinel implementation based on [original BIP](https://github.com/bitcoin/bips/
 
 ### BIP141 (Segwit):
 
-Sentinel spends to bech32 addresses P2WPKH based on [original BIP](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) by Eric Lombrozo, Johnson Lau and Pieter Wuille.
+Sentinel P2WPKH based on [original BIP](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) by Eric Lombrozo, Johnson Lau and Pieter Wuille.
 
 ### BIP173 (Segwit):
 
