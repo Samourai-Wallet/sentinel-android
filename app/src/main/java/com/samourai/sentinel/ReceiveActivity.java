@@ -30,6 +30,7 @@ import android.widget.Toast;
 //import android.util.Log;
 
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.uri.BitcoinURI;
@@ -43,6 +44,7 @@ import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.ExchangeRateFactory;
+import com.samourai.sentinel.util.FormatsUtil;
 import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
@@ -419,7 +421,17 @@ public class ReceiveActivity extends Activity {
 
             long lamount = (long)(amount * 1e8);
             if(lamount > 0L) {
-                ivQR.setImageBitmap(generateQRCode(BitcoinURI.convertToBitcoinURI(Address.fromBase58(MainNetParams.get(), addr), Coin.valueOf(lamount), null, null)));
+                if(!FormatsUtil.getInstance().isValidBech32(addr))    {
+                    ivQR.setImageBitmap(generateQRCode(BitcoinURI.convertToBitcoinURI(Address.fromBase58(MainNetParams.get(), addr), Coin.valueOf(lamount), null, null)));
+                }
+                else    {
+                    NumberFormat nf = NumberFormat.getInstance(Locale.US);
+                    nf.setMinimumIntegerDigits(1);
+                    nf.setMinimumFractionDigits(0);
+                    String strURI = "bitcoin:" + addr;
+                    strURI += "?amount=" + nf.format(amount);
+                    ivQR.setImageBitmap(generateQRCode(strURI));
+                }
             }
             else {
                 ivQR.setImageBitmap(generateQRCode(addr));
