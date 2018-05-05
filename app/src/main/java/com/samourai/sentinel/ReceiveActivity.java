@@ -415,21 +415,17 @@ public class ReceiveActivity extends Activity {
 
     private void displayQRCode() {
 
-        BigInteger bamount = null;
         try {
-            double amount = NumberFormat.getInstance(Locale.US).parse(edAmountBTC.getText().toString()).doubleValue();
+            Number amount = NumberFormat.getInstance(Locale.US).parse(edAmountBTC.getText().toString());
 
-            long lamount = (long)(amount * 1e8);
+            long lamount = (long)(amount.doubleValue() * 1e8);
             if(lamount > 0L) {
                 if(!FormatsUtil.getInstance().isValidBech32(addr))    {
                     ivQR.setImageBitmap(generateQRCode(BitcoinURI.convertToBitcoinURI(Address.fromBase58(MainNetParams.get(), addr), Coin.valueOf(lamount), null, null)));
                 }
                 else    {
-                    NumberFormat nf = NumberFormat.getInstance(Locale.US);
-                    nf.setMinimumIntegerDigits(1);
-                    nf.setMinimumFractionDigits(0);
                     String strURI = "bitcoin:" + addr;
-                    strURI += "?amount=" + nf.format(amount);
+                    strURI += "?amount=" + amount.toString();
                     ivQR.setImageBitmap(generateQRCode(strURI));
                 }
             }
