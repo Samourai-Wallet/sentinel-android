@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="new_version_message">Benvenuto in Sentinel!\n\nSentinel è un wallet bitcoin solo per depositi. Sentinel non può inviare bitcoin. Scannerizza qualsiasi XPUB e Sentinel ne terrà traccia, informandoti di qualsiasi transazione in ingresso e permettendoti di creare nuovi indirizzi per ricevere bitcoin sul tuo dispositivo.\n\nSentinel è il modo più semplice e sicuro per tener traccia e ricevere pagamenti al tuo wallet cold storage.\n\nSentinel NON può inviare bitcoin dal tuo wallet e le tue chiavi private non sono mai comunicate a Sentinel in nessun caso.</string>
+
+    <string name="decrypting_bip38">Decriptando password BIP38. Attendere...</string>
+
+    <string name="action_send">Invia</string>
+    <string name="action_stealth_send">Invia in segreto</string>
+    <string name="action_receive">Ricevi</string>
+    <string name="action_tx">Transazioni</string>
+    <string name="action_settings">Impostazioni</string>
+
+    <string name="about_us">Info su Sentinel</string>
+    <string name="about_title">Informazioni</string>
+
+    <string name="ok">Ok</string>
+    <string name="cancel">Annulla</string>
+
+    <string name="options_cat_prefs">Preferenze</string>
+    <string name="options_cat_wallet">Il tuo wallet</string>
+    <string name="options_cat_other">Sentinel</string>
+
+    <string name="options_currency">Valore di cambio</string>
+    <string name="options_currency2">Il prezzo in valuta dall\'exchange selezionato.</string>
+    <string name="options_blockexplorer">Block explorer</string>
+    <string name="options_blockexplorer2">Il block explorer usato per visualizzare i dettagli delle transazioni.</string>
+    <string name="options_export">Esporta wallet</string>
+    <string name="options_export2">Esporta wallet e metadati.</string>
+    <string name="options_restore">Ripristina wallet</string>
+    <string name="options_restore2">Ripristina wallet e metadati da backup.</string>
+    <string name="options_haptic">Vibrazione inserimento PIN</string>
+    <string name="options_haptic_2">Vibra ad ogni cifra nell\'inserimento PIN.</string>
+
+    <string name="timeline_today">Oggi</string>
+    <string name="timeline_yesterday">Ieri</string>
+    <string name="timeline_older">Più vecchie</string>
+
+    <string name="you_received">Hai ricevuto</string>
+    <string name="you_sent">Hai inviato</string>
+
+    <string name="copied_to_clipboard">Copiato negli appunti</string>
+    <string name="send_payment_code">Invia codice pagamento</string>
+
+    <string name="ask_you_sure_exit">Sei sicuro di voler uscire da Sentinel?</string>
+    <string name="yes">Sì</string>
+    <string name="no">No</string>
+
+    <string name="pin_5_8">Per favore inserisci un codice PIN da 5 a 8 caratteri. Avrai bisogno di questo PIN per accedere a Sentinel su questo dispositivo.</string>
+    <string name="pin_5_8_confirm">Per favore conferma il PIN a 5-8 caratteri</string>
+    <string name="pin_error">Errore PIN</string>
+    <string name="no_internet">Nessuna connessione a Internet. Per favore riprova.</string>
+    <string name="bip38_pw">Password BIP38</string>
+    <string name="bip38_pw_error">Errore password BIP38</string>
+    <string name="please_select">Seleziona...</string>
+    <string name="pin_enter">Inserisci codice PIN</string>
+    <string name="please_wait">Attendi...</string>
+    <string name="wallet_restored_ko">Errore nel ripristino wallet.</string>
+
+    <string name="address_used_previously">Questo indirizzo di ricezione è già stato usato.</string>
+
+    <string name="scan">Scansione</string>
+    <string name="manual">Manuale</string>
+
+    <string name="tx_ok">Transazione inviata</string>
+
+    <string name="invalid_amount">Quantità non valida</string>
+
+    <string name="receive_address_to_clipboard">Copiare questo indirizzo di ricezione negli appunti? Se copiato, potrebbe essere visibile ad altre applicazioni.</string>
+    <string name="receive_address_to_share">Condividere questo indirizzo di ricezione negli appunti? Se condiviso, potrebbe essere visibile ad altre applicazioni.</string>
+    <string name="sure_to_delete">Sei sicuro di voler eliminare questo valore?</string>
+
+    <string name="enter_xpub">Inserisci XPUB o indirizzo bitcoin.</string>
+    <string name="xpub_error">Si è verificato un errore creando un wallet dal tuo XPUB/indirizzo bitcoin. Riprova.</string>
+
+    <string name="create_pin">Crea codice PIN</string>
+    <string name="confirm_pin">Conferma codice PIN</string>
+    <string name="entering_stealth">Applicando il codice PIN. Attendere.</string>
+
+    <string name="error_activating_stealth">Errore nell\'attivazione della modalità segreta. Se l\'errore persiste, reinstallare Sentinel.</string>
+
+    <string name="options_scramble_pin">Mescola schermo PIN</string>
+    <string name="options_scramble_pin2">Usa un pad numerico in ordine sparso per entrare nel tuo wallet.</string>
+    <string name="options_pin">Codice PIN utente</string>
+    <string name="options_pin2">Codice PIN impostato per accedere a Sentinel.</string>
+
+    <string name="watchlist">Lista osservati</string>
+    <string name="deposit">Deposita</string>
+
+    <string name="xpub_label">Etichetta</string>
+    <string name="new_account">Nuovo account</string>
+
+    <string name="total_title">Totale</string>
+    <string name="deposit_into">Deposita in...</string>
+
+    <string name="password">Password</string>
+    <string name="confirm_password">Conferma password</string>
+    <string name="invalid_password">Per favore usa una password che abbia almeno 6 caratteri.</string>
+    <string name="export_to_clipboard">Esporta negli appunti</string>
+    <string name="export_to_email">Esporta in email</string>
+    <string name="error_password">Le password inserite non corrispondono. Riprova.</string>
+    <string name="encryption_error">Si è verificato un errore durante la criptazione del tuo backup del wallet. Riprova.</string>
+    <string name="encrypted_backup">Dati wallet criptati</string>
+    <string name="decryption_error">Si è verificato un errore durante la decriptazione del tuo backup del wallet. Riprova.</string>
+    <string name="restore_wallet_from_backup">Ripristina wallet da backup</string>
+
+    <string name="choose_email_client">Scegli un client email:</string>
+
+    <string name="bip32_account">Account BIP32</string>
+    <string name="bip44_account">Account BIP44/49</string>
+    <string name="bip49_account">Account BIP49</string>
+    <string name="bip84_account">Account BIP84</string>
+    <string name="base58_error">Formato non riconosciuto</string>
+    <string name="invalid_entry">XPUB o indirizzo bitcoin non valido</string>
+
+    <string name="unknown_xpub">Profondità XPUB</string>
+
+    <string name="action_sweep">Ripulisci una Private Key</string>
+    <string name="enter_privkey">Inserisci chiave privata</string>
+    <string name="cannot_recognize_privkey">Impossibile riconoscere chiave privata</string>
+    <string name="cannot_sweep_privkey">Errore ripulitura chiave privata</string>
+    <string name="pushtx_returns_null">Spesa fallita. Il server ha risposto con valore null.</string>
+
+    <string name="xpub_add_ok">XPUB aggiunta con successo</string>
+    <string name="xpub_add_ko">Errore nell\'aggiunta XPUB</string>
+
+    <string name="select_bitcoin_address1">Indirizzo Bitcoin</string>
+    <string name="select_bitcoin_address2">indirizzo bitcoin singolo</string>
+
+    <string name="select_bip44_xpub1">Wallet Bitcoin</string>
+    <string name="select_bip44_xpub2">wallet bitcoin XPUB (BIP44)</string>
+
+    <string name="select_bip49_xpub1">Wallet Segwit Bitcoin</string>
+    <string name="select_bip49_xpub2">wallet bitcoin Segwit YPUB/ZPUB (BIP49/84)</string>
+
+    <string name="track_new">Traccia nuovo...</string>
+    <string name="received_bitcoin">Bitcoin ricevuti</string>
+
+    <string name="bitcoin_address">indirizzo bitcoin</string>
+    <string name="bech32_address">indirizzo bitcoin bech32</string>
+
+</resources>
