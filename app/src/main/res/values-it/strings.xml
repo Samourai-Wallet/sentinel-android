@@ -139,4 +139,8 @@
     <string name="bitcoin_address">indirizzo bitcoin</string>
     <string name="bech32_address">indirizzo bitcoin bech32</string>
 
+    <string name="start">Inizia</string>
+    <string name="get_started">Per cominciare</string>
+    <string name="add_first_address">Aggiungi un qualsiasi indirizzo Bitcoin o XPUB e Sentinel inizierà a tracciarlo</string>
+
 </resources>

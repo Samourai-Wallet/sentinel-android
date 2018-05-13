@@ -64,7 +64,6 @@
 
     <string name="tx_ok">Transaction sent</string>
 
-    <string name="tx_length_error">Samourai does not handle transactions over 100KB in size. Please try splitting your transaction.</string>
     <string name="invalid_amount">Invalid amount</string>
 
     <string name="receive_address_to_clipboard">Copy this receive address to the clipboard? If copied, it may be visible to other applications.</string>
@@ -139,5 +138,10 @@
 
     <string name="bitcoin_address">bitcoin address</string>
     <string name="bech32_address">bech32 bitcoin address</string>
+
+    <string name="start">Start</string>
+    <string name="get_started">Get Started</string>
+    <string name="add_first_address">Add any Bitcoin address or XPUB and Sentinel will be activated</string>
+
 
 </resources>
