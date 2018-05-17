@@ -143,5 +143,6 @@
     <string name="get_started">Get Started</string>
     <string name="add_first_address">Add any Bitcoin address or XPUB and Sentinel will be activated</string>
 
+    <string name="tx_length_error">Samourai does not handle transactions over 100KB in size. Please try splitting your transaction.</string>
 
 </resources>
