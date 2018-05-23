@@ -21,7 +21,7 @@
     <string name="options_cat_wallet">Il tuo wallet</string>
     <string name="options_cat_other">Sentinel</string>
 
-    <string name="options_currency">Valore di cambio</string>
+    <string name="options_currency">Tasso di scambio</string>
     <string name="options_currency2">Il prezzo in valuta dall\'exchange selezionato.</string>
     <string name="options_blockexplorer">Block explorer</string>
     <string name="options_blockexplorer2">Il block explorer usato per visualizzare i dettagli delle transazioni.</string>
@@ -48,8 +48,8 @@
 
     <string name="pin_5_8">Per favore inserisci un codice PIN da 5 a 8 caratteri. Avrai bisogno di questo PIN per accedere a Sentinel su questo dispositivo.</string>
     <string name="pin_5_8_confirm">Per favore conferma il PIN a 5-8 caratteri</string>
-    <string name="pin_error">Errore PIN</string>
-    <string name="no_internet">Nessuna connessione a Internet. Per favore riprova.</string>
+    <string name="pin_error">Codice PIN errato</string>
+    <string name="no_internet">Nessuna connessione a Internet. Riprova.</string>
     <string name="bip38_pw">Password BIP38</string>
     <string name="bip38_pw_error">Errore password BIP38</string>
     <string name="please_select">Seleziona...</string>
@@ -67,7 +67,7 @@
     <string name="invalid_amount">Quantità non valida</string>
 
     <string name="receive_address_to_clipboard">Copiare questo indirizzo di ricezione negli appunti? Se copiato, potrebbe essere visibile ad altre applicazioni.</string>
-    <string name="receive_address_to_share">Condividere questo indirizzo di ricezione negli appunti? Se condiviso, potrebbe essere visibile ad altre applicazioni.</string>
+    <string name="receive_address_to_share">Condividere questo indirizzo di ricezione? Se condiviso, potrebbe essere visibile ad altre applicazioni.</string>
     <string name="sure_to_delete">Sei sicuro di voler eliminare questo valore?</string>
 
     <string name="enter_xpub">Inserisci XPUB o indirizzo bitcoin.</string>
