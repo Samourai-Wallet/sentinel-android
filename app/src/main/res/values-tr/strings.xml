@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="new_version_message">Sentinel'e hoş geldiniz.\n\nSentinel yalnızca para yatırabileceğiniz bir bitcoin cüzdanıdır. Sentinel bitcoin gönderemez. Herhangi bir XPUB'ı okutun ve Sentinel nöbette bekleyip sizi gelen tüm yeni işlemler hakkında bilgilendirecek ve bitcoin alabilmeniz için yeni adresler oluşturmanıza izin verecektir.\n\nSentinel fiziksel cüzdanlarınıza gelip giden tüm işlemleri izlemenin en kolay ve güvenli yoludur.\n\nSentinel cüzdanınızdan bitcoin gönderemez ve sizin özel anahtarlarınız hiçbir şekilde Sentinel'e iletilmez.</string>
+
+    <string name="decrypting_bip38">BIP38 şifresi çözülüyor, lütfen bekleyin...</string>
+
+    <string name="action_send">Gönder</string>
+    <string name="action_stealth_send">Gizli gönder</string>
+    <string name="action_receive">Al</string>
+    <string name="action_tx">İşlemler</string>
+    <string name="action_settings">Ayarlar</string>
+
+    <string name="about_us">Sentinel hakkında</string>
+    <string name="about_title">Hakkımızda</string>
+
+    <string name="ok">Tamam</string>
+    <string name="cancel">İptal</string>
+
+    <string name="options_cat_prefs">Tercihler</string>
+    <string name="options_cat_wallet">Cüzdanınız</string>
+    <string name="options_cat_other">Sentinel</string>
+
+    <string name="options_currency">Tahtakale borsası</string>
+    <string name="options_currency2">Fiyatı hesaplamak için yeğlediğiniz borsayı ve para biriminizi seçin.</string>
+    <string name="options_blockexplorer">Blok gezgini</string>
+    <string name="options_blockexplorer2">İşlem ayrıntılarını göstermek için kullanacağınız blok gezginini seçin.</string>
+    <string name="options_export">Cüzdanı dışa aktar</string>
+    <string name="options_export2">Cüzdan ve üstverisini dışa aktarın.</string>
+    <string name="options_restore">Cüzdanı geri getir</string>
+    <string name="options_restore2">Cüzdanı ve üstverisini bir yedekten geri getirin.</string>
+    <string name="options_haptic">Titreşimli PIN girişi</string>
+    <string name="options_haptic_2">PIN kodu girerken her basışta titretir.</string>
+
+    <string name="timeline_today">Bugün</string>
+    <string name="timeline_yesterday">Dün</string>
+    <string name="timeline_older">Daha eski</string>
+
+    <string name="you_received">Aldığınız</string>
+    <string name="you_sent">Gönderdiğiniz</string>
+
+    <string name="copied_to_clipboard">Panoya kopyalandı</string>
+    <string name="send_payment_code">Ödeme kodu gönder</string>
+
+    <string name="ask_you_sure_exit">Sentinel'den çıkmak istediğinize emin misiniz?</string>
+    <string name="yes">Evet</string>
+    <string name="no">Hayır</string>
+
+    <string name="pin_5_8">5 ve 8 karakter arası uzunlukta bir PIN kodu oluşturun. Bu aygıtta Sentinel'e giriş yapmak için bu PIN koduna gereksiniminiz olacak.</string>
+    <string name="pin_5_8_confirm">5 ve 8 karakter arasındaki PIN kodunuzu doğrulayın</string>
+    <string name="pin_error">PIN kodu hatası</string>
+    <string name="no_internet">İnternet bağlantısı bulunamadı. Lütfen yeniden deneyin.</string>
+    <string name="bip38_pw">BIP38 şifresi</string>
+    <string name="bip38_pw_error">BIP38 şifre hatası</string>
+    <string name="please_select">Lütfen seçin...</string>
+    <string name="pin_enter">PIN kodunuzu girin</string>
+    <string name="please_wait">Lütfen bekleyin...</string>
+    <string name="wallet_restored_ko">Cüzdanı geri getirirken hata</string>
+
+    <string name="address_used_previously">Bu alım adresi daha önce kullanıldı.</string>
+
+    <string name="scan">Tara</string>
+    <string name="manual">El ile</string>
+
+    <string name="tx_ok">İşlem gönderildi</string>
+
+    <string name="invalid_amount">Geçersiz tutar</string>
+
+    <string name="receive_address_to_clipboard">Bu alım adresi panoya kopyalansın mı? Eğer kopyalanırsa diğer uygulamalara görünür olabilir.</string>
+    <string name="receive_address_to_share">Bu alım adresi paylaşılsın mı? Eğer paylaşılırsa diğer uygulamalar tarafından okunabilir.</string>
+    <string name="sure_to_delete">Bu girdiyi silmek istediğinizden emin misiniz?</string>
+
+    <string name="enter_xpub">XPUB veya bitcoin adresinizi girin.</string>
+    <string name="xpub_error">XPUB/Bitcoin adreslerinizden cüzdan oluşturulurken bir hata oluştu. Lütfen yeniden deneyin.</string>
+
+    <string name="create_pin">PIN kodu oluştur</string>
+    <string name="confirm_pin">PIN kodunuzu doğrulayın</string>
+    <string name="entering_stealth">PIN kodu uygulanıyor, lütfen bekleyin.</string>
+
+    <string name="error_activating_stealth">Gizli başlatma etkinleştirilirken hata. Eğer hata sürerse Sentinel'i yeniden yükleyin.</string>
+
+    <string name="options_scramble_pin">PIN ekranını karıştır</string>
+    <string name="options_scramble_pin2">Sentinel'e girmek için karıştırılmış numara ekranı kullanın.</string>
+    <string name="options_pin">Kullanıcı PIN kodu</string>
+    <string name="options_pin2">Sentinel'e girmek için kullanıcı PIN kodu kullanın.</string>
+
+    <string name="watchlist">İzleme dizelgesi</string>
+    <string name="deposit">Yatırma</string>
+
+    <string name="xpub_label">Etiket</string>
+    <string name="new_account">Yeni hesap</string>
+
+    <string name="total_title">Toplam</string>
+    <string name="deposit_into">Şuraya yatır...</string>
+
+    <string name="password">Şifre</string>
+    <string name="confirm_password">Şifrenizi doğrulayın</string>
+    <string name="invalid_password">Lütfen en az 6 karakterden oluşan bir şifre kullanın.</string>
+    <string name="export_to_clipboard">Panoya aktar</string>
+    <string name="export_to_email">E-postaya aktar</string>
+    <string name="error_password">Girilen şifreler eşleşmiyor. Lütfen yeniden deneyin.</string>
+    <string name="encryption_error">Cüzdan yedeğiniz şifrelenirken bir hata oluştu. Lütfen yeniden deneyin.</string>
+    <string name="encrypted_backup">Şifreli cüzdan verisi</string>
+    <string name="decryption_error">Cüzdan yedeğinizin şifresi çözülürken bir hata oluştu. Lütfen yeniden deneyin.</string>
+    <string name="restore_wallet_from_backup">Yedekten cüzdanı geri getir</string>
+
+    <string name="choose_email_client">Bir e-posta istemcisi seçin:</string>
+
+    <string name="bip32_account">BIP32 hesabı</string>
+    <string name="bip44_account">BIP44/49 hesabı</string>
+    <string name="bip49_account">BIP49 hesabı</string>
+    <string name="bip84_account">BIP84 hesabı</string>
+    <string name="base58_error">Tanımlanamayan biçim</string>
+    <string name="invalid_entry">Geçersiz XPUB veya bitcoin adresi</string>
+
+    <string name="unknown_xpub">XPUB derinliği</string>
+
+    <string name="action_sweep">Özel anahtarı geçir</string>
+    <string name="enter_privkey">Özel anahtar gir</string>
+    <string name="cannot_recognize_privkey">Özel anahtar işlenemiyor</string>
+    <string name="cannot_sweep_privkey">Özel anahtar geçirilirken hata</string>
+    <string name="pushtx_returns_null">Harcama başarısız oldu. Sunucu geçersiz değer döndürdü.</string>
+
+    <string name="xpub_add_ok">XPUB başarıyla eklendi</string>
+    <string name="xpub_add_ko">XPUB ekleme başarısız</string>
+
+    <string name="select_bitcoin_address1">Bitcoin Adresi</string>
+    <string name="select_bitcoin_address2">tek bitcoin adresi</string>
+
+    <string name="select_bip44_xpub1">Bitcoin Cüzdanı</string>
+    <string name="select_bip44_xpub2">XPUB (BIP44) ile bitcoin cüzdanı</string>
+
+    <string name="select_bip49_xpub1">Segwit Bitcoin Cüzdanı</string>
+    <string name="select_bip49_xpub2">Segwit YPUB/ZPUB (BIP49/84) ile bitcoin cüzdanı</string>
+
+    <string name="track_new">Yeni izle...</string>
+    <string name="received_bitcoin">Alınan Bitcoin</string>
+
+    <string name="bitcoin_address">bitcoin adresi</string>
+    <string name="bech32_address">bech32 bitcoin adresi</string>
+
+    <string name="start">Başla</string>
+    <string name="get_started">Başlayalım</string>
+    <string name="add_first_address">Herhangi bir Bitcoin adresini veya XPUB'ı ekleyin ve Sentinel etkinleştirilecektir</string>
+
+    <string name="tx_length_error">Samuray, 100KB boyutu üzerindeki işlemleri gerçekleştirmemektedir. Lütfen işleminizi bölmeyi deneyin.</string>
+
+</resources>
