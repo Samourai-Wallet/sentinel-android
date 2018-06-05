@@ -105,9 +105,9 @@ public class SweepUtil  {
                         }
 
                         FeeUtil.getInstance().setSuggestedFee(FeeUtil.getInstance().getNormalFee());
-                        if(FeeUtil.getInstance().getSuggestedFee().getDefaultPerKB().longValue() / 1000L <= 1L)    {
+                        if(FeeUtil.getInstance().getSuggestedFee().getDefaultPerKB().longValue() <= 1000L)    {
                             SuggestedFee suggestedFee = new SuggestedFee();
-                            suggestedFee.setDefaultPerKB(BigInteger.valueOf((long)(1.20 * 1000.0)));
+                            suggestedFee.setDefaultPerKB(BigInteger.valueOf(1100L));
                             Log.d("SendActivity", "adjusted fee:" + suggestedFee.getDefaultPerKB().longValue());
                             FeeUtil.getInstance().setSuggestedFee(suggestedFee);
                         }
@@ -115,7 +115,7 @@ public class SweepUtil  {
                         if(type == TYPE_P2SH_P2WPKH)    {
                             fee = FeeUtil.getInstance().estimatedFeeSegwit(0, outpoints.size(), 1);
                         }
-                        else if(type == TYPE_P2PKH)    {
+                        else if(type == TYPE_P2WPKH)    {
                             fee = FeeUtil.getInstance().estimatedFeeSegwit(0, 0, outpoints.size(), 1);
                         }
                         else    {
