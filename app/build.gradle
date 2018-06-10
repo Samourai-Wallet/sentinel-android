@@ -8,8 +8,8 @@ android {
         applicationId "com.samourai.sentinel"
         minSdkVersion 21
         targetSdkVersion 21
-        versionCode 38
-        versionName '3.0.3'
+        versionCode 41
+        versionName '3.0.6'
         multiDexEnabled true
     }
     buildTypes {
@@ -41,38 +41,38 @@ android {
             minSdkVersion 21
             applicationId 'com.samourai.sentinel'
             targetSdkVersion 21
-            versionCode 38
-            versionName '3.0.3'
+            versionCode 41
+            versionName '3.0.6'
             resValue "string", "app_name", "Sentinel"
-            resValue "string", "version_name", "3.0.3"
+            resValue "string", "version_name", "3.0.6"
         }
         staging {
             minSdkVersion 21
             applicationId 'com.samourai.sentinel.staging'
             targetSdkVersion 21
-            versionCode 38
-            versionName '3.0.3'
+            versionCode 41
+            versionName '3.0.6'
             resValue "string", "app_name", "Sentinel Staging"
-            resValue "string", "version_name", "3.0.3"
+            resValue "string", "version_name", "3.0.6"
         }
     }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:multidex:1.0.0'
-    compile 'com.baoyz.swipemenulistview:library:1.2.1'
-    compile 'com.neovisionaries:nv-websocket-client:1.9'
-    compile 'commons-codec:commons-codec:1.4'
-    compile 'commons-io:commons-io:2.5'
-    compile 'com.google.guava:guava:16.0.1'
-    compile 'org.apache.commons:commons-lang3:3.3'
-    compile 'org.bouncycastle:bcprov-jdk15on:1.55'
-    compile 'com.lambdaworks:scrypt:1.4.0'
-    compile 'net.i2p.android.ext:floatingactionbutton:1.9.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile('com.google.zxing:core:3.3.0') {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:multidex:1.0.0'
+    implementation 'com.baoyz.swipemenulistview:library:1.2.1'
+    implementation 'com.neovisionaries:nv-websocket-client:1.9'
+    implementation 'commons-codec:commons-codec:1.4'
+    implementation 'commons-io:commons-io:2.5'
+    implementation 'com.google.guava:guava:16.0.1'
+    implementation 'org.apache.commons:commons-lang3:3.3'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.55'
+    implementation 'com.lambdaworks:scrypt:1.4.0'
+    implementation 'net.i2p.android.ext:floatingactionbutton:1.9.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation('com.google.zxing:core:3.3.0') {
         transitive = true
     }
-    compile 'com.yanzhenjie.zbar:camera:1.0.0'
+    implementation 'com.yanzhenjie.zbar:camera:1.0.0'
 }

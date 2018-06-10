@@ -63,7 +63,6 @@
 
     <string name="tx_ok">Transakce zaslána</string>
 
-    <string name="tx_length_error">Samourai nezpracovává transakce přesahující velikost 100KB. Zkuste svou transakci rozdělit.</string>
     <string name="invalid_amount">Neplatná částka</string>
 
     <string name="receive_address_to_clipboard">Kopírovat tuto adresu příjemce do schránky? Pokud zkopírováno, může být zviditelněno jiným aplikacím.</string>

@@ -74,7 +74,8 @@ public class InsertSegwitActivity extends Activity {
                 args.append("xpub=");
                 args.append(params[0]);
                 args.append("&type=restore");
-                args.append("&segwit=bip" + params[1]);
+                args.append("&segwit=bip");
+                args.append(params[1]);
                 Log.d("InsertSegwitActivity", "Segwit:" + args.toString());
                 response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
 

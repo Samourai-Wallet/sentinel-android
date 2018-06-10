@@ -62,7 +62,6 @@
 
     <string name="tx_ok">Transaktio lähetetty</string>
 
-    <string name="tx_length_error">Samourai ei toimita transaktioita, joiden koko ylittää 100KB. Ole hyvä ja syötä transaktio pienemmissä osissa.</string>
     <string name="invalid_amount">Virheellinen määrä</string>
 
     <string name="receive_address_to_clipboard">Kopioi tämä vastaanotto-osoite leikepöydälle? Kopioituna osoite voi näkyä muille sovelluksille laitteella.</string>
