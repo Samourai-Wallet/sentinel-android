@@ -145,4 +145,7 @@
 
     <string name="tx_length_error">Samourai does not handle transactions over 100KB in size. Please try splitting your transaction.</string>
 
+    <string name="permission_alert_dialog_title_camera">Requesting camera permission</string>
+    <string name="permission_dialog_message_camera">Your wallet needs access to the camera so it can scan QR codes.</string>
+
 </resources>

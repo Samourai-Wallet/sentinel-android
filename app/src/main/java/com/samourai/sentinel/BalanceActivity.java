@@ -1,5 +1,6 @@
 package com.samourai.sentinel;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -58,6 +59,7 @@ import com.samourai.sentinel.api.Tx;
 import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
+import com.samourai.sentinel.permissions.PermissionsUtil;
 import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.sweep.PrivKeyReader;
 import com.samourai.sentinel.sweep.SweepUtil;
@@ -259,6 +261,10 @@ public class BalanceActivity extends Activity {
 
         if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
             BalanceActivity.this.startService(new Intent(BalanceActivity.this.getApplicationContext(), WebSocketService.class));
+        }
+
+        if(!PermissionsUtil.getInstance(BalanceActivity.this).hasPermission(Manifest.permission.CAMERA)) {
+            PermissionsUtil.getInstance(BalanceActivity.this).showRequestPermissionsInfoAlertDialog(PermissionsUtil.CAMERA_PERMISSION_CODE);
         }
 
         restoreWatchOnly();
