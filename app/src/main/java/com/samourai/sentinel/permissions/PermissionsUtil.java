@@ -14,9 +14,6 @@ import com.samourai.sentinel.R;
 
 public class PermissionsUtil {
 
-    public final static int READ_WRITE_EXTERNAL_PERMISSION_CODE = 0;
-    public static final int SMS_PERMISSION_CODE = 1;
-    public static final int OUTGOING_CALL_PERMISSION_CODE = 2;
     public static final int CAMERA_PERMISSION_CODE = 3;
 
     private static PermissionsUtil instance = null;
