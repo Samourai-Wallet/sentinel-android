@@ -52,6 +52,18 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/options_cat_offline"
+        android:key="cat6">
+
+        <Preference
+            android:title="@string/options_broadcast_hex"
+            android:summary="@string/options_broadcast_hex2"
+            android:key="broadcastHex"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/options_cat_other"
         android:key="cat5">
 		        <Preference
