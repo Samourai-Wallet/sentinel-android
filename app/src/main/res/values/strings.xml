@@ -19,6 +19,7 @@
 
     <string name="options_cat_prefs">Preferences</string>
     <string name="options_cat_wallet">Your wallet</string>
+    <string name="options_cat_offline">Offline transactions</string>
     <string name="options_cat_other">Sentinel</string>
 
     <string name="options_currency">Street price</string>
@@ -83,6 +84,8 @@
     <string name="options_scramble_pin2">Use scrambled numerical pad to enter Sentinel.</string>
     <string name="options_pin">User PIN code</string>
     <string name="options_pin2">User PIN code to enter Sentinel.</string>
+    <string name="options_broadcast_hex">Broadcast transaction hex</string>
+    <string name="options_broadcast_hex2">Broadcast signed transaction supplied in hex format.</string>
 
     <string name="watchlist">Watchlist</string>
     <string name="deposit">Deposit</string>
@@ -144,6 +147,9 @@
     <string name="add_first_address">Add any Bitcoin address or XPUB and Sentinel will be activated</string>
 
     <string name="tx_length_error">Samourai does not handle transactions over 100KB in size. Please try splitting your transaction.</string>
+    <string name="tx_hex">Transaction hex</string>
+    <string name="enter_tx_hex">Enter transaction in hex format</string>
+    <string name="broadcast">Broadcast transaction</string>
 
     <string name="select_network">Select network...</string>
     <string name="MainNet">MainNet</string>
