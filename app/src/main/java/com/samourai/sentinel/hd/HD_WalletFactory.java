@@ -7,6 +7,8 @@ import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.crypto.MnemonicException;
 import org.bitcoinj.params.MainNetParams;
+
+import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.util.PrefsUtil;
 
 import org.apache.commons.codec.DecoderException;
@@ -59,9 +61,9 @@ public class HD_WalletFactory	{
             passphrase = "";
         }
 
-        NetworkParameters params = MainNetParams.get();
+        NetworkParameters params = SamouraiSentinel.getInstance().getCurrentNetworkParams();
 
-        if(data.startsWith("xpub") || data.startsWith("ypub") || data.startsWith("zpub")) {
+        if(data.startsWith("xpub") || data.startsWith("ypub") || data.startsWith("zpub") || data.startsWith("tpub") || data.startsWith("upub") || data.startsWith("vpub")) {
             String[] xpub = data.split(":");
 //            Log.i("HD_WalletFactory", "xpubs:" + xpub.length);
             hdw = new HD_Wallet(params, xpub);

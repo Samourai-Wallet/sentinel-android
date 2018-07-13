@@ -1,5 +1,7 @@
 package com.samourai.sentinel.hd;
 
+import com.samourai.sentinel.util.FormatsUtil;
+
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.NetworkParameters;
@@ -49,7 +51,8 @@ public class HD_Account {
 
         ByteBuffer bb = ByteBuffer.wrap(xpubBytes);
         int magic = bb.getInt();
-        if(magic != 0x0488B21E && magic != 0x049D7CB2 && magic != 0x04B24746)   {
+        if(magic != FormatsUtil.MAGIC_XPUB && magic != FormatsUtil.MAGIC_YPUB && magic != FormatsUtil.MAGIC_ZPUB &&
+                magic != FormatsUtil.MAGIC_TPUB && magic != FormatsUtil.MAGIC_UPUB && magic != FormatsUtil.MAGIC_VPUB)   {
             throw new AddressFormatException("invalid xpub version");
         }
 

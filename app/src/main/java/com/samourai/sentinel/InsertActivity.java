@@ -211,21 +211,21 @@ public class InsertActivity extends Activity {
                         }
                         else    {
 
-                            if(type == TYPE_SEGWIT_XPUB && xpubStr.startsWith("xpub"))    {
+                            if(type == TYPE_SEGWIT_XPUB && (xpubStr.startsWith("xpub") || xpubStr.startsWith("tpub")))    {
                                 Intent intent = new Intent(InsertActivity.this, InsertSegwitActivity.class);
                                 intent.putExtra("xpub", xpubStr);
                                 intent.putExtra("label", label);
                                 intent.putExtra("purpose", "49");
                                 startActivityForResult(intent, INSERT_SEGWIT);
                             }
-                            else if(xpubStr.startsWith("ypub"))    {
+                            else if(xpubStr.startsWith("ypub") || xpubStr.startsWith("upub"))    {
                                 Intent intent = new Intent(InsertActivity.this, InsertSegwitActivity.class);
                                 intent.putExtra("xpub", xpubStr);
                                 intent.putExtra("label", label);
                                 intent.putExtra("purpose", "49");
                                 startActivityForResult(intent, INSERT_SEGWIT);
                             }
-                            else if(xpubStr.startsWith("zpub"))    {
+                            else if(xpubStr.startsWith("zpub") || xpubStr.startsWith("vpub"))    {
                                 Intent intent = new Intent(InsertActivity.this, InsertSegwitActivity.class);
                                 intent.putExtra("xpub", xpubStr);
                                 intent.putExtra("label", label);

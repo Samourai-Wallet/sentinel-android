@@ -1,5 +1,6 @@
 package com.samourai.sentinel.sweep;
 
+import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.util.FormatsUtil;
 
 import java.math.BigInteger;
@@ -171,7 +172,7 @@ public class FeeUtil  {
         int p2pkh = 0;
 
         for(MyTransactionOutPoint out : outpoints)   {
-            if(Address.fromBase58(MainNetParams.get(), out.getAddress()).isP2SHAddress())    {
+            if(Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), out.getAddress()).isP2SHAddress())    {
                 p2sh_p2wpkh++;
             }
             else   {
@@ -189,7 +190,7 @@ public class FeeUtil  {
         int p2pkh = 0;
 
         for(MyTransactionOutPoint out : outpoints)   {
-            if(Address.fromBase58(MainNetParams.get(), out.getAddress()).isP2SHAddress())    {
+            if(Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), out.getAddress()).isP2SHAddress())    {
                 p2sh_p2wpkh++;
             }
             else if(FormatsUtil.getInstance().isValidBech32(out.getAddress()))    {

@@ -20,6 +20,7 @@ import java.util.List;
 import org.bitcoinj.params.MainNetParams;
 
 import com.samourai.sentinel.R;
+import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.segwit.P2SH_P2WPKH;
 import com.samourai.sentinel.segwit.SegwitAddress;
@@ -81,11 +82,11 @@ public class SweepUtil  {
                         address = addressP2WPKH;
                     }
                     else    {
-                        addressP2PKH = privKeyReader.getKey().toAddress(MainNetParams.get()).toString();
+                        addressP2PKH = privKeyReader.getKey().toAddress(SamouraiSentinel.getInstance().getCurrentNetworkParams()).toString();
                         Log.d("SweepUtil", "address derived P2PKH:" + addressP2PKH);
-                        addressP2SH_P2WPKH = new P2SH_P2WPKH(privKeyReader.getKey(), MainNetParams.get()).getAddressAsString();
+                        addressP2SH_P2WPKH = new P2SH_P2WPKH(privKeyReader.getKey(), SamouraiSentinel.getInstance().getCurrentNetworkParams()).getAddressAsString();
                         Log.d("SweepUtil", "address derived P2SH_P2WPKH:" + addressP2SH_P2WPKH);
-                        addressP2WPKH = new SegwitAddress(privKeyReader.getKey(), MainNetParams.get()).getBech32AsString();
+                        addressP2WPKH = new SegwitAddress(privKeyReader.getKey(), SamouraiSentinel.getInstance().getCurrentNetworkParams()).getBech32AsString();
                         Log.d("SweepUtil", "address derived P2WPKH:" + addressP2WPKH);
 
                         utxoP2PKH = APIFactory.getInstance(context).getUnspentOutputsForSweep(addressP2PKH);

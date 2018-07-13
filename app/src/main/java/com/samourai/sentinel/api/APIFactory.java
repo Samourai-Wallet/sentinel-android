@@ -62,12 +62,14 @@ public class APIFactory	{
 
     public JSONObject getXPUB(String[] xpubs) {
 
+        String _url = SamouraiSentinel.getInstance().isTestNet() ? Web.SAMOURAI_API2_TESTNET : Web.SAMOURAI_API2;
+
         JSONObject jsonObject  = null;
         xpub_amounts.clear();
 
         for(int i = 0; i < xpubs.length; i++)   {
             try {
-                StringBuilder url = new StringBuilder(Web.SAMOURAI_API2);
+                StringBuilder url = new StringBuilder(_url);
                 url.append("multiaddr?active=");
                 url.append(xpubs[i]);
 //                Log.i("APIFactory", "XPUB:" + url.toString());
@@ -126,7 +128,7 @@ public class APIFactory	{
                     }
                     if(addrObj.has("final_balance") && addrObj.has("address"))  {
                         xpub_amounts.put((String)addrObj.get("address"), addrObj.getLong("final_balance"));
-                        if(((String)addrObj.get("address")).startsWith("xpub") || ((String)addrObj.get("address")).startsWith("ypub") || ((String)addrObj.get("address")).startsWith("zpub"))    {
+                        if(((String)addrObj.get("address")).startsWith("xpub") || ((String)addrObj.get("address")).startsWith("ypub") || ((String)addrObj.get("address")).startsWith("zpub") || ((String)addrObj.get("address")).startsWith("tpub") || ((String)addrObj.get("address")).startsWith("upub") || ((String)addrObj.get("address")).startsWith("vpub"))    {
                             if(AddressFactory.getInstance().xpub2account().containsKey((String) addrObj.get("address")))    {
                                 if(addrObj.has("account_index"))    {
                                     AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("account_index"));
@@ -281,6 +283,8 @@ public class APIFactory	{
 
     public synchronized UTXO getUnspentOutputsForSweep(String address) {
 
+        String _url = SamouraiSentinel.getInstance().isTestNet() ? Web.SAMOURAI_API2_TESTNET : Web.SAMOURAI_API2;
+
         try {
 
             String response = null;
@@ -289,7 +293,7 @@ public class APIFactory	{
             args.append("active=");
             args.append(address);
             Log.d("APIFactory", "unspents call:" + args.toString());
-            response = Web.postURL(Web.SAMOURAI_API2 + "unspent?", args.toString());
+            response = Web.postURL(_url + "unspent?", args.toString());
 
             return parseUnspentOutputsForSweep(response);
 
@@ -341,7 +345,7 @@ public class APIFactory	{
                             Log.d("address parsed:", address);
                         }
                         else    {
-                            address = new Script(scriptBytes).getToAddress(MainNetParams.get()).toString();
+                            address = new Script(scriptBytes).getToAddress(SamouraiSentinel.getInstance().getCurrentNetworkParams()).toString();
                         }
 
                         // Construct the output

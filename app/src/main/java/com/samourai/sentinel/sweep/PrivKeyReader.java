@@ -10,6 +10,8 @@ import org.bitcoinj.core.DumpedPrivateKey;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.crypto.BIP38PrivateKey;
+
+import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.util.CharSequenceX;
 
 import org.bitcoinj.params.MainNetParams;
@@ -118,7 +120,7 @@ public class PrivKeyReader {
         }
 
         if(format.equals(WIF_COMPRESSED) || format.equals(WIF_UNCOMPRESSED)) {
-            DumpedPrivateKey pk = DumpedPrivateKey.fromBase58(MainNetParams.get(), strPrivKey.toString());
+            DumpedPrivateKey pk = DumpedPrivateKey.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), strPrivKey.toString());
             return pk.getKey();
         }
         else if(format.equals(BASE58)) {
@@ -187,7 +189,7 @@ public class PrivKeyReader {
         }
 
         try {
-            BIP38PrivateKey bip38 = new BIP38PrivateKey(MainNetParams.get(), encryptedKey);
+            BIP38PrivateKey bip38 = new BIP38PrivateKey(SamouraiSentinel.getInstance().getCurrentNetworkParams(), encryptedKey);
             final ECKey ecKey = bip38.decrypt(password.toString());
             if(ecKey != null && ecKey.hasPrivKey()) {
                 return ecKey;

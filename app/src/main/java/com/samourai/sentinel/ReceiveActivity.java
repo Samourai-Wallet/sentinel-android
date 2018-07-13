@@ -421,7 +421,7 @@ public class ReceiveActivity extends Activity {
             long lamount = (long)(amount.doubleValue() * 1e8);
             if(lamount > 0L) {
                 if(!FormatsUtil.getInstance().isValidBech32(addr))    {
-                    ivQR.setImageBitmap(generateQRCode(BitcoinURI.convertToBitcoinURI(Address.fromBase58(MainNetParams.get(), addr), Coin.valueOf(lamount), null, null)));
+                    ivQR.setImageBitmap(generateQRCode(BitcoinURI.convertToBitcoinURI(Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), addr), Coin.valueOf(lamount), null, null)));
                 }
                 else    {
                     String strURI = "bitcoin:" + addr;
@@ -477,7 +477,9 @@ public class ReceiveActivity extends Activity {
         final List<String> xpubList = SamouraiSentinel.getInstance(ReceiveActivity.this).getAllAddrsSorted();
 
         if(!xpubList.get(SamouraiSentinel.getInstance(ReceiveActivity.this).getCurrentSelectedAccount() - 1).startsWith("xpub") &&
-                !xpubList.get(SamouraiSentinel.getInstance(ReceiveActivity.this).getCurrentSelectedAccount() - 1).startsWith("ypub"))    {
+                !xpubList.get(SamouraiSentinel.getInstance(ReceiveActivity.this).getCurrentSelectedAccount() - 1).startsWith("ypub") &&
+                !xpubList.get(SamouraiSentinel.getInstance(ReceiveActivity.this).getCurrentSelectedAccount() - 1).startsWith("zpub")
+                )    {
             return;
         }
 

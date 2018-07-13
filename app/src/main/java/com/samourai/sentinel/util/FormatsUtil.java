@@ -2,6 +2,7 @@ package com.samourai.sentinel.util;
 
 import android.util.Patterns;
 
+import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.segwit.bech32.Bech32;
 import com.samourai.sentinel.segwit.bech32.Bech32Segwit;
 
@@ -175,7 +176,7 @@ public class FormatsUtil {
 		boolean ret = false;
 		Address addr = null;
 
-		if(address.toLowerCase().startsWith("bc"))	{
+		if(address.toLowerCase().startsWith("bc") || address.toLowerCase().startsWith("tb"))	{
 
 			try	{
 				Pair<Byte, byte[]> pair = Bech32Segwit.decode(address.substring(0, 2), address);
@@ -194,7 +195,7 @@ public class FormatsUtil {
 		else	{
 
 			try {
-				addr = new Address(MainNetParams.get(), address);
+				addr = new Address(SamouraiSentinel.getInstance().getCurrentNetworkParams(), address);
 				if(addr != null) {
 					ret = true;
 				}

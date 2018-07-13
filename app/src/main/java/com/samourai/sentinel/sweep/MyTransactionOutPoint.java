@@ -1,5 +1,7 @@
 package com.samourai.sentinel.sweep;
 
+import com.samourai.sentinel.SamouraiSentinel;
+
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ProtocolException;
 import org.bitcoinj.core.Sha256Hash;
@@ -21,7 +23,7 @@ public class MyTransactionOutPoint extends TransactionOutPoint {
     private boolean isChange = false;
 
     public MyTransactionOutPoint(Sha256Hash txHash, int txOutputN, BigInteger value, byte[] scriptBytes, String address) throws ProtocolException {
-        super(MainNetParams.get(), txOutputN, new Sha256Hash(txHash.getBytes()));
+        super(SamouraiSentinel.getInstance().getCurrentNetworkParams(), txOutputN, new Sha256Hash(txHash.getBytes()));
         this.scriptBytes = scriptBytes;
         this.value = value;
         this.txOutputN = txOutputN;

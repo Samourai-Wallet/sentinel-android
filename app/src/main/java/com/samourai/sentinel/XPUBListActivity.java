@@ -315,7 +315,7 @@ public class XPUBListActivity extends Activity {
     private void updateXPUBs(String xpub, String label, boolean delete, int purpose)   {
 
         if(delete)    {
-            if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub")) {
+            if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub") || xpub.startsWith("tpub") || xpub.startsWith("upub") || xpub.startsWith("vpub")) {
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getXPUBs().remove(xpub);
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().remove(xpub);
                 SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP84().remove(xpub);
@@ -376,11 +376,11 @@ public class XPUBListActivity extends Activity {
                 }
             }
 
-            if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub")) {
-                if(purpose == 49 || xpub.startsWith("ypub"))    {
+            if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub") || xpub.startsWith("tpub") || xpub.startsWith("upub") || xpub.startsWith("vpub")) {
+                if(purpose == 49 || xpub.startsWith("ypub") || xpub.startsWith("upub"))    {
                     SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP49().put(xpub, label);
                 }
-                else if(purpose == 84 || xpub.startsWith("zpub"))    {
+                else if(purpose == 84 || xpub.startsWith("zpub") || xpub.startsWith("vpub"))    {
                     SamouraiSentinel.getInstance(XPUBListActivity.this).getBIP84().put(xpub, label);
                 }
                 else    {
@@ -451,7 +451,7 @@ public class XPUBListActivity extends Activity {
             final SpannableStringBuilder strFirst = new SpannableStringBuilder(xpubs.get(position).first + strAmount);
             strFirst.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, strFirst.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             ((TextView)view.findViewById(android.R.id.text1)).setText(strFirst);
-            if(xpubs.get(position).second.startsWith("xpub") || xpubs.get(position).second.startsWith("ypub") || xpubs.get(position).second.startsWith("zpub"))    {
+            if(xpubs.get(position).second.startsWith("xpub") || xpubs.get(position).second.startsWith("ypub") || xpubs.get(position).second.startsWith("zpub") || xpubs.get(position).second.startsWith("tpub") || xpubs.get(position).second.startsWith("upub") || xpubs.get(position).second.startsWith("vpub"))    {
                 ((TextView)view.findViewById(android.R.id.text2)).setText(xpubs.get(position).second.substring(0, 4) + "..." + xpubs.get(position).second.substring(xpubs.get(position).second.length() - 3));
             }
             else    {
