@@ -30,7 +30,7 @@ public class PushTx {
         try {
             String response = null;
 
-            response = Web.postURL(_url + "v2/pushtx/", "tx=" + hexString);
+            response = Web.postURL(_url + "pushtx/", "tx=" + hexString);
 
             return response;
         }
