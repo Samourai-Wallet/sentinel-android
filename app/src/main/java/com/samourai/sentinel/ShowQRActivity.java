@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -172,7 +173,15 @@ public class ShowQRActivity extends Activity {
                                 Intent intent = new Intent();
                                 intent.setAction(Intent.ACTION_SEND);
                                 intent.setType("image/png");
-                                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                                if (android.os.Build.VERSION.SDK_INT >= 24) {
+                                    //From API 24 sending FIle on intent ,require custom file provider
+                                    intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(
+                                            ShowQRActivity.this,
+                                            getApplicationContext()
+                                                    .getPackageName() + ".provider", file));
+                                } else {
+                                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                                }
                                 startActivity(Intent.createChooser(intent, ShowQRActivity.this.getText(R.string.send_payment_code)));
                             }
 
