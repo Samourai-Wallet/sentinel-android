@@ -1,5 +1,6 @@
 package com.samourai.sentinel;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import com.samourai.sentinel.access.AccessFactory;
+import com.samourai.sentinel.permissions.PermissionsUtil;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.FormatsUtil;
 import com.samourai.sentinel.util.Web;
@@ -67,6 +69,10 @@ public class InitActivity extends Activity {
                 return false;
             }
         });
+
+        if(!PermissionsUtil.getInstance(InitActivity.this).hasPermission(Manifest.permission.CAMERA)) {
+            PermissionsUtil.getInstance(InitActivity.this).showRequestPermissionsInfoAlertDialog(PermissionsUtil.CAMERA_PERMISSION_CODE);
+        }
 
     }
 
