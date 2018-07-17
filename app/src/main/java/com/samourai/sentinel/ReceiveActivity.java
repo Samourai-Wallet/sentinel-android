@@ -31,9 +31,7 @@ import android.widget.Toast;
 //import android.util.Log;
 
 import org.bitcoinj.core.Address;
-import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.uri.BitcoinURI;
 
 import com.google.zxing.BarcodeFormat;
@@ -57,15 +55,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 public class ReceiveActivity extends Activity {
 

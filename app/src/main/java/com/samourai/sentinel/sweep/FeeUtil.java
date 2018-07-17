@@ -11,7 +11,6 @@ import java.util.Vector;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bitcoinj.core.Address;
-import org.bitcoinj.params.MainNetParams;
 
 public class FeeUtil  {
 

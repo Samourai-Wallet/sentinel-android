@@ -18,7 +18,6 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
@@ -26,7 +25,6 @@ import com.samourai.sentinel.sweep.PushTx;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.BlockExplorerUtil;
 import com.samourai.sentinel.util.ExchangeRateFactory;
-import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
 import com.yanzhenjie.zbar.Symbol;
 

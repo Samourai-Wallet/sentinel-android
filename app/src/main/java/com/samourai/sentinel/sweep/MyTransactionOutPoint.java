@@ -7,7 +7,6 @@ import org.bitcoinj.core.ProtocolException;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.TransactionOutPoint;
 import org.bitcoinj.core.TransactionOutput;
-import org.bitcoinj.params.MainNetParams;
 
 import java.math.BigInteger;
 

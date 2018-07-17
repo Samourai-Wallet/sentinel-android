@@ -6,7 +6,6 @@ import android.content.Context;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.crypto.MnemonicException;
-import org.bitcoinj.params.MainNetParams;
 
 import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.util.PrefsUtil;

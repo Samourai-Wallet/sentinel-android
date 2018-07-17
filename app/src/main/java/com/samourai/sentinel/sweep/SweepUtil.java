@@ -17,8 +17,6 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bitcoinj.params.MainNetParams;
-
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.api.APIFactory;

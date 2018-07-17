@@ -14,7 +14,6 @@ import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.Web;
 
 import org.bitcoinj.core.Sha256Hash;
-import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.script.Script;
 import org.json.JSONArray;
 import org.json.JSONException;

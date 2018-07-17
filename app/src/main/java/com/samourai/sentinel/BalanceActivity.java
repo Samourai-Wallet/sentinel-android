@@ -47,7 +47,6 @@ import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.BIP38PrivateKey;
 import org.bitcoinj.crypto.MnemonicException;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.params.MainNetParams;
 import org.json.JSONException;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
