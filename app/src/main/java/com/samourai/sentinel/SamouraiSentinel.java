@@ -489,7 +489,7 @@ public class SamouraiSentinel {
     }
 
     public NetworkParameters getCurrentNetworkParams() {
-        return (networkParams == null) ? SamouraiSentinel.getInstance().getCurrentNetworkParams() : networkParams;
+        return (networkParams == null) ? MainNetParams.get() : networkParams;
     }
 
     public void setCurrentNetworkParams(NetworkParameters params) {
