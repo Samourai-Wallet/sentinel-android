@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="new_version_message">Bienvenue à Sentinel\n\nSentinel est votre portefeuille bitcoin en dépot uniquement. Sentinel ne peut envoyer de bitcoin. Scannez n\'importe quelle clé publique étendue (XPUB) et Sentinel en assurera la surveillance, vous alertant de toutes nouvelles transactions entrantes et vous permettant de créer de nouvelles adresses pour recevoir des bitcoin sur votre mobile.\n\nSentinel est le moyen le plus facile et le plus sécurisé de garder un suivi de votre portefeuille hors-ligne et d\'y recevoir des paiements.\n\nSentinel ne permet pas l\'envoi de bitcoin contenus dans votre portefeuille et vos clés privées ne sont en aucun cas, à travers son utilisation, communiquées.</string>
+
+    <string name="decrypting_bip38">Déchiffrement mot de passe BIP38. Veuillez patienter...</string>
+
+    <string name="action_send">Envoyer</string>
+    <string name="action_stealth_send">Envoi mode furtif</string>
+    <string name="action_receive">Recevoir</string>
+    <string name="action_tx">Transactions</string>
+    <string name="action_settings">Paramètres</string>
+
+    <string name="about_us">Qu\'est-ce que Sentinel?</string>
+    <string name="about_title">Qui sommes-nous?</string>
+
+    <string name="ok">Ok</string>
+    <string name="cancel">Annuler</string>
+
+    <string name="options_cat_prefs">Préférences</string>
+    <string name="options_cat_wallet">Votre portefeuille</string>
+    <string name="options_cat_offline">Transactions hors-ligne</string>
+    <string name="options_cat_other">Sentinel</string>
+
+    <string name="options_currency">Taux en cours</string>
+    <string name="options_currency2">Valeur fiat sur plateforme d\'échanges sélectionnée.</string>
+    <string name="options_blockexplorer">Explorateur de blocs</string>
+    <string name="options_blockexplorer2">L\'explorateur de blocs utilisé pour un aperçu des données liées à la transaction.</string>
+    <string name="options_export">Exporter le portefeuille</string>
+    <string name="options_export2">Exporter le portefeuille et les métadonnées.</string>
+    <string name="options_restore">Restaurer le portefeuille</string>
+    <string name="options_restore2">Restaurer le portefeuille et les métadonnées à partir de la sauvegarde.</string>
+    <string name="options_haptic">Saisie code PIN avec retour tactile</string>
+    <string name="options_haptic_2">Émettre une vibration à chaque pression de touche lors de la saisie du code.</string>
+
+    <string name="timeline_today">Aujourd\'hui</string>
+    <string name="timeline_yesterday">Hier</string>
+    <string name="timeline_older">Plus ancienne</string>
+
+    <string name="you_received">Vous avez reçu</string>
+    <string name="you_sent">Vous avez envoyé</string>
+
+    <string name="copied_to_clipboard">Copié dans le presse-papiers</string>
+    <string name="send_payment_code">Envoyer le code paiement</string>
+
+    <string name="ask_you_sure_exit">Êtes-vous sûr de vouloir quitter Sentinel?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+
+    <string name="pin_5_8">Veuillez créer un code PIN comportant 5 à 8 caractères. Vous en aurez besoin pour accéder à Sentinel à partir de cet appareil.</string>
+    <string name="pin_5_8_confirm">Veuillez confirmer le code PIN à 5-8 caractères</string>
+    <string name="pin_error">Erreur de code PIN</string>
+    <string name="no_internet">Pas de connection Internet. Veuillez réessayer.</string>
+    <string name="bip38_pw">Mot de passe BIP38</string>
+    <string name="bip38_pw_error">Erreur mot de passe BIP38</string>
+    <string name="please_select">Veuillez sélectionner...</string>
+    <string name="pin_enter">Entrer le code PIN</string>
+    <string name="please_wait">Veuillez patienter...</string>
+    <string name="wallet_restored_ko">Erreur restauration portefeuille.</string>
+
+    <string name="address_used_previously">Cette adresse de réception a déjà été utilisée.</string>
+
+    <string name="scan">Scanner</string>
+    <string name="manual">Manuel</string>
+
+    <string name="tx_ok">Transaction envoyée</string>
+
+    <string name="invalid_amount">Montant invalide</string>
+
+    <string name="receive_address_to_clipboard">Copier cette adresse de réception dans le presse-papiers? Si oui, elle pourrait ête lue par d\'autres applications.</string>
+    <string name="receive_address_to_share">Partager cette adresse de réception? Si oui, elle pourrait être lue par d\'autres applications.</string>
+    <string name="sure_to_delete">Êtes-vous sûr de vouloir annuler cette saisie?</string>
+
+    <string name="enter_xpub">Entrer un clé publique étendue ou une adresse bitcoin.</string>
+    <string name="xpub_error">Erreur survenue lors de la création de votre portefeuille à partir des clés publiques étendues/adresses bitcoin. Veuillez réessayer.</string>
+
+    <string name="create_pin">Créer un code PIN</string>
+    <string name="confirm_pin">Confirmer code PIN</string>
+    <string name="entering_stealth">Application du code PIN en cours. Veuillez patienter.</string>
+
+    <string name="error_activating_stealth">Erreur survenue lors de l\'activation lancement mode furtif. Si \'erreur persiste, réinstallez Sentinel.</string>
+
+    <string name="options_scramble_pin">Affichage aléatoire touches code PIN</string>
+    <string name="options_scramble_pin2">Utilisez l\'affichage aléatoire de vote clavier numérique pour accéder à Sentinel.</string>
+    <string name="options_pin">Code PIN utilisateur</string>
+    <string name="options_pin2">Code PIN utilisateur pour accéder à Sentinel.</string>
+    <string name="options_broadcast_hex">Émettre la transaction hex</string>
+    <string name="options_broadcast_hex2">Émettre la transaction signée établie sous format hexadécimal.</string>
+
+    <string name="watchlist">Liste d\'adresses à surveiller</string>
+    <string name="deposit">Effectuer un dépot</string>
+
+    <string name="xpub_label">Saisir un libellé</string>
+    <string name="new_account">Nouveau compte</string>
+
+    <string name="total_title">Total</string>
+    <string name="deposit_into">Effectuer un dépot sur...</string>
+
+    <string name="password">Mot de passe</string>
+    <string name="confirm_password">Confirmer mot de passe</string>
+    <string name="invalid_password">Veuillez utiliser un mot de passe comportant au moins 6 caractères.</string>
+    <string name="export_to_clipboard">Exporter vers le presse-papiers</string>
+    <string name="export_to_email">Exporter vers un email</string>
+    <string name="error_password">Les mots de passe fournis ne correspondent pas. Veuillez réessayer.</string>
+    <string name="encryption_error">Erreur survenue lors du chiffrement de votre sauvegarde portefeuille. Veuillez réessayer.</string>
+    <string name="encrypted_backup">Données portefeuille chiffrées</string>
+    <string name="decryption_error">Erreur survenue lors du déchiffrement de votre sauvegarde portefeuille. Veuillez réessayer.</string>
+    <string name="restore_wallet_from_backup">Restaurer le portefeuille à partir de la sauvegarde</string>
+
+    <string name="choose_email_client">Choisissez un client de messagerie:</string>
+
+    <string name="bip32_account">Compte BIP32</string>
+    <string name="bip44_account">Compte BIP44/49</string>
+    <string name="bip49_account">Compte BIP49</string>
+    <string name="bip84_account">Compte BIP84</string>
+    <string name="base58_error">Format non reconnu</string>
+    <string name="invalid_entry">Clé publique étendue ou adresse bitcoin invalides</string>
+
+    <string name="unknown_xpub">Profondeur clé publique étendue</string>
+
+    <string name="action_sweep">Balayer la clé privée</string>
+    <string name="enter_privkey">Entrer la clé privée</string>
+    <string name="cannot_recognize_privkey">Ne peut reconnaître la clé privée</string>
+    <string name="cannot_sweep_privkey">Erreur survenue lors du balayage de la clé privée</string>
+    <string name="pushtx_returns_null">Echec Dépense. Le serveur n\'a rien renvoyé.</string>
+
+    <string name="xpub_add_ok">Ajout clé publique étendue réussi</string>
+    <string name="xpub_add_ko">Échec ajout clé publique étendue</string>
+
+    <string name="select_bitcoin_address1">Adresse bitcoin</string>
+    <string name="select_bitcoin_address2">Adresse bitcoin unique</string>
+
+    <string name="select_bip44_xpub1">Portefeuille Bitcoin</string>
+    <string name="select_bip44_xpub2">Portefeuille Bitcoin via clé publique étendue (BIP44)</string>
+
+    <string name="select_bip49_xpub1">Portefeuille Bitcoin Segwit</string>
+    <string name="select_bip49_xpub2">Portefeuille Bitcoin via Segwit YPUB/ZPUB (BIP49/84)</string>
+
+    <string name="track_new">Suivre nouvelle...</string>
+    <string name="received_bitcoin">Bitcoin reçus</string>
+
+    <string name="bitcoin_address">Adresse bitcoin</string>
+    <string name="bech32_address">Adresse bitcoin bech32</string>
+
+    <string name="start">Démarrer</string>
+    <string name="get_started">Commencer</string>
+    <string name="add_first_address">Ajouter n\'importe quelle clé publique étendue ou adresse bitcoin et Sentinel sera activé</string>
+
+    <string name="tx_length_error">Samourai ne permet pas les transactions de taille supérieure à 100KB. Veuillez essayer de fractionner votre transaction en plusieurs montants.</string>
+    <string name="tx_hex">Transaction hex</string>
+    <string name="enter_tx_hex">Entrer la transaction établie sous format hexadécimal</string>
+    <string name="broadcast">Émettre la transaction</string>
+
+    <string name="select_network">Sélectionner un réseau...</string>
+    <string name="MainNet">MainNet</string>
+    <string name="TestNet">TestNet</string>
+
+    <string name="permission_alert_dialog_title_camera">Demande autorisation caméra</string>
+    <string name="permission_dialog_message_camera">Votre portefeuille a besoin d\'un accès à la caméra pour pouvoir scanner les codes QR.</string>
+
+</resources>
