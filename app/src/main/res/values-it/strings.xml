@@ -143,4 +143,16 @@
     <string name="get_started">Per cominciare</string>
     <string name="add_first_address">Aggiungi un qualsiasi indirizzo Bitcoin o XPUB e Sentinel inizierà a tracciarlo</string>
 
+    <string name="tx_length_error">Samourai non gestisce transazioni oltre i 100KB di dimensioni. Prova a suddividere la tua transazione.</string>
+    <string name="tx_hex">Esadecimale della transazione</string>
+    <string name="enter_tx_hex">Inserisci la transazione in codice esadecimale</string>
+    <string name="broadcast">Trasmetti transazione</string>
+
+    <string name="select_network">Scegli la rete...</string>
+    <string name="MainNet">MainNet</string>
+    <string name="TestNet">TestNet</string>
+
+    <string name="permission_alert_dialog_title_camera">Richiesta permessi per fotocamera</string>
+    <string name="permission_dialog_message_camera">Il tuo wallet ha bisogno di accedere alla fotocamera per leggere i codici QR.</string>
+
 </resources>
