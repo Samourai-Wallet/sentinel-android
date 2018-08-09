@@ -1,5 +1,6 @@
 package com.samourai.sentinel;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -12,7 +13,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -47,7 +47,6 @@ import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.BIP38PrivateKey;
 import org.bitcoinj.crypto.MnemonicException;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.params.MainNetParams;
 import org.json.JSONException;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
@@ -58,6 +57,7 @@ import com.samourai.sentinel.api.Tx;
 import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
+import com.samourai.sentinel.permissions.PermissionsUtil;
 import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.sweep.PrivKeyReader;
 import com.samourai.sentinel.sweep.SweepUtil;
@@ -259,6 +259,10 @@ public class BalanceActivity extends Activity {
 
         if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
             BalanceActivity.this.startService(new Intent(BalanceActivity.this.getApplicationContext(), WebSocketService.class));
+        }
+
+        if(!PermissionsUtil.getInstance(BalanceActivity.this).hasPermission(Manifest.permission.CAMERA)) {
+            PermissionsUtil.getInstance(BalanceActivity.this).showRequestPermissionsInfoAlertDialog(PermissionsUtil.CAMERA_PERMISSION_CODE);
         }
 
         restoreWatchOnly();
@@ -821,7 +825,7 @@ public class BalanceActivity extends Activity {
                                 boolean keyDecoded = false;
 
                                 try {
-                                    BIP38PrivateKey bip38 = new BIP38PrivateKey(MainNetParams.get(), data);
+                                    BIP38PrivateKey bip38 = new BIP38PrivateKey(SamouraiSentinel.getInstance().getCurrentNetworkParams(), data);
                                     final ECKey ecKey = bip38.decrypt(password);
                                     if(ecKey != null && ecKey.hasPrivKey()) {
 
@@ -833,7 +837,7 @@ public class BalanceActivity extends Activity {
                                         keyDecoded = true;
 
                                         Toast.makeText(BalanceActivity.this, pvr.getFormat(), Toast.LENGTH_SHORT).show();
-                                        Toast.makeText(BalanceActivity.this, pvr.getKey().toAddress(MainNetParams.get()).toString(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(BalanceActivity.this, pvr.getKey().toAddress(SamouraiSentinel.getInstance().getCurrentNetworkParams()).toString(), Toast.LENGTH_SHORT).show();
 
                                     }
                                 }
@@ -905,13 +909,13 @@ public class BalanceActivity extends Activity {
 
         final String[] accounts = new String[xpubList.size()];
         for(int i = 0; i < xpubList.size(); i++)   {
-            if(xpubList.get(i).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i)))    {
+            if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("tpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i)))    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(i));
             }
-            else if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
+            else if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub") || xpubList.get(i).startsWith("tpub") || xpubList.get(i).startsWith("upub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
             }
-            else if(xpubList.get(i).startsWith("zpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i)))    {
+            else if((xpubList.get(i).startsWith("zpub") || xpubList.get(i).startsWith("vpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i)))    {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(i));
             }
             else    {
@@ -970,7 +974,7 @@ public class BalanceActivity extends Activity {
 
                 List<String> _xpubs = new ArrayList<String>();
                 for(String xpub : xpubList)   {
-                    if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub"))    {
+                    if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub") || xpub.startsWith("tpub") || xpub.startsWith("upub") || xpub.startsWith("vpub"))    {
                         _xpubs.add(xpub);
                     }
                 }
@@ -1017,13 +1021,13 @@ public class BalanceActivity extends Activity {
 
                         if(xpubList.size() == 1)    {
                             account_selections = new String[1];
-                            if(xpubList.get(0).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(0)))    {
+                            if((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("tpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(0)))    {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(0));
                             }
-                            else if((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("ypub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(0)))   {
+                            else if((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("ypub") || xpubList.get(0).startsWith("tpub") || xpubList.get(0).startsWith("upub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(0)))   {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(0));
                             }
-                            else if(xpubList.get(0).startsWith("zpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(0)))   {
+                            else if((xpubList.get(0).startsWith("zpub") || xpubList.get(0).startsWith("vpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(0)))   {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(0));
                             }
                             else    {
@@ -1034,13 +1038,13 @@ public class BalanceActivity extends Activity {
                             account_selections = new String[xpubList.size() + 1];
                             account_selections[0] = BalanceActivity.this.getString(R.string.total_title);
                             for(int i = 0; i < xpubList.size(); i++)   {
-                                if(xpubList.get(i).startsWith("xpub") && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i)))    {
+                                if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("tpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i)))    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(i));
                                 }
-                                else if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
+                                else if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub") || xpubList.get(i).startsWith("tpub") || xpubList.get(i).startsWith("upub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
                                 }
-                                else if((xpubList.get(i).startsWith("zpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i)))    {
+                                else if((xpubList.get(i).startsWith("zpub") || xpubList.get(i).startsWith("vpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i)))    {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(i));
                                 }
                                 else    {

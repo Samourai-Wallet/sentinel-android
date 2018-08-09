@@ -14,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,9 +31,7 @@ import android.widget.Toast;
 //import android.util.Log;
 
 import org.bitcoinj.core.Address;
-import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.uri.BitcoinURI;
 
 import com.google.zxing.BarcodeFormat;
@@ -56,15 +55,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 public class ReceiveActivity extends Activity {
 
@@ -376,7 +372,15 @@ public class ReceiveActivity extends Activity {
                                     Intent intent = new Intent();
                                     intent.setAction(Intent.ACTION_SEND);
                                     intent.setType("image/png");
-                                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                                    if (android.os.Build.VERSION.SDK_INT >= 24) {
+                                        //From API 24 sending FIle on intent ,require custom file provider
+                                        intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(
+                                                ReceiveActivity.this,
+                                                getApplicationContext()
+                                                        .getPackageName() + ".provider", file));
+                                    } else {
+                                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                                    }
                                     startActivity(Intent.createChooser(intent, ReceiveActivity.this.getText(R.string.send_payment_code)));
                                 }
 
@@ -421,7 +425,7 @@ public class ReceiveActivity extends Activity {
             long lamount = (long)(amount.doubleValue() * 1e8);
             if(lamount > 0L) {
                 if(!FormatsUtil.getInstance().isValidBech32(addr))    {
-                    ivQR.setImageBitmap(generateQRCode(BitcoinURI.convertToBitcoinURI(Address.fromBase58(MainNetParams.get(), addr), Coin.valueOf(lamount), null, null)));
+                    ivQR.setImageBitmap(generateQRCode(BitcoinURI.convertToBitcoinURI(Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), addr), Coin.valueOf(lamount), null, null)));
                 }
                 else    {
                     String strURI = "bitcoin:" + addr;
@@ -477,7 +481,9 @@ public class ReceiveActivity extends Activity {
         final List<String> xpubList = SamouraiSentinel.getInstance(ReceiveActivity.this).getAllAddrsSorted();
 
         if(!xpubList.get(SamouraiSentinel.getInstance(ReceiveActivity.this).getCurrentSelectedAccount() - 1).startsWith("xpub") &&
-                !xpubList.get(SamouraiSentinel.getInstance(ReceiveActivity.this).getCurrentSelectedAccount() - 1).startsWith("ypub"))    {
+                !xpubList.get(SamouraiSentinel.getInstance(ReceiveActivity.this).getCurrentSelectedAccount() - 1).startsWith("ypub") &&
+                !xpubList.get(SamouraiSentinel.getInstance(ReceiveActivity.this).getCurrentSelectedAccount() - 1).startsWith("zpub")
+                )    {
             return;
         }
 

@@ -2,6 +2,7 @@ package com.samourai.sentinel.util;
 
 import android.util.Patterns;
 
+import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.segwit.bech32.Bech32;
 import com.samourai.sentinel.segwit.bech32.Bech32Segwit;
 
@@ -10,7 +11,6 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.WrongNetworkException;
-import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.uri.BitcoinURI;
 import org.bitcoinj.uri.BitcoinURIParseException;
 
@@ -154,7 +154,7 @@ public class FormatsUtil {
 				if(matcher.find() && matcher.group(4) != null)    {
 					String amt = matcher.group(4);
 					try	{
-						double amount = Double.valueOf(amt);
+						double amount = Double.parseDouble(amt);
 						return Long.toString((long)(amount * 1e8));
 					}
 					catch(NumberFormatException nfe)	{
@@ -175,7 +175,7 @@ public class FormatsUtil {
 		boolean ret = false;
 		Address addr = null;
 
-		if(address.toLowerCase().startsWith("bc"))	{
+		if(address.toLowerCase().startsWith("bc") || address.toLowerCase().startsWith("tb"))	{
 
 			try	{
 				Pair<Byte, byte[]> pair = Bech32Segwit.decode(address.substring(0, 2), address);
@@ -194,7 +194,7 @@ public class FormatsUtil {
 		else	{
 
 			try {
-				addr = new Address(MainNetParams.get(), address);
+				addr = new Address(SamouraiSentinel.getInstance().getCurrentNetworkParams(), address);
 				if(addr != null) {
 					ret = true;
 				}

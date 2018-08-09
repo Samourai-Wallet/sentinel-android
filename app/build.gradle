@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 26
     buildToolsVersion '27.0.3'
     flavorDimensions "versionCode"
     defaultConfig {
         applicationId "com.samourai.sentinel"
         minSdkVersion 21
-        targetSdkVersion 21
-        versionCode 41
-        versionName '3.0.6'
+        targetSdkVersion 26
+        versionCode 43
+        versionName '3.5.01'
         multiDexEnabled true
     }
     buildTypes {
@@ -40,20 +40,20 @@ android {
         production {
             minSdkVersion 21
             applicationId 'com.samourai.sentinel'
-            targetSdkVersion 21
-            versionCode 41
-            versionName '3.0.6'
+            targetSdkVersion 26
+            versionCode 43
+            versionName '3.501'
             resValue "string", "app_name", "Sentinel"
-            resValue "string", "version_name", "3.0.6"
+            resValue "string", "version_name", "3.5.01"
         }
         staging {
             minSdkVersion 21
             applicationId 'com.samourai.sentinel.staging'
-            targetSdkVersion 21
-            versionCode 41
-            versionName '3.0.6'
+            targetSdkVersion 26
+            versionCode 43
+            versionName '3.5.01'
             resValue "string", "app_name", "Sentinel Staging"
-            resValue "string", "version_name", "3.0.6"
+            resValue "string", "version_name", "3.5.01"
         }
     }
 }
@@ -61,6 +61,8 @@ android {
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:multidex:1.0.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.baoyz.swipemenulistview:library:1.2.1'
     implementation 'com.neovisionaries:nv-websocket-client:1.9'
     implementation 'commons-codec:commons-codec:1.4'

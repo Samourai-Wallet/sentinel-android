@@ -11,10 +11,13 @@ import com.samourai.sentinel.segwit.SegwitAddress;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.CharSequenceX;
 import com.samourai.sentinel.util.MapUtil;
+import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
 import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.params.TestNet3Params;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SamouraiSentinel {
+
+    private static NetworkParameters networkParams = null;
 
     private static HashMap<String,String> xpubs = null;
     private static HashMap<String,String> legacy = null;
@@ -52,6 +57,21 @@ public class SamouraiSentinel {
     private static String strSentinelLegacy = "sentinel.legacy";
 
     private SamouraiSentinel()    { ; }
+
+    public static SamouraiSentinel getInstance()  {
+
+        if(instance == null)    {
+            xpubs = new HashMap<String,String>();
+            bip49 = new HashMap<String,String>();
+            bip84 = new HashMap<String,String>();
+            legacy = new HashMap<String,String>();
+            highestReceiveIdx = new HashMap<String,Integer>();
+
+            instance = new SamouraiSentinel();
+        }
+
+        return instance;
+    }
 
     public static SamouraiSentinel getInstance(Context ctx)  {
 
@@ -118,6 +138,16 @@ public class SamouraiSentinel {
         xpubs.clear();
 
         try {
+
+            if(obj.has("testnet"))    {
+                setCurrentNetworkParams(obj.getBoolean("testnet") ? TestNet3Params.get() : MainNetParams.get());
+                PrefsUtil.getInstance(context).setValue(PrefsUtil.TESTNET, obj.getBoolean("testnet"));
+            }
+            else    {
+                setCurrentNetworkParams(MainNetParams.get());
+                PrefsUtil.getInstance(context).removeValue(PrefsUtil.TESTNET);
+            }
+
             if(obj != null && obj.has("xpubs"))    {
                 JSONArray _xpubs = obj.getJSONArray("xpubs");
                 for(int i = 0; i < _xpubs.length(); i++)   {
@@ -195,6 +225,9 @@ public class SamouraiSentinel {
     public JSONObject toJSON() {
         try {
             JSONObject obj = new JSONObject();
+
+            obj.put("version_name", context.getText(R.string.version_name));
+            obj.put("testnet", isTestNet());
 
             JSONArray _xpubs = new JSONArray();
             for(String xpub : xpubs.keySet()) {
@@ -422,7 +455,10 @@ public class SamouraiSentinel {
 
         if(xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("xpub") ||
                 xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("ypub") ||
-                xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("zpub")
+                xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("zpub") ||
+        xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("tpub") ||
+        xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("upub") ||
+        xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1).startsWith("vpub")
                 )    {
             String xpub = xpubList.get(SamouraiSentinel.getInstance(context).getCurrentSelectedAccount() - 1);
             Log.d("SamouraiSentinel", "xpub:" + xpub);
@@ -430,13 +466,13 @@ public class SamouraiSentinel {
             Log.d("SamouraiSentinel", "account:" + account);
             if(SamouraiSentinel.getInstance(context).getBIP49().keySet().contains(xpub))    {
                 ecKey = AddressFactory.getInstance(context).getECKey(AddressFactory.RECEIVE_CHAIN, account);
-                P2SH_P2WPKH p2sh_p2wpkh = new P2SH_P2WPKH(ecKey.getPubKey(), MainNetParams.get());
+                P2SH_P2WPKH p2sh_p2wpkh = new P2SH_P2WPKH(ecKey.getPubKey(), SamouraiSentinel.getInstance().getCurrentNetworkParams());
                 addr = p2sh_p2wpkh.getAddressAsString();
                 Log.d("SamouraiSentinel", "addr:" + addr);
             }
             else if(SamouraiSentinel.getInstance(context).getBIP84().keySet().contains(xpub))    {
                 ecKey = AddressFactory.getInstance(context).getECKey(AddressFactory.RECEIVE_CHAIN, account);
-                SegwitAddress segwitAddress = new SegwitAddress(ecKey.getPubKey(), MainNetParams.get());
+                SegwitAddress segwitAddress = new SegwitAddress(ecKey.getPubKey(), SamouraiSentinel.getInstance().getCurrentNetworkParams());
                 addr = segwitAddress.getBech32AsString();
                 Log.d("SamouraiSentinel", "addr:" + addr);
             }
@@ -450,6 +486,18 @@ public class SamouraiSentinel {
 
         return addr;
 
+    }
+
+    public NetworkParameters getCurrentNetworkParams() {
+        return (networkParams == null) ? MainNetParams.get() : networkParams;
+    }
+
+    public void setCurrentNetworkParams(NetworkParameters params) {
+        networkParams = params;
+    }
+
+    public boolean isTestNet()  {
+        return (networkParams == null) ? false : !(getCurrentNetworkParams() instanceof MainNetParams);
     }
 
 }

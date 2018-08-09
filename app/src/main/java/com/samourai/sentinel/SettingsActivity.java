@@ -1,5 +1,6 @@
 package com.samourai.sentinel;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -7,19 +8,33 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.widget.Toast;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.widget.EditText;
 
+import com.dm.zbar.android.scanner.ZBarConstants;
+import com.dm.zbar.android.scanner.ZBarScannerActivity;
+import com.samourai.sentinel.sweep.PushTx;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.BlockExplorerUtil;
 import com.samourai.sentinel.util.ExchangeRateFactory;
-import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
+import com.yanzhenjie.zbar.Symbol;
+
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.params.MainNetParams;
+import org.bouncycastle.util.encoders.Hex;
 
 public class SettingsActivity extends PreferenceActivity	{
+
+    private static final int SCAN_HEX_TX = 2009;
 
     private ProgressDialog progress = null;
 
@@ -149,8 +164,15 @@ public class SettingsActivity extends PreferenceActivity	{
             }
         });
 
-    }
+        Preference broadcastHexPref = (Preference) findPreference("broadcastHex");
+        broadcastHexPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                doBroadcastHex();
+                return true;
+            }
+        });
 
+    }
 
     @Override
     public void onResume() {
@@ -158,6 +180,34 @@ public class SettingsActivity extends PreferenceActivity	{
 
         AppUtil.getInstance(SettingsActivity.this).checkTimeOut();
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(resultCode == Activity.RESULT_OK && requestCode == SCAN_HEX_TX)	{
+
+            if(data != null && data.getStringExtra(ZBarConstants.SCAN_RESULT) != null)	{
+
+                final String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT);
+
+                doBroadcastHex(strResult);
+
+            }
+        }
+        else if(resultCode == Activity.RESULT_CANCELED && requestCode == SCAN_HEX_TX)	{
+            ;
+        }
+        else {
+            ;
+        }
+
+    }
+
+    private void doScanHexTx()   {
+        Intent intent = new Intent(SettingsActivity.this, ZBarScannerActivity.class);
+        intent.putExtra(ZBarConstants.SCAN_MODES, new int[]{ Symbol.QRCODE } );
+        startActivityForResult(intent, SCAN_HEX_TX);
     }
 
     private void getBlockExplorer()	{
@@ -242,6 +292,123 @@ public class SettingsActivity extends PreferenceActivity	{
                             }
                         }
                 ).show();
+
+    }
+
+    private void doBroadcastHex()    {
+
+        AlertDialog.Builder dlg = new AlertDialog.Builder(SettingsActivity.this)
+                .setTitle(R.string.app_name)
+                .setMessage(R.string.tx_hex)
+                .setCancelable(true)
+                .setPositiveButton(R.string.enter_tx_hex, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        final EditText edHexTx = new EditText(SettingsActivity.this);
+                        edHexTx.setSingleLine(false);
+                        edHexTx.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                        edHexTx.setLines(10);
+                        edHexTx.setHint(R.string.tx_hex);
+                        edHexTx.setGravity(Gravity.START);
+                        TextWatcher textWatcher = new TextWatcher() {
+
+                            public void afterTextChanged(Editable s) {
+                                edHexTx.setSelection(0);
+                            }
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                                ;
+                            }
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                ;
+                            }
+                        };
+                        edHexTx.addTextChangedListener(textWatcher);
+
+                        AlertDialog.Builder dlg = new AlertDialog.Builder(SettingsActivity.this)
+                                .setTitle(R.string.app_name)
+                                .setView(edHexTx)
+                                .setMessage(R.string.enter_tx_hex)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        final String strHexTx = edHexTx.getText().toString().trim();
+
+                                        doBroadcastHex(strHexTx);
+
+                                    }
+                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        ;
+                                    }
+                                });
+                        if(!isFinishing())    {
+                            dlg.show();
+                        }
+
+                    }
+
+                }).setNegativeButton(R.string.scan, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        doScanHexTx();
+
+                    }
+                });
+        if(!isFinishing())    {
+            dlg.show();
+        }
+
+    }
+
+    private void doBroadcastHex(final String strHexTx)    {
+
+        Transaction tx = new Transaction(MainNetParams.get(), Hex.decode(strHexTx));
+
+        String msg = SettingsActivity
+                .this.getString(R.string.broadcast) + ":" + tx.getHashAsString() + " ?";
+
+        AlertDialog.Builder dlg = new AlertDialog.Builder(SettingsActivity.this)
+                .setTitle(R.string.app_name)
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        if (progress != null && progress.isShowing()) {
+                            progress.dismiss();
+                            progress = null;
+                        }
+
+                        progress = new ProgressDialog(SettingsActivity.this);
+                        progress.setCancelable(false);
+                        progress.setTitle(R.string.app_name);
+                        progress.setMessage(getString(R.string.please_wait));
+                        progress.show();
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Looper.prepare();
+
+                                PushTx.getInstance(SettingsActivity.this).samourai(strHexTx);
+
+                                progress.dismiss();
+
+                                Looper.loop();
+
+                            }
+                        }).start();
+
+                    }
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        ;
+                    }
+                });
+        if(!isFinishing())    {
+            dlg.show();
+        }
 
     }
 
