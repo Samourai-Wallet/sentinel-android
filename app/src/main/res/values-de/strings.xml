@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="new_version_message">Willkommen bei Sentinel\n\nSentinel ist dein Wallet, das nur Empfangen kann. Sentinel kann keine Bitcoins senden. Scanne einen XPUB und Sentinel wird die Adressen beobachten, dich über neu eigehende Transaktionen informieren und es dir erlauben, neue Adressen zu generieren, um Bitcoins auf deinem mobilen Gerät zu empfangen.\n\nSentinel ist der einfachste und sicherste Weg, deine Offline-Wallet zu beobachten und Zahlungen darauf zu empfangen.\n\nSentinel kann keine Bitcoins aus deiner Wallet versenden und deine Private Keys werden nie mit Sentinel kommuniziert.</string>
+    <string name="new_version_message">Willkommen bei Sentinel\n\nSentinel ist deine Wallet, die nur Empfangen kann. Sentinel kann keine Bitcoins senden. Scanne einen XPUB und Sentinel wird die Adressen beobachten, dich über neu eigehende Transaktionen informieren und es dir erlauben, neue Adressen zu generieren, um Bitcoins mit deinem mobilen Gerät zu empfangen.\n\nSentinel ist der einfachste und sicherste Weg, deine Offline-Wallet zu beobachten und Zahlungen darauf zu empfangen.\n\nSentinel kann keine Bitcoins aus deiner Wallet versenden und deine Private Keys werden nie mit Sentinel kommuniziert.</string>
 	 
     <string name="decrypting_bip38">BIP38 Passwort wird entschlüsselt. Bitte warten...</string>
 
@@ -101,7 +101,7 @@
     <string name="invalid_password">Bitte ein Passwort mit mindestens 6 Zeichen verwenden.</string>
     <string name="export_to_clipboard">In die Zwischenablage exportieren</string>
     <string name="export_to_email">Als E-Mail exportieren</string>
-    <string name="error_password">The proposed passwords do not match. Please try again.</string>
+    <string name="error_password">Die eingegebenen Passwörter stimmen nicht überein. Bitte nochmal versuchen.</string>
     <string name="encryption_error">Beim Verschlüsseln deines Wallet-Backups ist ein Fehler aufgetreten. Bitte nochmal versuchen.</string>
     <string name="encrypted_backup">Verschlüsselte Wallet-Daten</string>
     <string name="decryption_error">Beim Entschlüsseln des Wallet-Backups ist ein Fehler aufgetreten. Bitte nochmal versuchen.</string>
