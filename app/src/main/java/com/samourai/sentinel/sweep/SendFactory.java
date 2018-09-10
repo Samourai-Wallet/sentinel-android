@@ -58,7 +58,7 @@ public class SendFactory	{
         Transaction tx = null;
 
         try {
-            int changeIdx = HD_WalletFactory.getInstance(context).get().getAccount(accountIdx).getChange().getAddrIdx();
+//            int changeIdx = HD_WalletFactory.getInstance(context).get().getAccount(accountIdx).getChange().getAddrIdx();
             tx = makeTransaction(accountIdx, receivers, unspent);
         }
         catch(Exception e) {
@@ -148,8 +148,14 @@ public class SendFactory	{
                 throw new Exception(context.getString(R.string.invalid_amount));
             }
 
-            Script toOutputScript = ScriptBuilder.createOutputScript(org.bitcoinj.core.Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), toAddress));
-            TransactionOutput output = new TransactionOutput(SamouraiSentinel.getInstance().getCurrentNetworkParams(), null, Coin.valueOf(value.longValue()), toOutputScript.getProgram());
+            TransactionOutput output = null;
+            if(FormatsUtil.getInstance().isValidBech32(toAddress))   {
+                output = Bech32Util.getInstance().getTransactionOutput(toAddress, value.longValue());
+            }
+            else    {
+                Script toOutputScript = ScriptBuilder.createOutputScript(org.bitcoinj.core.Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), toAddress));
+                output = new TransactionOutput(SamouraiSentinel.getInstance().getCurrentNetworkParams(), null, Coin.valueOf(value.longValue()), toOutputScript.getProgram());
+            }
 
             outputs.add(output);
         }
