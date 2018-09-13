@@ -67,7 +67,7 @@
 
     <string name="invalid_amount">Montant invalide</string>
 
-    <string name="receive_address_to_clipboard">Copier cette adresse de réception dans le presse-papiers? Si oui, elle pourrait ête lue par d\'autres applications.</string>
+    <string name="receive_address_to_clipboard">Copier cette adresse de réception dans le presse-papiers? Si oui, elle pourrait être lue par d\'autres applications.</string>
     <string name="receive_address_to_share">Partager cette adresse de réception? Si oui, elle pourrait être lue par d\'autres applications.</string>
     <string name="sure_to_delete">Êtes-vous sûr de vouloir annuler cette saisie?</string>
 
@@ -81,7 +81,7 @@
     <string name="error_activating_stealth">Erreur survenue lors de l\'activation lancement mode furtif. Si \'erreur persiste, réinstallez Sentinel.</string>
 
     <string name="options_scramble_pin">Affichage aléatoire touches code PIN</string>
-    <string name="options_scramble_pin2">Utilisez l\'affichage aléatoire de vote clavier numérique pour accéder à Sentinel.</string>
+    <string name="options_scramble_pin2">Utilisez l\'affichage aléatoire de votre clavier numérique pour accéder à Sentinel.</string>
     <string name="options_pin">Code PIN utilisateur</string>
     <string name="options_pin2">Code PIN utilisateur pour accéder à Sentinel.</string>
     <string name="options_broadcast_hex">Émettre la transaction hex</string>
