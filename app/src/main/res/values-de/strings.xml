@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="new_version_message">Willkommen bei Sentinel\n\nSentinel ist deine Wallet, die nur Empfangen kann. Sentinel kann keine Bitcoins senden. Scanne einen XPUB und Sentinel wird die Adressen beobachten, dich über neu eigehende Transaktionen informieren und es dir erlauben, neue Adressen zu generieren, um Bitcoins mit deinem mobilen Gerät zu empfangen.\n\nSentinel ist der einfachste und sicherste Weg, deine Offline-Wallet zu beobachten und Zahlungen darauf zu empfangen.\n\nSentinel kann keine Bitcoins aus deiner Wallet versenden und deine Private Keys werden nie mit Sentinel kommuniziert.</string>
+	 
+    <string name="decrypting_bip38">BIP38 Passwort wird entschlüsselt. Bitte warten...</string>
+
+    <string name="action_send">Senden</string>
+    <string name="action_stealth_send">Geheimes Senden</string>
+    <string name="action_receive">Empfangen</string>
+    <string name="action_tx">Transaktionen</string>
+    <string name="action_settings">Einstellungen</string>
+
+    <string name="about_us">Über Sentinel</string>
+    <string name="about_title">Über uns</string>
+
+    <string name="ok">Ok</string>
+    <string name="cancel">Abbrechen</string>
+
+    <string name="options_cat_prefs">Voreinstellungen</string>
+    <string name="options_cat_wallet">Deine Wallet</string>
+    <string name="options_cat_offline">Offline-Transaktionen</string>
+    <string name="options_cat_other">Sentinel</string>
+
+    <string name="options_currency">Lokale Währung</string>
+    <string name="options_currency2">Wähle deine Exchange und deine lokale Fiat-Währung.</string>
+    <string name="options_blockexplorer">Block-Explorer</string>
+    <string name="options_blockexplorer2">Externer Block-Explorer, der für die Anzeige von Transaktionsdetails verwendet wird.</string>
+    <string name="options_export">Wallet exportieren</string>
+    <string name="options_export2">Wallet und Metadaten exportieren.</string>
+    <string name="options_restore">Wallet wiederherstellen</string>
+    <string name="options_restore2">Wallet und Metadaten aus einem Backup wiederherstellen.</string>
+    <string name="options_haptic">Haptische PIN-Eingabe</string>
+    <string name="options_haptic_2">Vibrationsfeedback während der PIN-Eingabe.</string>
+
+    <string name="timeline_today">Heute</string>
+    <string name="timeline_yesterday">Gestern</string>
+    <string name="timeline_older">Älter</string>
+
+    <string name="you_received">Erhalten: </string>
+    <string name="you_sent">Gesendet: </string>
+
+    <string name="copied_to_clipboard">In die Zwischenablage kopiert</string>
+    <string name="send_payment_code">Payment-Code senden</string>
+
+    <string name="ask_you_sure_exit">Sentinel wirklich verlassen?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+
+    <string name="pin_5_8">Bitte erstelle eine PIN mit 5 bis 8 Ziffern. Du wirst diese PIN brauchen, um Sentinel auf diesem Gerät zu öffnen.</string>
+    <string name="pin_5_8_confirm">Bitte PIN bestätigen</string>
+    <string name="pin_error">PIN-Code Fehler</string>
+    <string name="no_internet">Keine Internetverbindung. Bitte nochmal versuchen.</string>
+    <string name="bip38_pw">BIP38 Passwort</string>
+    <string name="bip38_pw_error">BIP38 Passwort Fehler</string>
+    <string name="please_select">Bitte auswählen...</string>
+    <string name="pin_enter">PIN eingeben</string>
+    <string name="please_wait">Bitte warten...</string>
+    <string name="wallet_restored_ko">Wallet wiederherstellen fehlgeschlagen.</string>
+
+    <string name="address_used_previously">Diese Empfangsadresse wurde bereits verwendet.</string>
+
+    <string name="scan">Scannen</string>
+    <string name="manual">Eingeben</string>
+
+    <string name="tx_ok">Transaktion gesendet</string>
+
+    <string name="invalid_amount">Ungültiger Betrag</string>
+
+    <string name="receive_address_to_clipboard">Diese Empfangsadresse in die Zwischenablage kopieren? Wenn sie kopiert wird, kann sie möglicherweise von anderen Programmen gesehen werden.</string>
+    <string name="receive_address_to_share">Diese Empfangsadresse teilen? Wenn sie geteilt wird, kann sie möglicherweise von anderen Programmen gelesen werden.</string>
+    <string name="sure_to_delete">Diesen Account wirklich entfernen?</string>
+
+    <string name="enter_xpub">XPUB oder Bitcoin-Adresse eingeben.</string>
+    <string name="xpub_error">Beim Erstellen der Wallet aus deinem XPUB oder deiner Bitcoin-Adresse ist ein Fehler aufgetreten. Bitte nochmal versuchen.</string>
+
+    <string name="create_pin">PIN erstellen</string>
+    <string name="confirm_pin">PIN bestätigen</string>
+    <string name="entering_stealth">PIN wird aktiviert. Bitte warten.</string>
+
+    <string name="error_activating_stealth">Fehler beim Aktivieren der PIN. Falls der Fehler bestehen bleibt, bitte Sentinel neu installieren.</string>
+
+    <string name="options_scramble_pin">PIN-Eingabe durchmischen</string>
+    <string name="options_scramble_pin2">Durchmischt das Zahlenfeld der Pin-Eingabe.</string>
+    <string name="options_pin">PIN-Code</string>
+    <string name="options_pin2">PIN verwenden um Sentinel zu öffnen.</string>
+    <string name="options_broadcast_hex">Hex-Transaktion veröffentlichen</string>
+    <string name="options_broadcast_hex2">Eine signierte Hex-Transaktion veröffentlichen.</string>
+
+    <string name="watchlist">Beobachtungsliste</string>
+    <string name="deposit">Empfangen</string>
+
+    <string name="xpub_label">Bezeichnung</string>
+    <string name="new_account">Neuer Account</string>
+
+    <string name="total_title">Alle Accounts</string>
+    <string name="deposit_into">Empfangen auf...</string>
+
+    <string name="password">Passwort</string>
+    <string name="confirm_password">Passwort bestätigen</string>
+    <string name="invalid_password">Bitte ein Passwort mit mindestens 6 Zeichen verwenden.</string>
+    <string name="export_to_clipboard">In die Zwischenablage exportieren</string>
+    <string name="export_to_email">Als E-Mail exportieren</string>
+    <string name="error_password">Die eingegebenen Passwörter stimmen nicht überein. Bitte nochmal versuchen.</string>
+    <string name="encryption_error">Beim Verschlüsseln deines Wallet-Backups ist ein Fehler aufgetreten. Bitte nochmal versuchen.</string>
+    <string name="encrypted_backup">Verschlüsselte Wallet-Daten</string>
+    <string name="decryption_error">Beim Entschlüsseln des Wallet-Backups ist ein Fehler aufgetreten. Bitte nochmal versuchen.</string>
+    <string name="restore_wallet_from_backup">Wallet aus Backup wiederherstellen</string>
+
+    <string name="choose_email_client">E-Mail-Programm wählen:</string>
+
+    <string name="bip32_account">BIP32-Account</string>
+    <string name="bip44_account">BIP44/49-Account</string>
+    <string name="bip49_account">BIP49-Account</string>
+    <string name="bip84_account">BIP84-Account</string>
+    <string name="base58_error">Unbekanntes Format</string>
+    <string name="invalid_entry">Ungültiger XPUB oder ungültige Bitcoin-Adresse</string>
+
+    <string name="unknown_xpub">XPUB Tiefe</string>
+
+    <string name="action_sweep">Private Key übertragen</string>
+    <string name="enter_privkey">Private Key eingeben</string>
+    <string name="cannot_recognize_privkey">Private Key kann nicht erkannt werden</string>
+    <string name="cannot_sweep_privkey">Fehler beim Übertragen des Private Keys</string>
+    <string name="pushtx_returns_null">Zahlung fehlgeschlagen. Der Server gibt einen leeren Wert zurück.</string>
+
+    <string name="xpub_add_ok">XPUB erfolgreich hinzugefügt</string>
+    <string name="xpub_add_ko">XPUB hinzufügen fehlgeschlagen</string>
+
+    <string name="select_bitcoin_address1">Bitcoin-Adresse</string>
+    <string name="select_bitcoin_address2">Einzelne Bitcoin-Adresse</string>
+
+    <string name="select_bip44_xpub1">Bitcoin-Wallet</string>
+    <string name="select_bip44_xpub2">Bitcoin-Wallet über XPUB (BIP44)</string>
+
+    <string name="select_bip49_xpub1">SegWit-Bitcoin-Wallet</string>
+    <string name="select_bip49_xpub2">Bitcoin-Wallet über SegWit YPUB/ZPUB (BIP49/84)</string>
+
+    <string name="track_new">Folgendes beobachten...</string>
+    <string name="received_bitcoin">Bitcoins erhalten</string>
+
+    <string name="bitcoin_address">Bitcoin-Adresse</string>
+    <string name="bech32_address">Bech32-Bitcoin-Adresse</string>
+
+    <string name="start">Start</string>
+    <string name="get_started">Los geht's</string>
+    <string name="add_first_address">Füge eine Bitcoin-Adresse oder einen XPUB hinzu, um Sentinel zu aktivieren</string>
+
+    <string name="tx_length_error">Sentinel verarbeitet keine Transaktionen mit einer Größe von über 100KB. Bitte versuch deine Transaktion aufzuteilen.</string>
+    <string name="tx_hex">Hex-Transaktion</string>
+    <string name="enter_tx_hex">Transaktion im Hex-Format eingeben</string>
+    <string name="broadcast">Transaktion veröffentlichen</string>
+
+    <string name="select_network">Netzwerk auswählen...</string>
+    <string name="MainNet">MainNet</string>
+    <string name="TestNet">TestNet</string>
+
+    <string name="permission_alert_dialog_title_camera">Zugriff auf Kamera erforderlich</string>
+    <string name="permission_dialog_message_camera">Deine Wallet benötigt Zugriff auf die Kamera, um QR-Codes scannen zu können.</string>
+	
+</resources>
+
+<!-- Hinweis: 
+	
+	Last updated for version: 3.5.02
+	
+	Einige Fachbegriffe oder bereits eingedeutschte Wörter habe ich englisch gelassen, da es meiner Meinung nach sinnvoller ist.
+	
+	Folgende Begriffe sind betroffen: 
+	Backup, Block-Explorer, Exchange, Payment-Code, MainNet, Private Key, Public Key, TestNet, Wallet
+
+-->
