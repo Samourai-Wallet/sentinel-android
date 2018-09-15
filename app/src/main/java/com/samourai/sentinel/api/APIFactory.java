@@ -65,6 +65,7 @@ public class APIFactory	{
 
         JSONObject jsonObject  = null;
         xpub_amounts.clear();
+        xpub_txs.clear();
 
         for(int i = 0; i < xpubs.length; i++)   {
             try {
