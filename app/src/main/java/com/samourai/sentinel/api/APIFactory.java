@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class APIFactory	{
 
@@ -229,14 +230,21 @@ public class APIFactory	{
                     }
 
                     if(addr != null)  {
-
-                        Tx tx = new Tx(hash, _addr, amount, ts, (latest_block > 0L && height > 0L) ? (latest_block - height) + 1 : 0);
-
                         if(!xpub_txs.containsKey(addr))  {
                             xpub_txs.put(addr, new ArrayList<Tx>());
                         }
-                        xpub_txs.get(addr).add(tx);
 
+                        List<Tx> addrTxs = xpub_txs.get(addr);
+                        boolean txAddedPreviously = false;
+                        for (Tx tx : addrTxs) {
+                            if (tx.getHash().equals(hash)) {
+                                txAddedPreviously = true;
+                                break;
+                            }
+                        }
+                        if (!txAddedPreviously) {
+                            xpub_txs.get(addr).add(new Tx(hash, _addr, amount, ts, (latest_block > 0L && height > 0L) ? (latest_block - height) + 1 : 0));
+                        }
                     }
                 }
 
@@ -271,9 +279,8 @@ public class APIFactory	{
     public List<Tx> getAllXpubTxs()  {
 
         List<Tx> ret = new ArrayList<Tx>();
-        for(String key : xpub_txs.keySet())  {
-            List<Tx> txs = xpub_txs.get(key);
-            ret.addAll(txs);
+        for (Map.Entry<String, List<Tx>> entry : xpub_txs.entrySet()) {
+            ret.addAll(entry.getValue());
         }
 
         Collections.sort(ret, new TxMostRecentDateComparator());
