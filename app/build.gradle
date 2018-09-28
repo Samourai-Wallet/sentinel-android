@@ -8,8 +8,8 @@ android {
         applicationId "com.samourai.sentinel"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 44
-        versionName '3.5.02'
+        versionCode 45
+        versionName '3.5.03'
         multiDexEnabled true
     }
     buildTypes {
@@ -41,19 +41,19 @@ android {
             minSdkVersion 21
             applicationId 'com.samourai.sentinel'
             targetSdkVersion 26
-            versionCode 44
-            versionName '3.5.02'
+            versionCode 45
+            versionName '3.5.03'
             resValue "string", "app_name", "Sentinel"
-            resValue "string", "version_name", "3.5.02"
+            resValue "string", "version_name", "3.5.03"
         }
         staging {
             minSdkVersion 21
             applicationId 'com.samourai.sentinel.staging'
             targetSdkVersion 26
-            versionCode 44
-            versionName '3.5.02'
+            versionCode 45
+            versionName '3.5.03'
             resValue "string", "app_name", "Sentinel Staging"
-            resValue "string", "version_name", "3.5.02"
+            resValue "string", "version_name", "3.5.03"
         }
     }
 }
