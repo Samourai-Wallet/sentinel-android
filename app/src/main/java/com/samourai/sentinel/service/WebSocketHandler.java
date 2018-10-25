@@ -16,6 +16,7 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 
 import com.samourai.sentinel.MainActivity2;
 import com.samourai.sentinel.R;
+import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.NotificationsFactory;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
@@ -149,9 +150,7 @@ public class WebSocketHandler {
             try {
 
                 mConnection = new WebSocketFactory()
-//                        .createSocket("wss://api.samouraiwallet.com/v1/inv")
-                        .createSocket("wss://ws.blockchain.info/inv")
-                        .addHeader("Origin", "https://blockchain.info").recreate()
+                        .createSocket(SamouraiSentinel.getInstance().isTestNet() ? "wss://api.samourai.io/test/v2/inv" : "wss://api.samourai.io/v2/inv")
                         .addListener(new WebSocketAdapter() {
 
                             @Override
