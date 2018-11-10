@@ -64,10 +64,11 @@ public class WebSocketHandler {
 
     public synchronized void subscribe() {
 
-        send("{\"op\":\"blocks_sub\"}");
-        Log.i("WebSocketHandler", "{\"op\":\"blocks_sub\"}");
-
         if(addrs != null && addrs.length > 0)    {
+
+            send("{\"op\":\"blocks_sub\"}");
+            Log.i("WebSocketHandler", "{\"op\":\"blocks_sub\"}");
+
             for(int i = 0; i < addrs.length; i++) {
                 if(addrs[i] != null && addrs[i].length() > 0) {
                     send("{\"op\":\"addr_sub\", \"addr\":\""+ addrs[i] + "\"}");
