@@ -6,16 +6,13 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 
-import org.bitcoinj.crypto.MnemonicException;
-import com.samourai.sentinel.hd.HD_WalletFactory;
+import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-//import android.util.Log;
+import android.util.Log;
 
 public class WebSocketService extends Service {
 
@@ -37,20 +34,12 @@ public class WebSocketService extends Service {
         //
         context = this.getApplicationContext();
 
-        try {
-            if(HD_WalletFactory.getInstance(context).get() == null)    {
-                return;
-            }
-        }
-        catch(IOException ioe) {
-            ioe.printStackTrace();
-        }
-        catch(MnemonicException.MnemonicLengthException mle) {
-            mle.printStackTrace();
-        }
-
-        addrSubs = ReceiveLookAtUtil.getInstance().getReceives();
+        List<String> addrSubs = SamouraiSentinel.getInstance(WebSocketService.this).getAllAddrsSorted();
         addrs = addrSubs.toArray(new String[addrSubs.size()]);
+
+        if(addrs.length == 0)    {
+            return;
+        }
 
         webSocketHandler = new WebSocketHandler(WebSocketService.this, addrs);
         connectToWebsocketIfNotConnected();

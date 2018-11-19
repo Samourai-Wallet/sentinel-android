@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.api.APIFactory;
+import com.samourai.sentinel.service.BackgroundManager;
 import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.ConnectivityStatus;
@@ -40,6 +42,26 @@ public class MainActivity2 extends Activity {
 
     private Timer timer = null;
     private Handler handler = null;
+
+    protected BackgroundManager.Listener bgListener = new BackgroundManager.Listener()  {
+
+        public void onBecameForeground()    {
+
+            Intent intent = new Intent("com.samourai.sentinel.BalanceFragment.REFRESH\"");
+            LocalBroadcastManager.getInstance(MainActivity2.this.getApplicationContext()).sendBroadcast(intent);
+        }
+
+        public void onBecameBackground()    {
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if(AppUtil.getInstance(MainActivity2.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
+                    stopService(new Intent(MainActivity2.this.getApplicationContext(), WebSocketService.class));
+                }
+            }
+
+        }
+
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,6 +188,8 @@ public class MainActivity2 extends Activity {
 
         }
 
+        BackgroundManager.get(MainActivity2.this).addListener(bgListener);
+
     }
 
     @Override
@@ -195,6 +219,8 @@ public class MainActivity2 extends Activity {
         if(AppUtil.getInstance(MainActivity2.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
             stopService(new Intent(MainActivity2.this.getApplicationContext(), WebSocketService.class));
         }
+
+        BackgroundManager.get(this).removeListener(bgListener);
 
         super.onDestroy();
     }

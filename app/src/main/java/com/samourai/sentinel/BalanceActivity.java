@@ -589,6 +589,10 @@ public class BalanceActivity extends Activity {
                     ;
                 }
 
+                if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
+                    startService(new Intent(BalanceActivity.this.getApplicationContext(), WebSocketService.class));
+                }
+
                 PrefsUtil.getInstance(BalanceActivity.this).setValue(PrefsUtil.FIRST_RUN, false);
 
                 handler.post(new Runnable() {
@@ -1073,6 +1077,7 @@ public class BalanceActivity extends Activity {
                         }
 
                     }
+
                 });
 
                 Looper.loop();

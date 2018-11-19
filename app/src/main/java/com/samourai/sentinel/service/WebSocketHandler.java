@@ -26,17 +26,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class WebSocketHandler {
 
     private WebSocket mConnection = null;
-
-    private Timer pingTimer = null;
-    private final long pingInterval = 20000L;
-    private final long pongTimeout = 5000L;
-    private boolean pingPongSuccess = false;
 
     private String[] addrs = null;
 
@@ -69,10 +66,12 @@ public class WebSocketHandler {
             send("{\"op\":\"blocks_sub\"}");
             Log.i("WebSocketHandler", "{\"op\":\"blocks_sub\"}");
 
+            List<String> seen = new ArrayList<String>();
             for(int i = 0; i < addrs.length; i++) {
-                if(addrs[i] != null && addrs[i].length() > 0) {
+                if(addrs[i] != null && addrs[i].length() > 0 && !seen.contains(addrs[i])) {
                     send("{\"op\":\"addr_sub\", \"addr\":\""+ addrs[i] + "\"}");
                     Log.i("WebSocketHandler", "{\"op\":\"addr_sub\",\"addr\":\"" + addrs[i] + "\"}");
+                    seen.add(addrs[i]);
                 }
             }
         }
@@ -85,8 +84,6 @@ public class WebSocketHandler {
 
     public void stop() {
 
-        stopPingTimer();
-
         if(mConnection != null && mConnection.isOpen()) {
             mConnection.disconnect();
         }
@@ -97,7 +94,6 @@ public class WebSocketHandler {
         try {
             stop();
             connect();
-            startPingTimer();
         }
         catch (IOException | com.neovisionaries.ws.client.WebSocketException e) {
             e.printStackTrace();
@@ -154,12 +150,6 @@ public class WebSocketHandler {
                         .createSocket(SamouraiSentinel.getInstance().isTestNet() ? "wss://api.samourai.io/test/v2/inv" : "wss://api.samourai.io/v2/inv")
                         .addListener(new WebSocketAdapter() {
 
-                            @Override
-                            public void onPongFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
-                                super.onPongFrame(websocket, frame);
-                                pingPongSuccess = true;
-                            }
-
                             public void onTextMessage(WebSocket websocket, String message) {
 //                                    Log.d("WebSocket", message);
                                 try {
@@ -172,7 +162,7 @@ public class WebSocketHandler {
                                     }
 
                                     if (jsonObject == null) {
-//                                            Log.i("WebSocketHandler", "jsonObject is null");
+                                            Log.i("WebSocketHandler", "jsonObject is null");
                                         return;
                                     }
 
@@ -191,14 +181,8 @@ public class WebSocketHandler {
 
                                         long value = 0L;
                                         long total_value = 0L;
-                                        long ts = 0L;
-                                        String in_addr = null;
                                         String out_addr = null;
                                         String hash = null;
-
-                                        if (objX.has("time")) {
-                                            ts = objX.getLong("time");
-                                        }
 
                                         if (objX.has("hash")) {
                                             hash = objX.getString("hash");
@@ -211,7 +195,10 @@ public class WebSocketHandler {
                                             JSONObject outObj = null;
                                             for (int j = 0; j < outArray.length(); j++) {
                                                 outObj = (JSONObject) outArray.get(j);
-                                                if(outObj.has("addr") && ReceiveLookAtUtil.getInstance().contains(outObj.getString("addr")))   {
+                                                if (outObj.has("value")) {
+                                                    value = outObj.getLong("value");
+                                                }
+                                                if(outObj.has("addr"))   {
                                                     total_value += value;
                                                     out_addr = outObj.getString("addr");
                                                 }
@@ -249,7 +236,9 @@ public class WebSocketHandler {
 
                             }
                         });
-                mConnection.connect();
+                if(mConnection != null)    {
+                    mConnection.connect();
+                }
 
                 subscribe();
 
@@ -260,41 +249,6 @@ public class WebSocketHandler {
 
             return null;
         }
-    }
-
-    private void startPingTimer(){
-
-        pingTimer = new Timer();
-        try {
-            pingTimer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    if (mConnection != null) {
-                        pingPongSuccess = false;
-                        if (mConnection.isOpen()) mConnection.sendPing();
-                        startPongTimer();
-                    }
-                }
-            }, pingInterval, pingInterval);
-        }
-        catch(IllegalStateException ise) {
-            pingTimer = null;
-        }
-    }
-
-    private void stopPingTimer(){
-        if(pingTimer != null) pingTimer.cancel();
-    }
-
-    private void startPongTimer(){
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (!pingPongSuccess) {
-                    start();
-                }
-            }
-        }, pongTimeout);
     }
 
 }

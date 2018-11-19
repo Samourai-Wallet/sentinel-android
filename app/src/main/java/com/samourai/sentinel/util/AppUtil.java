@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Looper;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -77,12 +78,16 @@ public class AppUtil {
     }
 
     public boolean isServiceRunning(Class<?> serviceClass) {
+
         ActivityManager manager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.d("AppUtil", "service class name:" + serviceClass.getName() + " is running");
                 return true;
             }
         }
+
+        Log.d("AppUtil", "service class name:" + serviceClass.getName() + " is not running");
         return false;
     }
 
