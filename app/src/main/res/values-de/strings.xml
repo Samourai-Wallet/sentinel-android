@@ -143,7 +143,7 @@
     <string name="bech32_address">Bech32-Bitcoin-Adresse</string>
 
     <string name="start">Start</string>
-    <string name="get_started">Los geht's</string>
+    <string name="get_started">Los geht\'s</string>
     <string name="add_first_address">Füge eine Bitcoin-Adresse oder einen XPUB hinzu, um Sentinel zu aktivieren</string>
 
     <string name="tx_length_error">Sentinel verarbeitet keine Transaktionen mit einer Größe von über 100KB. Bitte versuch deine Transaktion aufzuteilen.</string>
@@ -162,7 +162,7 @@
 
 <!-- Hinweis: 
 	
-	Last updated for version: 3.5.02
+	Last updated for version: 3.5.04
 	
 	Einige Fachbegriffe oder bereits eingedeutschte Wörter habe ich englisch gelassen, da es meiner Meinung nach sinnvoller ist.
 	
