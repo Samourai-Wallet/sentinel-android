@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="new_version_message">Sentinel'e hoş geldiniz.\n\nSentinel yalnızca para yatırabileceğiniz bir bitcoin cüzdanıdır. Sentinel bitcoin gönderemez. Herhangi bir XPUB'ı okutun ve Sentinel nöbette bekleyip sizi gelen tüm yeni işlemler hakkında bilgilendirecek ve bitcoin alabilmeniz için yeni adresler oluşturmanıza izin verecektir.\n\nSentinel fiziksel cüzdanlarınıza gelip giden tüm işlemleri izlemenin en kolay ve güvenli yoludur.\n\nSentinel cüzdanınızdan bitcoin gönderemez ve sizin özel anahtarlarınız hiçbir şekilde Sentinel'e iletilmez.</string>
+    <string name="new_version_message">Sentinel\'e hoş geldiniz.\n\nSentinel yalnızca para yatırabileceğiniz bir bitcoin cüzdanıdır. Sentinel bitcoin gönderemez. Herhangi bir XPUB\'ı okutun ve Sentinel nöbette bekleyip sizi gelen tüm yeni işlemler hakkında bilgilendirecek ve bitcoin alabilmeniz için yeni adresler oluşturmanıza izin verecektir.\n\nSentinel fiziksel cüzdanlarınıza gelip giden tüm işlemleri izlemenin en kolay ve güvenli yoludur.\n\nSentinel cüzdanınızdan bitcoin gönderemez ve sizin özel anahtarlarınız hiçbir şekilde Sentinel\'e iletilmez.</string>
 
     <string name="decrypting_bip38">BIP38 şifresi çözülüyor, lütfen bekleyin...</string>
 
@@ -42,11 +42,11 @@
     <string name="copied_to_clipboard">Panoya kopyalandı</string>
     <string name="send_payment_code">Ödeme kodu gönder</string>
 
-    <string name="ask_you_sure_exit">Sentinel'den çıkmak istediğinize emin misiniz?</string>
+    <string name="ask_you_sure_exit">Sentinel\'den çıkmak istediğinize emin misiniz?</string>
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
 
-    <string name="pin_5_8">5 ve 8 karakter arası uzunlukta bir PIN kodu oluşturun. Bu aygıtta Sentinel'e giriş yapmak için bu PIN koduna gereksiniminiz olacak.</string>
+    <string name="pin_5_8">5 ve 8 karakter arası uzunlukta bir PIN kodu oluşturun. Bu aygıtta Sentinel\'e giriş yapmak için bu PIN koduna gereksiniminiz olacak.</string>
     <string name="pin_5_8_confirm">5 ve 8 karakter arasındaki PIN kodunuzu doğrulayın</string>
     <string name="pin_error">PIN kodu hatası</string>
     <string name="no_internet">İnternet bağlantısı bulunamadı. Lütfen yeniden deneyin.</string>
@@ -77,12 +77,12 @@
     <string name="confirm_pin">PIN kodunuzu doğrulayın</string>
     <string name="entering_stealth">PIN kodu uygulanıyor, lütfen bekleyin.</string>
 
-    <string name="error_activating_stealth">Gizli başlatma etkinleştirilirken hata. Eğer hata sürerse Sentinel'i yeniden yükleyin.</string>
+    <string name="error_activating_stealth">Gizli başlatma etkinleştirilirken hata. Eğer hata sürerse Sentinel\'i yeniden yükleyin.</string>
 
     <string name="options_scramble_pin">PIN ekranını karıştır</string>
-    <string name="options_scramble_pin2">Sentinel'e girmek için karıştırılmış numara ekranı kullanın.</string>
+    <string name="options_scramble_pin2">Sentinel\'e girmek için karıştırılmış numara ekranı kullanın.</string>
     <string name="options_pin">Kullanıcı PIN kodu</string>
-    <string name="options_pin2">Sentinel'e girmek için kullanıcı PIN kodu kullanın.</string>
+    <string name="options_pin2">Sentinel\'e girmek için kullanıcı PIN kodu kullanın.</string>
 
     <string name="watchlist">İzleme dizelgesi</string>
     <string name="deposit">Yatırma</string>
@@ -141,7 +141,7 @@
 
     <string name="start">Başla</string>
     <string name="get_started">Başlayalım</string>
-    <string name="add_first_address">Herhangi bir Bitcoin adresini veya XPUB'ı ekleyin ve Sentinel etkinleştirilecektir</string>
+    <string name="add_first_address">Herhangi bir Bitcoin adresini veya XPUB\'ı ekleyin ve Sentinel etkinleştirilecektir</string>
 
     <string name="tx_length_error">Samuray, 100KB boyutu üzerindeki işlemleri gerçekleştirmemektedir. Lütfen işleminizi bölmeyi deneyin.</string>
 
