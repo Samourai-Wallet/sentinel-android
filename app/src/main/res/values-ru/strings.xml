@@ -35,7 +35,7 @@
 
     <string name="timeline_today">Сегодня</string>
     <string name="timeline_yesterday">Вчера</string>
-    <string name="timeline_older">Давно</string>
+    <string name="timeline_older">Эти операции были давно</string>
 
     <string name="you_received">Вы получили</string>
     <string name="you_sent">Вы отправили</string>
@@ -137,7 +137,7 @@
     <string name="select_bip49_xpub2">биткоин-кошелёк через Segwit YPUB/ZPUB (BIP49/84)</string>
 
     <string name="track_new">Отследить новый...</string>
-    <string name="received_bitcoin">Получен биткоин</string>
+    <string name="received_bitcoin">Получено</string>
 
     <string name="bitcoin_address">биткоин-адрес</string>
     <string name="bech32_address">bech32 биткоин-адрес </string>
