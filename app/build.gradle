@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
     flavorDimensions "versionCode"
     defaultConfig {
         applicationId "com.samourai.sentinel"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 48
-        versionName '3.5.06'
+        versionName '3.5.10'
         multiDexEnabled true
     }
     buildTypes {
@@ -40,29 +40,29 @@ android {
         production {
             minSdkVersion 21
             applicationId 'com.samourai.sentinel'
-            targetSdkVersion 26
-            versionCode 48
-            versionName '3.5.06'
+            targetSdkVersion 28
+            versionCode 49
+            versionName '3.5.10'
             resValue "string", "app_name", "Sentinel"
-            resValue "string", "version_name", "3.5.06"
+            resValue "string", "version_name", "3.5.10"
         }
         staging {
             minSdkVersion 21
             applicationId 'com.samourai.sentinel.staging'
-            targetSdkVersion 26
-            versionCode 48
-            versionName '3.5.06'
-            resValue "string", "app_name", "Sentinel Staging"
-            resValue "string", "version_name", "3.5.06"
+            targetSdkVersion 28
+            versionCode 49
+            versionName '3.5.10'
+            resValue "string", "app_name", "Sentinel"
+            resValue "string", "version_name", "3.5.10"
         }
     }
 }
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:multidex:1.0.0'
-    implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.baoyz.swipemenulistview:library:1.2.1'
     implementation 'com.neovisionaries:nv-websocket-client:1.9'
     implementation 'commons-codec:commons-codec:1.4'
