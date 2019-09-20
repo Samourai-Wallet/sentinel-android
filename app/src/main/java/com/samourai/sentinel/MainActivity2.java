@@ -23,7 +23,7 @@ import com.samourai.sentinel.util.ConnectivityStatus;
 import com.samourai.sentinel.util.ExchangeRateFactory;
 import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.TimeOutUtil;
-import com.samourai.sentinel.util.Web;
+import com.samourai.sentinel.util.WebUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -282,51 +282,46 @@ public class MainActivity2 extends Activity {
 
                 String response = null;
                 try {
-                    response = Web.getURL(Web.LBC_EXCHANGE_URL);
+                    response = WebUtil.getInstance(getApplicationContext()).getURL(WebUtil.LBC_EXCHANGE_URL);
                     ExchangeRateFactory.getInstance(MainActivity2.this).setDataLBC(response);
                     ExchangeRateFactory.getInstance(MainActivity2.this).parseLBC();
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 response = null;
                 try {
-                    response = Web.getURL(Web.BTCe_EXCHANGE_URL + "btc_usd");
+                    response = WebUtil.getInstance(getApplicationContext()).getURL(WebUtil.BTCe_EXCHANGE_URL + "btc_usd");
                     ExchangeRateFactory.getInstance(MainActivity2.this).setDataBTCe(response);
                     ExchangeRateFactory.getInstance(MainActivity2.this).parseBTCe();
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 response = null;
                 try {
-                    response = Web.getURL(Web.BTCe_EXCHANGE_URL + "btc_rur");
+                    response = WebUtil.getInstance(getApplicationContext()).getURL(WebUtil.BTCe_EXCHANGE_URL + "btc_rur");
                     ExchangeRateFactory.getInstance(MainActivity2.this).setDataBTCe(response);
                     ExchangeRateFactory.getInstance(MainActivity2.this).parseBTCe();
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 response = null;
                 try {
-                    response = Web.getURL(Web.BTCe_EXCHANGE_URL + "btc_eur");
+                    response = WebUtil.getInstance(getApplicationContext()).getURL(WebUtil.BTCe_EXCHANGE_URL + "btc_eur");
                     ExchangeRateFactory.getInstance(MainActivity2.this).setDataBTCe(response);
                     ExchangeRateFactory.getInstance(MainActivity2.this).parseBTCe();
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 response = null;
                 try {
-                    response = Web.getURL(Web.BFX_EXCHANGE_URL);
+                    response = WebUtil.getInstance(getApplicationContext()).getURL(WebUtil.BFX_EXCHANGE_URL);
                     ExchangeRateFactory.getInstance(MainActivity2.this).setDataBFX(response);
                     ExchangeRateFactory.getInstance(MainActivity2.this).parseBFX();
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

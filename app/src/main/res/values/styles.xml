@@ -10,4 +10,18 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+
+
+
+    <style name="AppTheme.Launcher" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:statusBarColor">
+            @color/window
+        </item>
+        <item name="android:windowBackground">
+            @drawable/launch_screen
+        </item>
+    </style>
+
+
+
 </resources>

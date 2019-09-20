@@ -307,6 +307,9 @@ public class BalanceActivity extends Activity {
         if (id == R.id.action_settings) {
             doSettings();
         }
+        if (id == R.id.action_network) {
+           startActivity(new Intent(this,Network.class));
+        }
         else if (id == R.id.action_sweep) {
             confirmAccountSelection(true);
         }

@@ -14,6 +14,7 @@ public class PrefsUtil {
     public static final String BLOCK_EXPLORER = "blockExplorer";
     public static final String FIRST_RUN = "1stRun";
     public static final String SIM_IMSI = "IMSI";
+    public static final String ENABLE_TOR = "ENABLE_TOR";
     public static final String PIN_HASH = "pinHash";
     public static final String XPUB = "xpub";
     public static final String SCRAMBLE_PIN = "scramblePin";

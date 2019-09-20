@@ -11,10 +11,9 @@ import com.samourai.sentinel.sweep.MyTransactionOutPoint;
 import com.samourai.sentinel.sweep.SuggestedFee;
 import com.samourai.sentinel.sweep.UTXO;
 import com.samourai.sentinel.util.AddressFactory;
-import com.samourai.sentinel.util.Web;
+import com.samourai.sentinel.util.WebUtil;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.script.Script;
 import org.json.JSONArray;
@@ -22,7 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.bouncycastle.util.encoders.Hex;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -72,7 +70,7 @@ public class APIFactory	{
 
     public JSONObject getXPUB(String[] xpubs) {
 
-        String _url = SamouraiSentinel.getInstance().isTestNet() ? Web.SAMOURAI_API2_TESTNET : Web.SAMOURAI_API2;
+        String _url =WebUtil.getAPIUrl(context );
 
         JSONObject jsonObject  = null;
         xpub_amounts.clear();
@@ -83,7 +81,7 @@ public class APIFactory	{
                 url.append("multiaddr?active=");
                 url.append(xpubs[i]);
 //                Log.i("APIFactory", "XPUB:" + url.toString());
-                String response = Web.getURL(url.toString());
+                String response = WebUtil.getInstance(context).getURL(url.toString());
                 Log.i("APIFactory", "XPUB response:" + response);
                 try {
                     jsonObject = new JSONObject(response);
@@ -290,7 +288,7 @@ public class APIFactory	{
 
     public synchronized JSONObject getUnspentOutputs(String[] xpubs) {
 
-        String _url = SamouraiSentinel.getInstance().isTestNet() ? Web.SAMOURAI_API2_TESTNET : Web.SAMOURAI_API2;
+        String _url = WebUtil.getAPIUrl(context);
 
         JSONObject jsonObject  = null;
 
@@ -302,7 +300,7 @@ public class APIFactory	{
             args.append("active=");
             args.append(StringUtils.join(xpubs, URLEncoder.encode("|", "UTF-8")));
             Log.d("APIFactory", "UTXO args:" + args.toString());
-            response = Web.postURL(_url + "unspent?", args.toString());
+            response = WebUtil.getInstance(context).postURL(_url + "unspent?", args.toString());
             Log.d("APIFactory", "UTXO:" + response);
 
             parseUnspentOutputs(response);
@@ -406,7 +404,7 @@ public class APIFactory	{
 
     public synchronized UTXO getUnspentOutputsForSweep(String address) {
 
-        String _url = SamouraiSentinel.getInstance().isTestNet() ? Web.SAMOURAI_API2_TESTNET : Web.SAMOURAI_API2;
+        String _url = WebUtil.getAPIUrl(context);
 
         try {
 
@@ -416,7 +414,7 @@ public class APIFactory	{
             args.append("active=");
             args.append(address);
             Log.d("APIFactory", "unspents call:" + args.toString());
-            response = Web.postURL(_url + "unspent?", args.toString());
+            response = WebUtil.getInstance(context).postURL(_url + "unspent?", args.toString());
 
             return parseUnspentOutputsForSweep(response);
 
@@ -531,9 +529,9 @@ public class APIFactory	{
         JSONObject jsonObject  = null;
 
         try {
-            StringBuilder url = new StringBuilder(Web.BITCOIND_FEE_URL);
+            String url =  WebUtil.getAPIUrl(context).concat("fees");
 //            Log.i("APIFactory", "Dynamic fees:" + url.toString());
-            String response = Web.getURL(url.toString());
+            String response = WebUtil.getInstance(context).getURL(url);
 //            Log.i("APIFactory", "Dynamic fees response:" + response);
             try {
                 jsonObject = new JSONObject(response);

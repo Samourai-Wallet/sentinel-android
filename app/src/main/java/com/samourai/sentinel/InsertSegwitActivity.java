@@ -9,7 +9,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.samourai.sentinel.util.AppUtil;
-import com.samourai.sentinel.util.Web;
+import com.samourai.sentinel.util.WebUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,7 +77,7 @@ public class InsertSegwitActivity extends Activity {
                 args.append("&segwit=bip");
                 args.append(params[1]);
                 Log.d("InsertSegwitActivity", "Segwit:" + args.toString());
-                response = Web.postURL(Web.SAMOURAI_API2 + "xpub/", args.toString());
+                response = WebUtil.getInstance(getApplicationContext()).postURL(WebUtil.getAPIUrl(getApplicationContext()) + "xpub/", args.toString());
 
                 Log.d("InsertSegwitActivity", "Segwit:" + response);
 

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.samourai.sentinel.BuildConfig;
 import com.samourai.sentinel.R;
+import com.samourai.sentinel.util.LogUtil;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -106,6 +107,7 @@ public class TorService extends Service {
             compositeDisposable.add(disposable);
 
         } else if (intent.getAction().equals(TorService.RENEW_IDENTITY)) {
+            LogUtil.info(TAG, "onStartCommand: RENEW_IDENTITY");
             renewIdentity();
             return START_STICKY;
         } else if (Objects.requireNonNull(intent.getAction()).equals(TorService.START_SERVICE)) {

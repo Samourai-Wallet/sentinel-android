@@ -3,7 +3,7 @@ package com.samourai.sentinel.sweep;
 import android.content.Context;
 
 import com.samourai.sentinel.SamouraiSentinel;
-import com.samourai.sentinel.util.Web;
+import com.samourai.sentinel.util.WebUtil;
 
 public class PushTx {
 
@@ -25,12 +25,12 @@ public class PushTx {
 
     public String samourai(String hexString) {
 
-        String _url = SamouraiSentinel.getInstance().isTestNet() ? Web.SAMOURAI_API2_TESTNET : Web.SAMOURAI_API2;
+        String _url = WebUtil.getAPIUrl(context);
 
         try {
             String response = null;
 
-            response = Web.postURL(_url + "pushtx/", "tx=" + hexString);
+            response = WebUtil.getInstance(context).postURL(_url + "pushtx/", "tx=" + hexString);
 
             return response;
         }

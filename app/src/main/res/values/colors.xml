@@ -11,8 +11,13 @@
     <color name="text_secondary">#FFbab9b9</color>
     <color name="accent">#FF03A9F4</color>
     <color name="balance">#FF13181f</color>
+    <color name="success_green">#0ecf96</color>
+    <color name="red">#FFFF4444</color>
     <color name="pinBG">#FF212429</color>
     <color name="pinGreen">#FF4a9c52</color>
+    <item name="disabledRed" type="color">#A82D2D</item>
+    <color name="warning_yellow">#B6B260</color>
+    <color name="green_ui_2">#0ecf96</color>
 
     <color name="white">#fafafa</color>
     <color name="blue_semi_transparent_pressed">#80738ffe</color>

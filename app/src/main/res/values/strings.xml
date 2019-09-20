@@ -158,4 +158,13 @@
     <string name="permission_alert_dialog_title_camera">Requesting camera permission</string>
     <string name="permission_dialog_message_camera">Your wallet needs access to the camera so it can scan QR codes.</string>
 
+    <string name="is_offline">Samourai is offline</string>
+    <string name="history_will_be_updated">Balance and transaction history will not be updated until a working data connection is establishede</string>
+    <string name="you_received_s">You received</string>
+    <string name="paynym_follow_message">This fee covers the cost of creating a special  type of transaction on the blockchain.  This keeps PayNym decentralized</string>
+    <string name="paynym_follow_fee_message">A one time connection fee of   will be charged to follow contact</string>
+    <string name="initializing_tor">initializing Tor…</string>
+    <string name="renew">RENEW</string>
+    <string name="in_offline_mode">Samourai Wallet is in offline mode.</string>
+
 </resources>

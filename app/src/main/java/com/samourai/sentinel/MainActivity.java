@@ -5,21 +5,35 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
+import com.samourai.sentinel.tor.TorManager;
 import com.samourai.sentinel.util.AppUtil;
+import com.samourai.sentinel.util.ConnectivityStatus;
 import com.samourai.sentinel.util.PrefsUtil;
 
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.TestNet3Params;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class MainActivity extends Activity {
+
+    private CompositeDisposable compositeDisposables = new CompositeDisposable();
+
+    private TextView loaderTxView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.main);
+        setContentView(R.layout.activity_main);
+        loaderTxView = findViewById(R.id.loader_text);
 
-        if(PrefsUtil.getInstance(MainActivity.this).getValue(PrefsUtil.TESTNET, false) == true)    {
+        if(PrefsUtil.getInstance(MainActivity.this).getValue(PrefsUtil.TESTNET, false))    {
             SamouraiSentinel.getInstance().setCurrentNetworkParams(TestNet3Params.get());
         }
 
@@ -27,7 +41,22 @@ public class MainActivity extends Activity {
             doSelectNet();
         }
         else    {
-            doMain();
+            if (ConnectivityStatus.hasConnectivity(getApplicationContext()) && PrefsUtil.getInstance(getApplicationContext()).getValue(PrefsUtil.ENABLE_TOR, false)) {
+                loaderTxView.setText(getText(R.string.initializing_tor));
+                Disposable disposable = TorManager.getInstance(getApplicationContext())
+                        .torStatus
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(connection_states -> {
+                            if (connection_states == TorManager.CONNECTION_STATES.CONNECTED) {
+                                doMain();
+                                compositeDisposables.dispose();
+                            }
+                        });
+                compositeDisposables.add(disposable);
+            }else {
+                doMain();
+            }
         }
 
     }
@@ -37,6 +66,12 @@ public class MainActivity extends Activity {
         intent = new Intent(MainActivity.this, MainActivity2.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposables.dispose();
     }
 
     private void doSelectNet()  {

@@ -22,10 +22,6 @@ public class SentinelApplication extends Application {
     public void onCreate() {
         super.onCreate();
         setUpChannels();
-        Intent startIntent = new Intent(this, TorService.class);
-        startIntent.setAction(TorService.START_SERVICE);
-        startService(startIntent);
-
         if (PrefsUtil.getInstance(this).getValue(PrefsUtil.ENABLE_TOR, false)) {
             startService();
         }
