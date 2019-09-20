@@ -27,7 +27,6 @@ import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.permissions.PermissionsUtil;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.FormatsUtil;
-import com.samourai.sentinel.util.Web;
 
 import net.sourceforge.zbar.Symbol;
 

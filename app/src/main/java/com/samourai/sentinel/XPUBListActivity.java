@@ -58,7 +58,6 @@ import com.samourai.sentinel.util.FormatsUtil;
 import com.samourai.sentinel.util.MapUtil;
 import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
-import com.samourai.sentinel.util.Web;
 
 public class XPUBListActivity extends Activity {
 
