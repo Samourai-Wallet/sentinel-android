@@ -557,6 +557,10 @@ public class BalanceActivity extends Activity {
             public void run() {
                 Looper.prepare();
 
+                runOnUiThread(() -> {
+                    swipeRefreshLayout.setRefreshing(true);
+                });
+
                 int idx = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount();
 
                 List<String> _xpubs = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrsSorted();
@@ -600,9 +604,8 @@ public class BalanceActivity extends Activity {
 
                 handler.post(new Runnable() {
                     public void run() {
-                        if(dragged)    {
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
+                        swipeRefreshLayout.setRefreshing(false);
+
                         txAdapter.notifyDataSetChanged();
                         displayBalance();
                     }
