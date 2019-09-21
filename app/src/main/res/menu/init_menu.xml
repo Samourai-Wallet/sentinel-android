@@ -5,4 +5,12 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         />
+
+
+    <item android:id="@+id/action_network_init"
+        android:icon="@drawable/ic_network_check_white_24dp"
+        android:visible="true"
+        android:title=""
+        android:showAsAction="always"/>
+
 </menu>

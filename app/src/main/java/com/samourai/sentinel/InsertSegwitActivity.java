@@ -16,6 +16,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import okhttp3.FormBody;
+
 public class InsertSegwitActivity extends Activity {
 
     private ProgressDialog progress = null;
@@ -70,14 +72,16 @@ public class InsertSegwitActivity extends Activity {
 
             String response = null;
             try {
-                StringBuilder args = new StringBuilder();
-                args.append("xpub=");
-                args.append(params[0]);
-                args.append("&type=restore");
-                args.append("&segwit=bip");
-                args.append(params[1]);
-                Log.d("InsertSegwitActivity", "Segwit:" + args.toString());
-                response = WebUtil.getInstance(getApplicationContext()).postURL(WebUtil.getAPIUrl(getApplicationContext()) + "xpub/", args.toString());
+
+                FormBody body    = new FormBody.Builder()
+                        .add("xpub", params[0])
+                        .add("type", "restore")
+                        .add("segwit", "bip".concat(params[1]))
+                        .build();
+
+
+                Log.d("InsertSegwitActivity", "Segwit:" + body.toString());
+                response = WebUtil.getInstance(getApplicationContext()).postURL(WebUtil.getAPIUrl(getApplicationContext()) + "xpub/", body);
 
                 Log.d("InsertSegwitActivity", "Segwit:" + response);
 

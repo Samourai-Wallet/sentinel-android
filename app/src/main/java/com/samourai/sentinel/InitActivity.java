@@ -91,6 +91,9 @@ public class InitActivity extends Activity {
         if (id == R.id.action_restore) {
             AppUtil.getInstance(InitActivity.this).doRestore();
         }
+        if (id == R.id.action_network_init) {
+            startActivity(new Intent(this,Network.class));
+        }
         else {
             ;
         }

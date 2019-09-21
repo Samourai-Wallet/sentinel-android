@@ -29,6 +29,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.FormBody;
+
 public class APIFactory	{
 
     private static long xpub_balance = 0L;
@@ -296,11 +298,14 @@ public class APIFactory	{
 
             String response = null;
 
-            StringBuilder args = new StringBuilder();
-            args.append("active=");
-            args.append(StringUtils.join(xpubs, URLEncoder.encode("|", "UTF-8")));
-            Log.d("APIFactory", "UTXO args:" + args.toString());
-            response = WebUtil.getInstance(context).postURL(_url + "unspent?", args.toString());
+
+            FormBody body    = new FormBody.Builder()
+                    .add("active", StringUtils.join(xpubs, URLEncoder.encode("|", "UTF-8")))
+                    .build();
+
+
+
+            response = WebUtil.getInstance(context).postURL(_url + "unspent?", body);
             Log.d("APIFactory", "UTXO:" + response);
 
             parseUnspentOutputs(response);
@@ -410,11 +415,13 @@ public class APIFactory	{
 
             String response = null;
 
-            StringBuilder args = new StringBuilder();
-            args.append("active=");
-            args.append(address);
-            Log.d("APIFactory", "unspents call:" + args.toString());
-            response = WebUtil.getInstance(context).postURL(_url + "unspent?", args.toString());
+            FormBody body    = new FormBody.Builder()
+                    .add("active", address)
+                    .build();
+
+
+
+            response = WebUtil.getInstance(context).postURL(_url + "unspent?",body);
 
             return parseUnspentOutputsForSweep(response);
 

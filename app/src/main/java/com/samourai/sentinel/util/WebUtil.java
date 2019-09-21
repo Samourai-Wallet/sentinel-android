@@ -92,6 +92,34 @@ public class WebUtil {
         }
     }
 
+    public String postURL(String URL, FormBody args) throws Exception {
+
+
+
+        if ( PrefsUtil.getInstance(context).getValue(PrefsUtil.ENABLE_TOR, false)) {
+            return tor_postURL(URL,args);
+        }
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+        if (BuildConfig.DEBUG) {
+            builder.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+        }
+
+        Request request = new Request.Builder()
+                .url(URL)
+                .post(args)
+                .build();
+
+        try (Response response = builder.build().newCall(request).execute()) {
+            if (response.body() == null) {
+                return "";
+            }
+            return response.body().string();
+
+        }
+    }
+
 
     public String getURL(String URL) throws Exception {
 
@@ -188,11 +216,8 @@ public class WebUtil {
 
     }
 
-    public String tor_postURL(String URL, JSONObject args) throws Exception {
+    public String tor_postURL(String URL, FormBody args) throws Exception {
 
-        final MediaType JSON
-                = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, args.toString());
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .proxy(TorManager.getInstance(this.context).getProxy());
@@ -207,7 +232,7 @@ public class WebUtil {
 
         Request request = new Request.Builder()
                 .url(URL)
-                .post(body)
+                .post(args)
                 .build();
 
         try (Response response = builder.build().newCall(request).execute()) {
