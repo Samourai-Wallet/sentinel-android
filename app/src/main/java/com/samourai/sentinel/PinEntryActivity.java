@@ -210,11 +210,19 @@ public class PinEntryActivity extends Activity {
     }
 
     public void OnNumberPadClick(View view) {
-        if(PrefsUtil.getInstance(PinEntryActivity.this).getValue(PrefsUtil.HAPTIC_PIN, false) == true)    {
-            vibrator.vibrate(55);
+        if (userInput.length() <= (AccessFactory.MAX_PIN_LENGTH - 1)){
+            userInput.append(((Button) view).getText().toString());
+            if(PrefsUtil.getInstance(PinEntryActivity.this).getValue(PrefsUtil.HAPTIC_PIN, false))    {
+                vibrator.vibrate(55);
+            }
+            if (userInput.length() >= AccessFactory.MIN_PIN_LENGTH) {
+                tsend.setVisibility(View.VISIBLE);
+            } else {
+                tsend.setVisibility(View.GONE);
+            }
+            displayUserInput();
         }
-        userInput.append(((Button) view).getText().toString());
-        displayUserInput();
+
     }
 
     private void displayUserInput() {
