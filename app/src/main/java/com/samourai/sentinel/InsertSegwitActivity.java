@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.WebUtil;
 
@@ -77,6 +78,7 @@ public class InsertSegwitActivity extends Activity {
                         .add("xpub", params[0])
                         .add("type", "restore")
                         .add("segwit", "bip".concat(params[1]))
+                        .add("at", APIFactory.getInstance(getApplicationContext()).getAccessToken())
                         .build();
 
 

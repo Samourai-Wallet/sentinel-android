@@ -2,41 +2,19 @@ package com.samourai.sentinel;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 //import android.widget.Toast;
 
-import com.dm.zbar.android.scanner.ZBarConstants;
-import com.dm.zbar.android.scanner.ZBarScannerActivity;
-import com.samourai.sentinel.access.AccessFactory;
+import com.samourai.sentinel.network.dojo.Network;
 import com.samourai.sentinel.permissions.PermissionsUtil;
 import com.samourai.sentinel.util.AppUtil;
-import com.samourai.sentinel.util.FormatsUtil;
-
-import net.sourceforge.zbar.Symbol;
-
-import org.bitcoinj.core.AddressFormatException;
-import org.bitcoinj.core.Base58;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
 
 public class InitActivity extends Activity {
 
@@ -92,7 +70,7 @@ public class InitActivity extends Activity {
             AppUtil.getInstance(InitActivity.this).doRestore();
         }
         if (id == R.id.action_network_init) {
-            startActivity(new Intent(this,Network.class));
+            startActivity(new Intent(this, Network.class));
         }
         else {
             ;

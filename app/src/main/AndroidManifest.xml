@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Network" android:label="Network" />
+        <activity android:name=".network.dojo.Network" android:theme="@style/AppThemeV2" android:label="Network" />
 
         <receiver android:name=".tor.TorBroadCastReceiver" />
 

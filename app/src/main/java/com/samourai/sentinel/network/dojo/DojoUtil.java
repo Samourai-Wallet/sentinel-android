@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.samourai.sentinel.SamouraiSentinel;
-import com.samourai.sentinel.SentinelApplication;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.util.LogUtil;
 import com.samourai.sentinel.util.WebUtil;
@@ -21,13 +20,15 @@ public class DojoUtil {
     private static final String TAG = "DojoUtil";
     private static Context context = null;
 
-    private DojoUtil()  { ; }
+    private DojoUtil() {
+        ;
+    }
 
-    public static DojoUtil getInstance(Context ctx)    {
+    public static DojoUtil getInstance(Context ctx) {
 
         context = ctx;
 
-        if(instance == null)    {
+        if (instance == null) {
             instance = new DojoUtil();
         }
 
@@ -43,22 +44,19 @@ public class DojoUtil {
         try {
             JSONObject obj = new JSONObject(data);
 
-            if(obj.has("pairing"))    {
+            if (obj.has("pairing")) {
 
                 JSONObject pObj = obj.getJSONObject("pairing");
-                if(pObj.has("type") && pObj.has("version") && pObj.has("apikey") && pObj.has("url"))    {
+                if (pObj.has("type") && pObj.has("version") && pObj.has("apikey") && pObj.has("url")) {
                     return true;
-                }
-                else    {
+                } else {
                     return false;
                 }
 
-            }
-            else    {
+            } else {
                 return false;
             }
-        }
-        catch(JSONException je) {
+        } catch (JSONException je) {
             return false;
         }
 
@@ -69,46 +67,41 @@ public class DojoUtil {
     }
 
     public synchronized Observable<Boolean> setDojoParams(String dojoParams) {
-       return Observable.fromCallable(() -> {
-           DojoUtil.dojoParams = dojoParams;
-           Log.i(TAG, "setDojoParams: ".concat(dojoParams));
-           String url = getUrl(dojoParams);
-           if(url.charAt(url.length() - 1) != '/') {
-               url = url + "/";
+        return Observable.fromCallable(() -> {
+            DojoUtil.dojoParams = dojoParams;
+            String url = getUrl(dojoParams);
+            if (url.charAt(url.length() - 1) != '/') {
+                url = url + "/";
 
-               JSONObject obj = new JSONObject(dojoParams);
-               if(obj.has("pairing") && obj.getJSONObject("pairing").has("url")) {
-                   obj.getJSONObject("pairing").put("url", url);
-                   DojoUtil.dojoParams = obj.toString();
-               }
-           }
-           if(SamouraiSentinel.getInstance().isTestNet())    {
-               WebUtil.SAMOURAI_API2_TOR = url;
-           }
-           else    {
-               WebUtil.SAMOURAI_API2_TOR = url;
-           }
-           LogUtil.info(TAG, "setDojoParams: ".concat(WebUtil.SAMOURAI_API2_TOR));
-           LogUtil.info(TAG, "setDojoParams: ".concat(WebUtil.SAMOURAI_API2_TESTNET_TOR));
+                JSONObject obj = new JSONObject(dojoParams);
+                if (obj.has("pairing") && obj.getJSONObject("pairing").has("url")) {
+                    obj.getJSONObject("pairing").put("url", url);
+                    DojoUtil.dojoParams = obj.toString();
+                }
+            }
+            if (SamouraiSentinel.getInstance().isTestNet()) {
+                WebUtil.SAMOURAI_API2_TOR = url;
+            } else {
+                WebUtil.SAMOURAI_API2_TOR = url;
+            }
 
-           String apiToken = getApiKey(dojoParams);
-           APIFactory.getInstance(context).setAppToken(apiToken);
-           try {
-               APIFactory.getInstance(context).getToken(true);
-           }catch (Exception ex){
-               ex.printStackTrace();
-           }
-           return  true;
-       });
+            String apiToken = getApiKey(dojoParams);
+            APIFactory.getInstance(context).setAppToken(apiToken);
+            try {
+                APIFactory.getInstance(context).getToken(true);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return true;
+        });
     }
 
     public synchronized void removeDojoParams() {
         DojoUtil.dojoParams = null;
 
-        if(SamouraiSentinel.getInstance().isTestNet())    {
+        if (SamouraiSentinel.getInstance().isTestNet()) {
             WebUtil.SAMOURAI_API2_TESTNET_TOR = WebUtil.SAMOURAI_API2_TESTNET_TOR_DIST;
-        }
-        else    {
+        } else {
             WebUtil.SAMOURAI_API2_TOR = WebUtil.SAMOURAI_API2_TOR_DIST;
         }
 
@@ -117,9 +110,9 @@ public class DojoUtil {
 
     }
 
-    public String getVersion(String data)  {
+    public String getVersion(String data) {
 
-        if(!isValidPairingPayload(data))    {
+        if (!isValidPairingPayload(data)) {
             return null;
         }
 
@@ -127,16 +120,15 @@ public class DojoUtil {
             JSONObject obj = new JSONObject(data);
             JSONObject pObj = obj.getJSONObject("pairing");
             return pObj.getString("version");
-        }
-        catch(JSONException je) {
+        } catch (JSONException je) {
             return null;
         }
 
     }
 
-    public String getApiKey(String data)  {
+    public String getApiKey(String data) {
 
-        if(!isValidPairingPayload(data))    {
+        if (!isValidPairingPayload(data)) {
             return null;
         }
 
@@ -144,16 +136,19 @@ public class DojoUtil {
             JSONObject obj = new JSONObject(data);
             JSONObject pObj = obj.getJSONObject("pairing");
             return pObj.getString("apikey");
-        }
-        catch(JSONException je) {
+        } catch (JSONException je) {
             return null;
         }
 
     }
 
-    public String getUrl(String data)  {
+    public boolean isDojoEnabled() {
+        return getDojoParams() != null;
+    }
 
-        if(!isValidPairingPayload(data))    {
+    public String getUrl(String data) {
+
+        if (!isValidPairingPayload(data)) {
             return null;
         }
 
@@ -161,8 +156,7 @@ public class DojoUtil {
             JSONObject obj = new JSONObject(data);
             JSONObject pObj = obj.getJSONObject("pairing");
             return pObj.getString("url");
-        }
-        catch(JSONException je) {
+        } catch (JSONException je) {
             return null;
         }
 
@@ -173,14 +167,12 @@ public class DojoUtil {
         JSONObject obj = null;
 
         try {
-            if(dojoParams != null)    {
+            if (dojoParams != null) {
                 obj = new JSONObject(dojoParams);
-            }
-            else    {
+            } else {
                 obj = new JSONObject();
             }
-        }
-        catch(JSONException je) {
+        } catch (JSONException je) {
             ;
         }
 
@@ -189,7 +181,7 @@ public class DojoUtil {
 
     public void fromJSON(JSONObject obj) {
 
-        if(isValidPairingPayload(obj.toString())) {
+        if (isValidPairingPayload(obj.toString())) {
 
             dojoParams = obj.toString();
 

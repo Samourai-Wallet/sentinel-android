@@ -47,6 +47,7 @@ import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.BIP38PrivateKey;
 import org.bitcoinj.crypto.MnemonicException;
 import org.bitcoinj.core.Coin;
+import org.bitcoinj.params.MainNetParams;
 import org.json.JSONException;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
@@ -57,6 +58,8 @@ import com.samourai.sentinel.api.Tx;
 import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
+import com.samourai.sentinel.network.dojo.DojoUtil;
+import com.samourai.sentinel.network.dojo.Network;
 import com.samourai.sentinel.permissions.PermissionsUtil;
 import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.sweep.PrivKeyReader;
@@ -77,7 +80,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
@@ -257,7 +259,7 @@ public class BalanceActivity extends Activity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
+        if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class) && !DojoUtil.getInstance(getApplicationContext()).isDojoEnabled()) {
             BalanceActivity.this.startService(new Intent(BalanceActivity.this.getApplicationContext(), WebSocketService.class));
         }
 
@@ -308,7 +310,7 @@ public class BalanceActivity extends Activity {
             doSettings();
         }
         if (id == R.id.action_network) {
-           startActivity(new Intent(this,Network.class));
+           startActivity(new Intent(this, Network.class));
         }
         else if (id == R.id.action_sweep) {
             confirmAccountSelection(true);
@@ -557,6 +559,8 @@ public class BalanceActivity extends Activity {
             public void run() {
                 Looper.prepare();
 
+                APIFactory.getInstance(getApplicationContext()).stayingAlive();
+
                 runOnUiThread(() -> {
                     swipeRefreshLayout.setRefreshing(true);
                 });
@@ -596,7 +600,7 @@ public class BalanceActivity extends Activity {
                     ;
                 }
 
-                if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class)) {
+                if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class) && !DojoUtil.getInstance(getApplicationContext()).isDojoEnabled()) {
                     startService(new Intent(BalanceActivity.this.getApplicationContext(), WebSocketService.class));
                 }
 
