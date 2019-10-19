@@ -1,6 +1,9 @@
 package com.samourai.sentinel.network.dojo;
 
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,11 +26,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.samourai.sentinel.InsertSegwitActivity;
 import com.samourai.sentinel.R;
+import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.codescanner.CameraFragmentBottomSheet;
 import com.samourai.sentinel.tor.TorManager;
 import com.samourai.sentinel.tor.TorService;
 import com.samourai.sentinel.util.PrefsUtil;
+
+import org.json.JSONException;
+
+import java.io.IOException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -117,23 +126,22 @@ public class DojoConfigureBottomSheet extends BottomSheetDialogFragment {
 
         });
 
-        dialog.findViewById(R.id.dojo_paste_config).setVisibility(View.GONE);
+//        dialog.findViewById(R.id.dojo_paste_config).setVisibility(View.GONE);
 
-//        dialog.findViewById(R.id.dojo_paste_config).setOnClickListener(view -> {
-//
-//            try {
-//                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-//                ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
-//                connectToDojo(item.getText().toString());
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            dialog.dismiss();
-//
-//        });
-//
+        dialog.findViewById(R.id.dojo_paste_config).setOnClickListener(view -> {
+
+            try {
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
+                connectToDojo(item.getText().toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            dialog.dismiss();
+
+        });
+
 
     }
 
@@ -172,19 +180,26 @@ public class DojoConfigureBottomSheet extends BottomSheetDialogFragment {
 
     private void doPairing(String params) {
 
-        Disposable disposable = DojoUtil.getInstance(getActivity().getApplicationContext()).setDojoParams(params)
+        Disposable disposable = DojoUtil.getInstance(getContext()).setDojoParams(params)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(aBoolean -> {
                     progressStates.setText("Successfully connected to Dojo Node");
-//                    if (this.dojoConfigurationListener != null) {
-//                        this.dojoConfigurationListener.onConnect();
-//                    }
-//                    dojoConnectProgress.setProgress(100);
-//                    new Handler().postDelayed(() -> {
-//                        Toast.makeText(getActivity(), "Successfully connected to Dojo", Toast.LENGTH_SHORT).show();
-//                        dismissAllowingStateLoss();
-//                    }, 800);
+                    if (this.dojoConfigurationListener != null) {
+                        this.dojoConfigurationListener.onConnect();
+                    }
+                    dojoConnectProgress.setProgress(100);
+                    new Handler().postDelayed(() -> {
+                        Toast.makeText(getActivity(), "Successfully connected to Dojo", Toast.LENGTH_SHORT).show();
+                        try {
+                            SamouraiSentinel.getInstance(getContext()).serialize(SamouraiSentinel.getInstance(getContext()).toJSON(), null);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        dismissAllowingStateLoss();
+                    }, 800);
                 }, error -> {
                     error.printStackTrace();
                     if (this.dojoConfigurationListener != null) {
