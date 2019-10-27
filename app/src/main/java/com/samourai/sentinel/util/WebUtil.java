@@ -60,9 +60,7 @@ public class WebUtil {
     public static String SAMOURAI_API2_TESTNET_TOR = SAMOURAI_API2_TESTNET_TOR_DIST;
 
     public static final String LBC_EXCHANGE_URL = "https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/";
-    public static final String BTCe_EXCHANGE_URL = "https://wex.nz/api/3/ticker/";
     public static final String BFX_EXCHANGE_URL = "https://api.bitfinex.com/v1/pubticker/btcusd";
-    public static final String BITCOIND_FEE_URL = "https://api.samourai.io/v2/fees";
 
     private static final int DefaultRequestRetry = 2;
     private static final int DefaultRequestTimeout = 60000;

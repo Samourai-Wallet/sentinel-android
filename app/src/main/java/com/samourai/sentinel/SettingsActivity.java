@@ -237,7 +237,7 @@ public class SettingsActivity extends PreferenceActivity	{
     private void getExchange()	{
 
         final String[] exchanges = ExchangeRateFactory.getInstance(this).getExchangeLabels();
-        final int sel = PrefsUtil.getInstance(SettingsActivity.this).getValue(PrefsUtil.CURRENT_EXCHANGE_SEL, 0);
+        final int sel = (PrefsUtil.getInstance(SettingsActivity.this).getValue(PrefsUtil.CURRENT_EXCHANGE_SEL, 0) >= exchanges.length) ? 0 : PrefsUtil.getInstance(SettingsActivity.this).getValue(PrefsUtil.CURRENT_EXCHANGE_SEL, 0);
 
         new AlertDialog.Builder(SettingsActivity.this)
                 .setTitle(R.string.options_currency)
@@ -245,7 +245,7 @@ public class SettingsActivity extends PreferenceActivity	{
                             public void onClick(DialogInterface dialog, int which) {
                                 PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.CURRENT_EXCHANGE, exchanges[which].substring(exchanges[which].length() - 3));
                                 PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.CURRENT_EXCHANGE_SEL, which);
-                                if(which == 2)    {
+                                if(which == 1)    {
                                     PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.CURRENT_FIAT, "USD");
                                     PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.CURRENT_FIAT_SEL, 0);
                                     dialog.dismiss();
@@ -263,15 +263,8 @@ public class SettingsActivity extends PreferenceActivity	{
 
     private void getFiat()	{
 
-        final int fxSel = PrefsUtil.getInstance(SettingsActivity.this).getValue(PrefsUtil.CURRENT_EXCHANGE_SEL, 0);
-
         final String[] currencies;
-        if(fxSel == 1)	{
-            currencies = ExchangeRateFactory.getInstance(this).getCurrencyLabelsBTCe();
-        }
-        else	{
-            currencies = ExchangeRateFactory.getInstance(this).getCurrencyLabels();
-        }
+        currencies = ExchangeRateFactory.getInstance(this).getCurrencyLabels();
 
         new AlertDialog.Builder(SettingsActivity.this)
                 .setTitle(R.string.options_currency)
@@ -279,12 +272,7 @@ public class SettingsActivity extends PreferenceActivity	{
                             public void onClick(DialogInterface dialog, int which) {
 
                                 String selectedCurrency = null;
-                                if (currencies[which].substring(currencies[which].length() - 3).equals("RUR")) {
-                                    selectedCurrency = "RUB";
-                                }
-                                else {
-                                    selectedCurrency = currencies[which].substring(currencies[which].length() - 3);
-                                }
+                                selectedCurrency = currencies[which].substring(currencies[which].length() - 3);
 
                                 PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.CURRENT_FIAT, selectedCurrency);
                                 PrefsUtil.getInstance(SettingsActivity.this).setValue(PrefsUtil.CURRENT_FIAT_SEL, which);
