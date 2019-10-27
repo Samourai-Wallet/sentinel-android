@@ -5,29 +5,25 @@
         android:icon="@drawable/ic_action_refresh"
         android:visible="true"
         android:title=""
-        android:showAsAction="always"
-        />
+        app:showAsAction="always" />
 
     <item android:id="@+id/action_share_receive"
         android:icon="@android:drawable/ic_menu_share"
         android:visible="true"
         android:title=""
-        android:showAsAction="always"
-        />
+        app:showAsAction="always" />
     <item android:id="@+id/action_sweep"
         android:title="@string/action_sweep"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        />
+        app:showAsAction="never" />
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        />
+        app:showAsAction="never" />
 
     <item android:id="@+id/action_network"
         android:icon="@drawable/ic_network_check_white_24dp"
         android:visible="true"
         android:title=""
-        android:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

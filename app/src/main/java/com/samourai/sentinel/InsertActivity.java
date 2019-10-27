@@ -5,20 +5,19 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-//import android.widget.Toast;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
-import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import com.samourai.sentinel.access.AccessFactory;
+import com.samourai.sentinel.codescanner.CameraFragmentBottomSheet;
 import com.samourai.sentinel.util.FormatsUtil;
-
-import net.sourceforge.zbar.Symbol;
 
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Base58;
@@ -27,7 +26,9 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-public class InsertActivity extends Activity {
+//import android.widget.Toast;
+
+public class InsertActivity extends AppCompatActivity {
 
     private final static int SCAN_XPUB = 2011;
     private final static int INSERT_SEGWIT = 2012;
@@ -37,13 +38,20 @@ public class InsertActivity extends Activity {
     public final static int TYPE_SEGWIT_XPUB = 2;
 
     private int storedType = 0;
+    private CameraFragmentBottomSheet cameraFragmentBottomSheet;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
 
-        setTitle(R.string.track_new);
+//        setTitle();
+
+        setSupportActionBar(findViewById(R.id.toolbar));
+        if(getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.track_new);
+        }
 
         InsertActivity.this.setFinishOnTouchOutside(false);
 
@@ -78,7 +86,13 @@ public class InsertActivity extends Activity {
         });
 
     }
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return (super.onOptionsItemSelected(menuItem));
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -181,9 +195,28 @@ public class InsertActivity extends Activity {
     }
 
     private void doScan() {
-        Intent intent = new Intent(InsertActivity.this, ZBarScannerActivity.class);
-        intent.putExtra(ZBarConstants.SCAN_MODES, new int[]{Symbol.QRCODE});
-        startActivityForResult(intent, SCAN_XPUB);
+
+        cameraFragmentBottomSheet = new CameraFragmentBottomSheet();
+        cameraFragmentBottomSheet.show(this.getSupportFragmentManager(), cameraFragmentBottomSheet.getTag());
+        cameraFragmentBottomSheet.setQrCodeScanLisenter(code -> {
+            cameraFragmentBottomSheet.dismiss();
+//            this.connectToDojo(code);
+                if(code.startsWith("bitcoin:"))    {
+                    code = code.substring(8);
+                }
+                if(code.contains("?"))   {
+                    code = code.substring(0, code.indexOf("?"));
+                }
+
+                addXPUB(code, storedType);
+        });
+
+//
+//
+//
+//        Intent intent = new Intent(InsertActivity.this, ZBarScannerActivity.class);
+//        intent.putExtra(ZBarConstants.SCAN_MODES, new int[]{Symbol.QRCODE});
+//        startActivityForResult(intent, SCAN_XPUB);
     }
 
     private void addXPUB(final String xpubStr, final int type) {

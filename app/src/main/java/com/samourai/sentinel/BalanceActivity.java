@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -38,23 +39,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-//import android.util.Log;
-
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.lang3.StringUtils;
-import org.bitcoinj.core.AddressFormatException;
-import org.bitcoinj.core.ECKey;
-import org.bitcoinj.crypto.BIP38PrivateKey;
-import org.bitcoinj.crypto.MnemonicException;
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.params.MainNetParams;
-import org.json.JSONException;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
-import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.api.Tx;
+import com.samourai.sentinel.codescanner.CameraFragmentBottomSheet;
 import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
@@ -75,17 +65,27 @@ import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.TimeOutUtil;
 import com.samourai.sentinel.util.TypefaceUtil;
 
+import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
+import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
+
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.lang3.StringUtils;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.crypto.BIP38PrivateKey;
+import org.bitcoinj.crypto.MnemonicException;
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
-import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
-import net.sourceforge.zbar.Symbol;
+//import android.util.Log;
 
-public class BalanceActivity extends Activity {
+public class BalanceActivity extends AppCompatActivity {
 
     private final static int SCAN_COLD_STORAGE = 2011;
 
@@ -117,7 +117,7 @@ public class BalanceActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(ACTION_INTENT.equals(intent.getAction())) {
+            if (ACTION_INTENT.equals(intent.getAction())) {
 
                 BalanceActivity.this.runOnUiThread(new Runnable() {
                     @Override
@@ -136,15 +136,19 @@ public class BalanceActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_balance);
 
-        BalanceActivity.this.getActionBar().setTitle(R.string.app_name);
+//        BalanceActivity.this.getActionBar().setTitle(R.string.app_name);
 
         //
         // account selection
         //
+        setSupportActionBar(findViewById(R.id.toolbar));
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.app_name);
         account_selections = new String[1];
         account_selections[0] = "";
         adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
-        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+//        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        setSupportActionBar(findViewById(R.id.toolbar));
         navigationListener = new ActionBar.OnNavigationListener() {
             @Override
             public boolean onNavigationItemSelected(int itemPosition, long itemId) {
@@ -156,10 +160,10 @@ public class BalanceActivity extends Activity {
                 return false;
             }
         };
-        getActionBar().setListNavigationCallbacks(adapter, navigationListener);
+//        getActionBar().setListNavigationCallbacks(adapter, navigationListener);
 
         LayoutInflater inflator = BalanceActivity.this.getLayoutInflater();
-        tvBalanceBar = (LinearLayout)inflator.inflate(R.layout.balance_layout, null);
+        tvBalanceBar = (LinearLayout) inflator.inflate(R.layout.balance_layout, null);
         tvBalanceBar.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -169,11 +173,11 @@ public class BalanceActivity extends Activity {
                 return false;
             }
         });
-        tvBalanceAmount = (TextView)tvBalanceBar.findViewById(R.id.BalanceAmount);
-        tvBalanceUnits = (TextView)tvBalanceBar.findViewById(R.id.BalanceUnits);
+        tvBalanceAmount = (TextView) tvBalanceBar.findViewById(R.id.BalanceAmount);
+        tvBalanceUnits = (TextView) tvBalanceBar.findViewById(R.id.BalanceUnits);
 
-        ibQuickSend = (FloatingActionsMenu)findViewById(R.id.wallet_menu);
-        actionReceive = (FloatingActionButton)findViewById(R.id.receive);
+        ibQuickSend = (FloatingActionsMenu) findViewById(R.id.wallet_menu);
+        actionReceive = (FloatingActionButton) findViewById(R.id.receive);
         actionReceive.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -183,7 +187,7 @@ public class BalanceActivity extends Activity {
             }
         });
 
-        actionXPUB = (FloatingActionButton)findViewById(R.id.xpub);
+        actionXPUB = (FloatingActionButton) findViewById(R.id.xpub);
         actionXPUB.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -195,39 +199,37 @@ public class BalanceActivity extends Activity {
             }
         });
 
-        txList = (ListView)findViewById(R.id.txList);
+        txList = (ListView) findViewById(R.id.txList);
         txAdapter = new TransactionAdapter();
         txList.setAdapter(txAdapter);
         txList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 
-                if(position == 0) {
+                if (position == 0) {
                     return;
                 }
 
                 long viewId = view.getId();
-                View v = (View)view.getParent();
+                View v = (View) view.getParent();
                 Tx tx = txs.get(position - 1);
-                ImageView ivTxStatus = (ImageView)v.findViewById(R.id.TransactionStatus);
-                TextView tvConfirmationCount = (TextView)v.findViewById(R.id.ConfirmationCount);
+                ImageView ivTxStatus = (ImageView) v.findViewById(R.id.TransactionStatus);
+                TextView tvConfirmationCount = (TextView) v.findViewById(R.id.ConfirmationCount);
 
-                if(viewId == R.id.ConfirmationCount || viewId == R.id.TransactionStatus) {
+                if (viewId == R.id.ConfirmationCount || viewId == R.id.TransactionStatus) {
 
-                    if(txStates.containsKey(tx.getHash()) && txStates.get(tx.getHash()) == true) {
+                    if (txStates.containsKey(tx.getHash()) && txStates.get(tx.getHash()) == true) {
                         txStates.put(tx.getHash(), false);
                         displayTxStatus(false, tx.getConfirmations(), tvConfirmationCount, ivTxStatus);
-                    }
-                    else {
+                    } else {
                         txStates.put(tx.getHash(), true);
                         displayTxStatus(true, tx.getConfirmations(), tvConfirmationCount, ivTxStatus);
                     }
 
-                }
-                else {
+                } else {
 
                     String strTx = tx.getHash();
-                    if(strTx != null) {
+                    if (strTx != null) {
                         int sel = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BLOCK_EXPLORER, 0);
                         CharSequence url = BlockExplorerUtil.getInstance().getBlockExplorerUrls()[sel];
 
@@ -240,7 +242,7 @@ public class BalanceActivity extends Activity {
             }
         });
 
-        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swiperefresh);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -259,11 +261,11 @@ public class BalanceActivity extends Activity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class) && !DojoUtil.getInstance(getApplicationContext()).isDojoEnabled()) {
+        if (!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class) && !DojoUtil.getInstance(getApplicationContext()).isDojoEnabled()) {
             BalanceActivity.this.startService(new Intent(BalanceActivity.this.getApplicationContext(), WebSocketService.class));
         }
 
-        if(!PermissionsUtil.getInstance(BalanceActivity.this).hasPermission(Manifest.permission.CAMERA)) {
+        if (!PermissionsUtil.getInstance(BalanceActivity.this).hasPermission(Manifest.permission.CAMERA)) {
             PermissionsUtil.getInstance(BalanceActivity.this).showRequestPermissionsInfoAlertDialog(PermissionsUtil.CAMERA_PERMISSION_CODE);
         }
 
@@ -296,7 +298,7 @@ public class BalanceActivity extends Activity {
         menu.getItem(0).setVisible(false);
         menu.getItem(1).setVisible(false);
         menu.getItem(2).setVisible(true);
-        restoreActionBar();
+//        restoreActionBar();
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -310,12 +312,10 @@ public class BalanceActivity extends Activity {
             doSettings();
         }
         if (id == R.id.action_network) {
-           startActivity(new Intent(this, Network.class));
-        }
-        else if (id == R.id.action_sweep) {
+            startActivity(new Intent(this, Network.class));
+        } else if (id == R.id.action_sweep) {
             confirmAccountSelection(true);
-        }
-        else {
+        } else {
             ;
         }
 
@@ -325,20 +325,18 @@ public class BalanceActivity extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(resultCode == Activity.RESULT_OK && requestCode == SCAN_COLD_STORAGE)	{
+        if (resultCode == Activity.RESULT_OK && requestCode == SCAN_COLD_STORAGE) {
 
-            if(data != null && data.getStringExtra(ZBarConstants.SCAN_RESULT) != null)	{
+            if (data != null && data.getStringExtra(ZBarConstants.SCAN_RESULT) != null) {
 
                 final String strResult = data.getStringExtra(ZBarConstants.SCAN_RESULT);
 
                 doPrivKey(strResult);
 
             }
-        }
-        else if(resultCode == Activity.RESULT_CANCELED && requestCode == SCAN_COLD_STORAGE)	{
+        } else if (resultCode == Activity.RESULT_CANCELED && requestCode == SCAN_COLD_STORAGE) {
             ;
-        }
-        else {
+        } else {
             ;
         }
 
@@ -347,7 +345,7 @@ public class BalanceActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if(keyCode == KeyEvent.KEYCODE_BACK) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.ask_you_sure_exit).setCancelable(false);
@@ -362,18 +360,19 @@ public class BalanceActivity extends Activity {
                     Intent intent = new Intent(BalanceActivity.this, ExodusActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                }});
+                }
+            });
 
             alert.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
-                }});
+                }
+            });
 
             alert.show();
 
             return true;
-        }
-        else	{
+        } else {
             ;
         }
 
@@ -386,7 +385,7 @@ public class BalanceActivity extends Activity {
         actionBar.setTitle(R.string.app_name);
     }
 
-    private void doSettings()	{
+    private void doSettings() {
         TimeOutUtil.getInstance().updatePin();
         Intent intent = new Intent(BalanceActivity.this, SettingsActivity.class);
         startActivity(intent);
@@ -399,12 +398,12 @@ public class BalanceActivity extends Activity {
         private static final int TYPE_BALANCE = 1;
 
         TransactionAdapter() {
-            inflater = (LayoutInflater)BalanceActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater = (LayoutInflater) BalanceActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
         public int getCount() {
-            if(txs == null) {
+            if (txs == null) {
                 txs = new ArrayList<Tx>();
                 txStates = new HashMap<String, Boolean>();
             }
@@ -413,11 +412,11 @@ public class BalanceActivity extends Activity {
 
         @Override
         public String getItem(int position) {
-            if(txs == null) {
+            if (txs == null) {
                 txs = new ArrayList<Tx>();
                 txStates = new HashMap<String, Boolean>();
             }
-            if(position == 0) {
+            if (position == 0) {
                 return "";
             }
             return txs.get(position - 1).toString();
@@ -444,51 +443,47 @@ public class BalanceActivity extends Activity {
             View view = null;
 
             int type = getItemViewType(position);
-            if(convertView == null) {
-                if(type == TYPE_BALANCE) {
+            if (convertView == null) {
+                if (type == TYPE_BALANCE) {
                     view = tvBalanceBar;
-                }
-                else {
+                } else {
                     view = inflater.inflate(R.layout.tx_layout_simple, parent, false);
                 }
             } else {
                 view = convertView;
             }
 
-            if(type == TYPE_BALANCE) {
+            if (type == TYPE_BALANCE) {
                 ;
-            }
-            else {
+            } else {
                 view.findViewById(R.id.TransactionStatus).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((ListView)parent).performItemClick(v, position, 0);
+                        ((ListView) parent).performItemClick(v, position, 0);
                     }
                 });
 
                 view.findViewById(R.id.ConfirmationCount).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((ListView)parent).performItemClick(v, position, 0);
+                        ((ListView) parent).performItemClick(v, position, 0);
                     }
                 });
 
                 Tx tx = txs.get(position - 1);
 
-                TextView tvTodayLabel = (TextView)view.findViewById(R.id.TodayLabel);
+                TextView tvTodayLabel = (TextView) view.findViewById(R.id.TodayLabel);
                 String strDateGroup = DateUtil.getInstance(BalanceActivity.this).group(tx.getTS());
-                if(position == 1) {
+                if (position == 1) {
                     tvTodayLabel.setText(strDateGroup);
                     tvTodayLabel.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     Tx prevTx = txs.get(position - 2);
                     String strPrevDateGroup = DateUtil.getInstance(BalanceActivity.this).group(prevTx.getTS());
 
-                    if(strPrevDateGroup.equals(strDateGroup)) {
+                    if (strPrevDateGroup.equals(strDateGroup)) {
                         tvTodayLabel.setVisibility(View.GONE);
-                    }
-                    else {
+                    } else {
                         tvTodayLabel.setText(strDateGroup);
                         tvTodayLabel.setVisibility(View.VISIBLE);
                     }
@@ -497,46 +492,42 @@ public class BalanceActivity extends Activity {
                 String strDetails = null;
                 String strTS = DateUtil.getInstance(BalanceActivity.this).formatted(tx.getTS());
                 long _amount = 0L;
-                if(tx.getAmount() < 0.0) {
-                    _amount = Math.abs((long)tx.getAmount());
+                if (tx.getAmount() < 0.0) {
+                    _amount = Math.abs((long) tx.getAmount());
                     strDetails = BalanceActivity.this.getString(R.string.you_sent);
-                }
-                else {
-                    _amount = (long)tx.getAmount();
+                } else {
+                    _amount = (long) tx.getAmount();
                     strDetails = BalanceActivity.this.getString(R.string.you_received);
                 }
                 String strAmount = null;
                 String strUnits = null;
-                if(isBTC)    {
+                if (isBTC) {
                     strAmount = getBTCDisplayAmount(_amount);
                     strUnits = getBTCDisplayUnits();
-                }
-                else    {
+                } else {
                     strAmount = getFiatDisplayAmount(_amount);
                     strUnits = getFiatDisplayUnits();
                 }
 
-                TextView tvDirection = (TextView)view.findViewById(R.id.TransactionDirection);
-                TextView tvDirection2 = (TextView)view.findViewById(R.id.TransactionDirection2);
-                TextView tvDetails = (TextView)view.findViewById(R.id.TransactionDetails);
-                ImageView ivTxStatus = (ImageView)view.findViewById(R.id.TransactionStatus);
-                TextView tvConfirmationCount = (TextView)view.findViewById(R.id.ConfirmationCount);
+                TextView tvDirection = (TextView) view.findViewById(R.id.TransactionDirection);
+                TextView tvDirection2 = (TextView) view.findViewById(R.id.TransactionDirection2);
+                TextView tvDetails = (TextView) view.findViewById(R.id.TransactionDetails);
+                ImageView ivTxStatus = (ImageView) view.findViewById(R.id.TransactionStatus);
+                TextView tvConfirmationCount = (TextView) view.findViewById(R.id.ConfirmationCount);
 
                 tvDirection.setTypeface(TypefaceUtil.getInstance(BalanceActivity.this).getAwesomeTypeface());
-                if(tx.getAmount() < 0.0) {
+                if (tx.getAmount() < 0.0) {
                     tvDirection.setTextColor(Color.RED);
                     tvDirection.setText(Character.toString((char) TypefaceUtil.awesome_arrow_up));
-                }
-                else {
+                } else {
                     tvDirection.setTextColor(Color.GREEN);
                     tvDirection.setText(Character.toString((char) TypefaceUtil.awesome_arrow_down));
                 }
 
-                if(txStates.containsKey(tx.getHash()) && txStates.get(tx.getHash()) == false) {
+                if (txStates.containsKey(tx.getHash()) && txStates.get(tx.getHash()) == false) {
                     txStates.put(tx.getHash(), false);
                     displayTxStatus(false, tx.getConfirmations(), tvConfirmationCount, ivTxStatus);
-                }
-                else {
+                } else {
                     txStates.put(tx.getHash(), true);
                     displayTxStatus(true, tx.getConfirmations(), tvConfirmationCount, ivTxStatus);
                 }
@@ -568,39 +559,35 @@ public class BalanceActivity extends Activity {
                 int idx = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount();
 
                 List<String> _xpubs = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrsSorted();
-                if(idx == 0)    {
+                if (idx == 0) {
                     APIFactory.getInstance(BalanceActivity.this).getXPUB(_xpubs.toArray(new String[_xpubs.size()]));
-                }
-                else    {
-                    APIFactory.getInstance(BalanceActivity.this).getXPUB(new String[] { _xpubs.get(idx  - 1) } );
+                } else {
+                    APIFactory.getInstance(BalanceActivity.this).getXPUB(new String[]{_xpubs.get(idx - 1)});
                 }
 
-                if(idx == 0)    {
+                if (idx == 0) {
                     txs = APIFactory.getInstance(BalanceActivity.this).getAllXpubTxs();
-                }
-                else    {
+                } else {
                     txs = APIFactory.getInstance(BalanceActivity.this).getXpubTxs().get(_xpubs.get(idx - 1));
                 }
 
                 try {
-                    if(HD_WalletFactory.getInstance(BalanceActivity.this).get() != null)    {
+                    if (HD_WalletFactory.getInstance(BalanceActivity.this).get() != null) {
 
                         HD_Wallet hdw = HD_WalletFactory.getInstance(BalanceActivity.this).get();
 
-                        for(int i = 0; i < hdw.getAccounts().size(); i++)   {
+                        for (int i = 0; i < hdw.getAccounts().size(); i++) {
                             HD_WalletFactory.getInstance(BalanceActivity.this).get().getAccount(i).getReceive().setAddrIdx(AddressFactory.getInstance().getHighestTxReceiveIdx(i));
                         }
 
                     }
-                }
-                catch(IOException ioe) {
+                } catch (IOException ioe) {
                     ;
-                }
-                catch(MnemonicException.MnemonicLengthException mle) {
+                } catch (MnemonicException.MnemonicLengthException mle) {
                     ;
                 }
 
-                if(!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class) && !DojoUtil.getInstance(getApplicationContext()).isDojoEnabled()) {
+                if (!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class) && !DojoUtil.getInstance(getApplicationContext()).isDojoEnabled()) {
                     startService(new Intent(BalanceActivity.this.getApplicationContext(), WebSocketService.class));
                 }
 
@@ -630,26 +617,23 @@ public class BalanceActivity extends Activity {
         long balance = 0L;
 
         List<String> _xpubs = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrsSorted();
-        if(idx == 0)    {
+        if (idx == 0) {
             balance = APIFactory.getInstance(BalanceActivity.this).getXpubBalance();
-        }
-        else if(_xpubs.get(idx - 1) != null && APIFactory.getInstance(BalanceActivity.this).getXpubAmounts().get(_xpubs.get(idx - 1)) != null)    {
-            if(APIFactory.getInstance(BalanceActivity.this).getXpubAmounts().get(_xpubs.get(idx - 1)) != null)    {
+        } else if (_xpubs.get(idx - 1) != null && APIFactory.getInstance(BalanceActivity.this).getXpubAmounts().get(_xpubs.get(idx - 1)) != null) {
+            if (APIFactory.getInstance(BalanceActivity.this).getXpubAmounts().get(_xpubs.get(idx - 1)) != null) {
                 balance = APIFactory.getInstance(BalanceActivity.this).getXpubAmounts().get(_xpubs.get(idx - 1));
             }
-        }
-        else    {
+        } else {
             ;
         }
 
-        double btc_balance = (((double)balance) / 1e8);
+        double btc_balance = (((double) balance) / 1e8);
         double fiat_balance = btc_fx * btc_balance;
 
-        if(isBTC) {
+        if (isBTC) {
             tvBalanceAmount.setText(getDisplayAmount(balance));
             tvBalanceUnits.setText(getDisplayUnits());
-        }
-        else {
+        } else {
             tvBalanceAmount.setText(MonetaryUtil.getInstance().getFiatFormat(strFiat).format(fiat_balance));
             tvBalanceUnits.setText(strFiat);
         }
@@ -675,36 +659,32 @@ public class BalanceActivity extends Activity {
 
     }
 
-    private void displayTxStatus(boolean heads, long confirmations, TextView tvConfirmationCount, ImageView ivTxStatus)	{
+    private void displayTxStatus(boolean heads, long confirmations, TextView tvConfirmationCount, ImageView ivTxStatus) {
 
-        if(heads)	{
-            if(confirmations == 0) {
+        if (heads) {
+            if (confirmations == 0) {
                 rotateTxStatus(tvConfirmationCount, true);
                 ivTxStatus.setVisibility(View.VISIBLE);
                 ivTxStatus.setImageResource(R.drawable.ic_query_builder_white);
                 tvConfirmationCount.setVisibility(View.GONE);
-            }
-            else if(confirmations > 3) {
+            } else if (confirmations > 3) {
                 rotateTxStatus(tvConfirmationCount, true);
                 ivTxStatus.setVisibility(View.VISIBLE);
                 ivTxStatus.setImageResource(R.drawable.ic_done_white);
                 tvConfirmationCount.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 rotateTxStatus(ivTxStatus, false);
                 tvConfirmationCount.setVisibility(View.VISIBLE);
                 tvConfirmationCount.setText(Long.toString(confirmations));
                 ivTxStatus.setVisibility(View.GONE);
             }
-        }
-        else	{
-            if(confirmations < 100) {
+        } else {
+            if (confirmations < 100) {
                 rotateTxStatus(ivTxStatus, false);
                 tvConfirmationCount.setVisibility(View.VISIBLE);
                 tvConfirmationCount.setText(Long.toString(confirmations));
                 ivTxStatus.setVisibility(View.GONE);
-            }
-            else    {
+            } else {
                 rotateTxStatus(ivTxStatus, false);
                 tvConfirmationCount.setVisibility(View.VISIBLE);
                 tvConfirmationCount.setText("\u221e");
@@ -714,10 +694,10 @@ public class BalanceActivity extends Activity {
 
     }
 
-    private void rotateTxStatus(View view, boolean clockwise)	{
+    private void rotateTxStatus(View view, boolean clockwise) {
 
         float degrees = 360f;
-        if(!clockwise)	{
+        if (!clockwise) {
             degrees = -360f;
         }
 
@@ -728,66 +708,61 @@ public class BalanceActivity extends Activity {
         animation.start();
     }
 
-    private void doSweepViaScan()	{
-        Intent intent = new Intent(BalanceActivity.this, ZBarScannerActivity.class);
-        intent.putExtra(ZBarConstants.SCAN_MODES, new int[]{ Symbol.QRCODE } );
-        startActivityForResult(intent, SCAN_COLD_STORAGE);
+    private void doSweepViaScan() {
+        CameraFragmentBottomSheet cameraFragmentBottomSheet = new CameraFragmentBottomSheet();
+        cameraFragmentBottomSheet.setQrCodeScanLisenter(code -> {
+            cameraFragmentBottomSheet.dismiss();
+            doPrivKey(code);
+        });
+        cameraFragmentBottomSheet.show(this.getSupportFragmentManager(), cameraFragmentBottomSheet.getTag());
     }
 
-    private void doSweep()   {
-
+    private void doSweep() {
         AlertDialog.Builder dlg = new AlertDialog.Builder(BalanceActivity.this)
                 .setTitle(R.string.app_name)
                 .setMessage(R.string.action_sweep)
                 .setCancelable(true)
-                .setPositiveButton(R.string.enter_privkey, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                .setPositiveButton(R.string.enter_privkey, (dialog, whichButton) -> {
 
-                        dialog.dismiss();
+                    dialog.dismiss();
 
-                        final EditText privkey = new EditText(BalanceActivity.this);
-                        privkey.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                    final EditText privkey = new EditText(BalanceActivity.this);
+                    privkey.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
-                        AlertDialog.Builder dlg = new AlertDialog.Builder(BalanceActivity.this)
-                                .setTitle(R.string.app_name)
-                                .setMessage(R.string.enter_privkey)
-                                .setView(privkey)
-                                .setCancelable(false)
-                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
+                    AlertDialog.Builder dlg1 = new AlertDialog.Builder(BalanceActivity.this)
+                            .setTitle(R.string.app_name)
+                            .setMessage(R.string.enter_privkey)
+                            .setView(privkey)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.ok, (dialog1, whichButton1) -> {
 
-                                        dialog.dismiss();
+                                dialog1.dismiss();
 
-                                        final String strPrivKey = privkey.getText().toString();
+                                final String strPrivKey = privkey.getText().toString();
 
-                                        if(strPrivKey != null && strPrivKey.length() > 0)    {
-                                            doPrivKey(strPrivKey);
-                                        }
+                                if (strPrivKey != null && strPrivKey.length() > 0) {
+                                    doPrivKey(strPrivKey);
+                                }
 
-                                    }
-                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
+                            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
 
-                                        dialog.dismiss();
+                                    dialog.dismiss();
 
-                                    }
-                                });
-                        if(!isFinishing())    {
-                            dlg.show();
-                        }
-
+                                }
+                            });
+                    if (!isFinishing()) {
+                        dlg1.show();
                     }
 
-                }).setNegativeButton(R.string.scan, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                }).setNegativeButton(R.string.scan, (dialog, whichButton) -> {
 
-                        dialog.dismiss();
+                    dialog.dismiss();
 
-                        doSweepViaScan();
+                    doSweepViaScan();
 
-                    }
                 });
-        if(!isFinishing())    {
+        if (!isFinishing()) {
             dlg.show();
         }
 
@@ -800,19 +775,18 @@ public class BalanceActivity extends Activity {
         PrivKeyReader privKeyReader = null;
 
         String format = null;
-        try	{
+        try {
             privKeyReader = new PrivKeyReader(new CharSequenceX(data), null);
             format = privKeyReader.getFormat();
 //            Log.d("BalanceActivity", "privkey format:" + format);
-        }
-        catch(Exception e)	{
+        } catch (Exception e) {
             Toast.makeText(BalanceActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(format != null)	{
+        if (format != null) {
 
-            if(format.equals(PrivKeyReader.BIP38))	{
+            if (format.equals(PrivKeyReader.BIP38)) {
 
                 final PrivKeyReader pvr = privKeyReader;
 
@@ -841,9 +815,9 @@ public class BalanceActivity extends Activity {
                                 try {
                                     BIP38PrivateKey bip38 = new BIP38PrivateKey(SamouraiSentinel.getInstance().getCurrentNetworkParams(), data);
                                     final ECKey ecKey = bip38.decrypt(password);
-                                    if(ecKey != null && ecKey.hasPrivKey()) {
+                                    if (ecKey != null && ecKey.hasPrivKey()) {
 
-                                        if(progress != null && progress.isShowing())    {
+                                        if (progress != null && progress.isShowing()) {
                                             progress.cancel();
                                         }
 
@@ -854,19 +828,18 @@ public class BalanceActivity extends Activity {
                                         Toast.makeText(BalanceActivity.this, pvr.getKey().toAddress(SamouraiSentinel.getInstance().getCurrentNetworkParams()).toString(), Toast.LENGTH_SHORT).show();
 
                                     }
-                                }
-                                catch(Exception e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                     Toast.makeText(BalanceActivity.this, R.string.bip38_pw_error, Toast.LENGTH_SHORT).show();
                                 }
 
-                                if(progress != null && progress.isShowing())    {
+                                if (progress != null && progress.isShowing()) {
                                     progress.cancel();
                                 }
 
-                                if(keyDecoded)    {
+                                if (keyDecoded) {
                                     String strReceiveAddress = SamouraiSentinel.getInstance(BalanceActivity.this).getReceiveAddress();
-                                    if(strReceiveAddress != null)    {
+                                    if (strReceiveAddress != null) {
                                         SweepUtil.getInstance(BalanceActivity.this).sweep(pvr, strReceiveAddress, SweepUtil.TYPE_P2PKH);
                                     }
                                 }
@@ -881,40 +854,36 @@ public class BalanceActivity extends Activity {
 
                             }
                         });
-                if(!isFinishing())    {
+                if (!isFinishing()) {
                     dlg.show();
                 }
 
-            }
-            else if(privKeyReader != null)	{
+            } else if (privKeyReader != null) {
                 String strReceiveAddress = SamouraiSentinel.getInstance(BalanceActivity.this).getReceiveAddress();
-                if(strReceiveAddress != null)    {
+                if (strReceiveAddress != null) {
                     Log.d("BalanceActivity", "receive address:" + strReceiveAddress);
                     SweepUtil.getInstance(BalanceActivity.this).sweep(privKeyReader, strReceiveAddress, SweepUtil.TYPE_P2PKH);
                 }
-            }
-            else    {
+            } else {
                 ;
             }
 
-        }
-        else    {
+        } else {
             Toast.makeText(BalanceActivity.this, R.string.cannot_recognize_privkey, Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private void confirmAccountSelection(final boolean isSweep)	{
+    private void confirmAccountSelection(final boolean isSweep) {
 
         final List<String> xpubList = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrsSorted();
 
-        if(xpubList.size() == 1)    {
+        if (xpubList.size() == 1) {
             SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(1);
-            if(isSweep)    {
+            if (isSweep) {
                 doSweep();
                 return;
-            }
-            else    {
+            } else {
                 Intent intent = new Intent(BalanceActivity.this, ReceiveActivity.class);
                 startActivity(intent);
                 return;
@@ -922,17 +891,14 @@ public class BalanceActivity extends Activity {
         }
 
         final String[] accounts = new String[xpubList.size()];
-        for(int i = 0; i < xpubList.size(); i++)   {
-            if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("tpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i)))    {
+        for (int i = 0; i < xpubList.size(); i++) {
+            if ((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("tpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i))) {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(i));
-            }
-            else if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub") || xpubList.get(i).startsWith("tpub") || xpubList.get(i).startsWith("upub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
+            } else if ((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub") || xpubList.get(i).startsWith("tpub") || xpubList.get(i).startsWith("upub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i))) {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
-            }
-            else if((xpubList.get(i).startsWith("zpub") || xpubList.get(i).startsWith("vpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i)))    {
+            } else if ((xpubList.get(i).startsWith("zpub") || xpubList.get(i).startsWith("vpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i))) {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(i));
-            }
-            else    {
+            } else {
                 accounts[i] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));
             }
         }
@@ -947,12 +913,11 @@ public class BalanceActivity extends Activity {
                                 dialog.dismiss();
 
                                 SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(which + 1);
-                                getActionBar().setSelectedNavigationItem(which + 1);
+//                                getActionBar().setSelectedNavigationItem(which + 1);
 
-                                if(isSweep)    {
+                                if (isSweep) {
                                     doSweep();
-                                }
-                                else    {
+                                } else {
                                     Intent intent = new Intent(BalanceActivity.this, ReceiveActivity.class);
                                     startActivity(intent);
                                 }
@@ -987,39 +952,36 @@ public class BalanceActivity extends Activity {
                 Looper.prepare();
 
                 List<String> _xpubs = new ArrayList<String>();
-                for(String xpub : xpubList)   {
-                    if(xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub") || xpub.startsWith("tpub") || xpub.startsWith("upub") || xpub.startsWith("vpub"))    {
+                for (String xpub : xpubList) {
+                    if (xpub.startsWith("xpub") || xpub.startsWith("ypub") || xpub.startsWith("zpub") || xpub.startsWith("tpub") || xpub.startsWith("upub") || xpub.startsWith("vpub")) {
                         _xpubs.add(xpub);
                     }
                 }
 
-                if(_xpubs.size() > 0)    {
+                if (_xpubs.size() > 0) {
                     try {
                         String xpubs = StringUtils.join(_xpubs.toArray(new String[_xpubs.size()]), ":");
 //                        Log.i("BalanceActivity", xpubs);
-                        if(_xpubs.size() > 0)    {
+                        if (_xpubs.size() > 0) {
                             HD_Wallet hdw = HD_WalletFactory.getInstance(BalanceActivity.this).restoreWallet(xpubs, null, 1);
-                            if(hdw != null) {
+                            if (hdw != null) {
                                 List<HD_Account> accounts = hdw.getAccounts();
-                                for(int i = 0; i < accounts.size(); i++)   {
+                                for (int i = 0; i < accounts.size(); i++) {
                                     AddressFactory.getInstance().account2xpub().put(i, _xpubs.get(i));
                                     AddressFactory.getInstance().xpub2account().put(_xpubs.get(i), i);
                                 }
                             }
                         }
 
-                    }
-                    catch(DecoderException de) {
+                    } catch (DecoderException de) {
                         PrefsUtil.getInstance(BalanceActivity.this).clear();
                         Toast.makeText(BalanceActivity.this, R.string.xpub_error, Toast.LENGTH_SHORT).show();
                         de.printStackTrace();
-                    }
-                    catch(AddressFormatException afe) {
+                    } catch (AddressFormatException afe) {
                         PrefsUtil.getInstance(BalanceActivity.this).clear();
                         Toast.makeText(BalanceActivity.this, R.string.xpub_error, Toast.LENGTH_SHORT).show();
                         afe.printStackTrace();
-                    }
-                    finally {
+                    } finally {
                         ;
                     }
                 }
@@ -1033,44 +995,37 @@ public class BalanceActivity extends Activity {
                     @Override
                     public void run() {
 
-                        if(xpubList.size() == 1)    {
+                        if (xpubList.size() == 1) {
                             account_selections = new String[1];
-                            if((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("tpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(0)))    {
+                            if ((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("tpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(0))) {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(0));
-                            }
-                            else if((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("ypub") || xpubList.get(0).startsWith("tpub") || xpubList.get(0).startsWith("upub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(0)))   {
+                            } else if ((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("ypub") || xpubList.get(0).startsWith("tpub") || xpubList.get(0).startsWith("upub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(0))) {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(0));
-                            }
-                            else if((xpubList.get(0).startsWith("zpub") || xpubList.get(0).startsWith("vpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(0)))   {
+                            } else if ((xpubList.get(0).startsWith("zpub") || xpubList.get(0).startsWith("vpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(0))) {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(0));
-                            }
-                            else    {
+                            } else {
                                 account_selections[0] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(0));
                             }
-                        }
-                        else    {
+                        } else {
                             account_selections = new String[xpubList.size() + 1];
                             account_selections[0] = BalanceActivity.this.getString(R.string.total_title);
-                            for(int i = 0; i < xpubList.size(); i++)   {
-                                if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("tpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i)))    {
+                            for (int i = 0; i < xpubList.size(); i++) {
+                                if ((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("tpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().containsKey(xpubList.get(i))) {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getXPUBs().get(xpubList.get(i));
-                                }
-                                else if((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub") || xpubList.get(i).startsWith("tpub") || xpubList.get(i).startsWith("upub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i)))    {
+                                } else if ((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub") || xpubList.get(i).startsWith("tpub") || xpubList.get(i).startsWith("upub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().containsKey(xpubList.get(i))) {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP49().get(xpubList.get(i));
-                                }
-                                else if((xpubList.get(i).startsWith("zpub") || xpubList.get(i).startsWith("vpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i)))    {
+                                } else if ((xpubList.get(i).startsWith("zpub") || xpubList.get(i).startsWith("vpub")) && SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().containsKey(xpubList.get(i))) {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getBIP84().get(xpubList.get(i));
-                                }
-                                else    {
+                                } else {
                                     account_selections[i + 1] = SamouraiSentinel.getInstance(BalanceActivity.this).getLegacy().get(xpubList.get(i));
                                 }
                             }
                         }
 
                         adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
-                        getActionBar().setListNavigationCallbacks(adapter, navigationListener);
+//                        getActionBar().setListNavigationCallbacks(adapter, navigationListener);
                         adapter.notifyDataSetChanged();
-                        if(account_selections.length == 1)    {
+                        if (account_selections.length == 1) {
                             SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(0);
                         }
 
@@ -1078,11 +1033,9 @@ public class BalanceActivity extends Activity {
 
                         try {
                             SamouraiSentinel.getInstance(BalanceActivity.this).serialize(SamouraiSentinel.getInstance(BalanceActivity.this).toJSON(), null);
-                        }
-                        catch(IOException ioe)  {
+                        } catch (IOException ioe) {
                             ;
-                        }
-                        catch(JSONException je)  {
+                        } catch (JSONException je) {
                             ;
                         }
 
@@ -1114,7 +1067,7 @@ public class BalanceActivity extends Activity {
 
         String strFiat = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.CURRENT_FIAT, "USD");
         double btc_fx = ExchangeRateFactory.getInstance(BalanceActivity.this).getAvgPrice(strFiat);
-        String strAmount = MonetaryUtil.getInstance().getFiatFormat(strFiat).format(btc_fx * (((double)value) / 1e8));
+        String strAmount = MonetaryUtil.getInstance().getFiatFormat(strFiat).format(btc_fx * (((double) value) / 1e8));
 
         return strAmount;
     }

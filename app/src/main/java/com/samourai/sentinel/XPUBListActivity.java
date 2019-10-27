@@ -1,20 +1,15 @@
 package com.samourai.sentinel;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -24,42 +19,34 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-//import android.util.Log;
 
-import com.dm.zbar.android.scanner.ZBarConstants;
-import com.dm.zbar.android.scanner.ZBarScannerActivity;
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.samourai.sentinel.api.APIFactory;
+import com.samourai.sentinel.util.AppUtil;
+import com.samourai.sentinel.util.FormatsUtil;
+import com.samourai.sentinel.util.MonetaryUtil;
+import com.samourai.sentinel.util.PrefsUtil;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
-import net.sourceforge.zbar.Symbol;
 
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.Coin;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import com.samourai.sentinel.access.AccessFactory;
+//import android.util.Log;
 
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
-import com.samourai.sentinel.api.APIFactory;
-import com.samourai.sentinel.util.AppUtil;
-import com.samourai.sentinel.util.FormatsUtil;
-import com.samourai.sentinel.util.MapUtil;
-import com.samourai.sentinel.util.MonetaryUtil;
-import com.samourai.sentinel.util.PrefsUtil;
-
-public class XPUBListActivity extends Activity {
+public class XPUBListActivity extends AppCompatActivity {
 
     private SwipeMenuListView xpubList = null;
     private XPUBAdapter xpubAdapter = null;
@@ -81,6 +68,7 @@ public class XPUBListActivity extends Activity {
             PrefsUtil.getInstance(XPUBListActivity.this).setValue(PrefsUtil.XPUB, "");
             AppUtil.getInstance(XPUBListActivity.this).restartApp();
         }
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         xpubList = (SwipeMenuListView)findViewById(R.id.xpubList);
         xpubAdapter = new XPUBAdapter();
@@ -194,6 +182,9 @@ public class XPUBListActivity extends Activity {
                 return false;
             }
         });
+
+        if(getSupportActionBar()!=null)
+          getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
 
