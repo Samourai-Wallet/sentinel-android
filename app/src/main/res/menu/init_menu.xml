@@ -1,16 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/action_restore"
         android:title="@string/options_restore"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        />
+        app:showAsAction="never" />
 
 
     <item android:id="@+id/action_network_init"
         android:icon="@drawable/ic_network_check_white_24dp"
         android:visible="true"
-        android:title=""
-        android:showAsAction="always"/>
+        android:title="Network"
+        android:showAsAction="always"
+        app:showAsAction="always" />
 
 </menu>

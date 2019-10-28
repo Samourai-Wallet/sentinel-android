@@ -1,6 +1,7 @@
 package com.samourai.sentinel.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.samourai.sentinel.BuildConfig;
 import com.samourai.sentinel.SamouraiSentinel;
@@ -8,6 +9,8 @@ import com.samourai.sentinel.tor.TorManager;
 
 import org.json.JSONObject;
 
+import java.sql.Time;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +41,6 @@ public class WebUtil {
     public static WebUtil getInstance(Context ctx) {
 
         if (instance == null) {
-
             instance = new WebUtil(ctx);
         }
 
@@ -47,11 +49,15 @@ public class WebUtil {
 
 
     public static final String SAMOURAI_API = "https://api.samouraiwallet.com/";
+    public static final String SAMOURAI_API_CHECK = "https://api.samourai.com/v1/status";
     public static final String SAMOURAI_API2 = "https://api.samouraiwallet.com/v2/";
     public static final String SAMOURAI_API2_TESTNET = "https://api.samouraiwallet.com/test/v2/";
 
     public static final String SAMOURAI_API2_TOR_DIST = "http://d2oagweysnavqgcfsfawqwql2rwxend7xxpriq676lzsmtfwbt75qbqd.onion/v2/";
     public static final String SAMOURAI_API2_TESTNET_TOR_DIST = "http://d2oagweysnavqgcfsfawqwql2rwxend7xxpriq676lzsmtfwbt75qbqd.onion/test/v2/";
+
+    public static String SAMOURAI_API2_TOR = SAMOURAI_API2_TOR_DIST;
+    public static String SAMOURAI_API2_TESTNET_TOR = SAMOURAI_API2_TESTNET_TOR_DIST;
 
     public static final String LBC_EXCHANGE_URL = "https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/";
     public static final String BFX_EXCHANGE_URL = "https://api.bitfinex.com/v1/pubticker/btcusd";
@@ -193,6 +199,7 @@ public class WebUtil {
 
         if (URL.contains("onion")) {
             getHostNameVerifier(builder);
+            builder.connectTimeout(90, TimeUnit.SECONDS);
         }
 
         if (BuildConfig.DEBUG) {
@@ -222,10 +229,12 @@ public class WebUtil {
 
         if (URL.contains("onion")) {
             getHostNameVerifier(builder);
+            builder.connectTimeout(90, TimeUnit.SECONDS);
         }
 
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+            builder.connectTimeout(90, TimeUnit.SECONDS);
         }
 
         Request request = new Request.Builder()
@@ -247,7 +256,6 @@ public class WebUtil {
     private void getHostNameVerifier(OkHttpClient.Builder
                                              clientBuilder) throws
             Exception {
-         LogUtil.info("DK", "getHostNameVerifier: ");
 
         // Create a trust manager that does not validate certificate chains
         final TrustManager[] trustAllCerts = new TrustManager[]{
@@ -282,8 +290,7 @@ public class WebUtil {
 
     public static String getAPIUrl(Context context) {
         if (TorManager.getInstance(context).isRequired()) {
-            return SamouraiSentinel.getInstance().isTestNet() ? SAMOURAI_API2_TESTNET_TOR_DIST : SAMOURAI_API2_TOR_DIST;
-
+            return SamouraiSentinel.getInstance().isTestNet() ? SAMOURAI_API2_TESTNET_TOR : SAMOURAI_API2_TOR;
         } else {
             return SamouraiSentinel.getInstance().isTestNet() ? SAMOURAI_API2_TESTNET : SAMOURAI_API2;
         }

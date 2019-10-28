@@ -23,5 +23,29 @@
     </style>
 
 
+    <style name="AppThemeV2" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/window</item>
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:navigationBarColor">@color/primary_dark</item>
+    </style>
+    <style name="AppThemeV2Alert" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@color/window</item>
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:navigationBarColor">@color/primary_dark</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_close_black_24dp</item>
+
+    </style>
+
+
 
 </resources>

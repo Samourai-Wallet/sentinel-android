@@ -136,7 +136,7 @@
     <string name="select_bip49_xpub1">Segwit Bitcoin Wallet</string>
     <string name="select_bip49_xpub2">bitcoin wallet via Segwit YPUB/ZPUB (BIP49/84)</string>
 
-    <string name="track_new">Track new...</string>
+    <string name="track_new">Track new…</string>
     <string name="received_bitcoin">Received Bitcoin</string>
 
     <string name="bitcoin_address">bitcoin address</string>
@@ -151,7 +151,7 @@
     <string name="enter_tx_hex">Enter transaction in hex format</string>
     <string name="broadcast">Broadcast transaction</string>
 
-    <string name="select_network">Select network...</string>
+    <string name="select_network">Select network…</string>
     <string name="MainNet">MainNet</string>
     <string name="TestNet">TestNet</string>
 
@@ -165,6 +165,19 @@
     <string name="paynym_follow_fee_message">A one time connection fee of   will be charged to follow contact</string>
     <string name="initializing_tor">initializing Tor…</string>
     <string name="renew">RENEW</string>
-    <string name="in_offline_mode">Samourai Wallet is in offline mode.</string>
+    <string name="in_offline_mode">Sentinel is in offline mode.</string>
+    <string name="dojo_headline">Power Sentinel with your  own personal DOJO full node</string>
+    <string name="powering_sentinel_wallet_">Powering Sentinel Wallet with your own personal node offers the best level of privacy and independence when interacting with the bitcoin network. Dojo makes running a full node easy and simple.</string>
+    <string name="preorder">Preorder</string>
+    <string name="plug_and_play_full_bitcoin_node_automatically">- Plug and Play full bitcoin node\n\n -Automatically configured Tor hidden service\n\n -Independence from default Samourai servers</string>
+    <string name="connect_to_existing_dojo">Connect to existing Dojo</string>
+    <string name="dojo_connect_instruction">If you already have a Dojo Full Node or are \nrunning the free and open source Dojo Software\non your own hardware, scan the pairing QR code\nlocated on the Dojo Maintenance control panel</string>
+    <string name="powering_samourai_wallet_">Powering Samourai Wallet with your own personal node offers the best level of privacy and independence when interacting with the bitcoin network. Dojo makes running a full node easy and simple.</string>
+    <string name="disable">Disable</string>
+    <string name="Enabled">Enabled</string>
+    <string name="loading">loading…</string>
+    <string name="tor_initializing">Tor initializing</string>
+    <string name="enable">Enable</string>
+    <string name="disabled">Disabled</string>
 
 </resources>

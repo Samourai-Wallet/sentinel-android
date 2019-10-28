@@ -90,8 +90,7 @@ public class MainActivity2 extends Activity {
 
         }
         else  {
-            feeThread();
-            exchangeRateThread();
+
 
             if(PrefsUtil.getInstance(MainActivity2.this).getValue("popup_" + getResources().getString(R.string.version_name), false) == true)	{
 
@@ -185,7 +184,8 @@ public class MainActivity2 extends Activity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
-
+            feeThread();
+            exchangeRateThread();
         }
 
         BackgroundManager.get(MainActivity2.this).addListener(bgListener);

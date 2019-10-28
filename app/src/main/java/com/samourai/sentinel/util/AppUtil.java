@@ -1,13 +1,11 @@
 package com.samourai.sentinel.util;
- 
+
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Looper;
 import android.text.InputType;
 import android.util.Log;
@@ -18,10 +16,7 @@ import android.widget.Toast;
 import com.samourai.sentinel.MainActivity2;
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.SamouraiSentinel;
-import com.samourai.sentinel.access.AccessFactory;
-import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.crypto.AESUtil;
-import com.samourai.sentinel.hd.HD_WalletFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,25 +35,38 @@ public class AppUtil {
     public static final int MAX_BACKUP_PW_LENGTH = 255;
 
     private boolean isInForeground = false;
-	
-	private static AppUtil instance = null;
-	private static Context context = null;
+
+    private static AppUtil instance = null;
+    private static Context context = null;
 
     private static String strReceiveQRFilename = null;
-	
-	private AppUtil() { ; }
 
-	public static AppUtil getInstance(Context ctx) {
-		
-		context = ctx;
-		
-		if(instance == null) {
+    private static boolean isOfflineMode = false;
+
+
+    private AppUtil() {
+        ;
+    }
+
+    public static AppUtil getInstance(Context ctx) {
+
+        context = ctx;
+
+        if (instance == null) {
             strReceiveQRFilename = context.getExternalCacheDir() + File.separator + "qr.png";
-			instance = new AppUtil();
-		}
-		
-		return instance;
-	}
+            instance = new AppUtil();
+        }
+
+        return instance;
+    }
+
+    public boolean isOfflineMode() {
+
+        isOfflineMode = !ConnectivityStatus.hasConnectivity(context);
+
+        return isOfflineMode;
+    }
+
 
     public void restartApp() {
         Intent intent = new Intent(context, MainActivity2.class);
