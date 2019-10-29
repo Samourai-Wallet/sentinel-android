@@ -11,8 +11,8 @@
     <string name="action_tx">Transactions</string>
     <string name="action_settings">Paramètres</string>
 
-    <string name="about_us">Qu\'est-ce que Sentinel?</string>
-    <string name="about_title">Qui sommes-nous?</string>
+    <string name="about_us">Qu\'est-ce que Sentinel ?</string>
+    <string name="about_title">Qui sommes-nous ?</string>
 
     <string name="ok">Ok</string>
     <string name="cancel">Annuler</string>
@@ -43,14 +43,14 @@
     <string name="copied_to_clipboard">Copié dans le presse-papiers</string>
     <string name="send_payment_code">Envoyer le code paiement</string>
 
-    <string name="ask_you_sure_exit">Êtes-vous sûr de vouloir quitter Sentinel?</string>
+    <string name="ask_you_sure_exit">Êtes-vous sûr de vouloir quitter Sentinel ?</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
 
     <string name="pin_5_8">Veuillez créer un code PIN comportant 5 à 8 caractères. Vous en aurez besoin pour accéder à Sentinel à partir de cet appareil.</string>
     <string name="pin_5_8_confirm">Veuillez confirmer le code PIN à 5-8 caractères</string>
     <string name="pin_error">Erreur de code PIN</string>
-    <string name="no_internet">Pas de connection Internet. Veuillez réessayer.</string>
+    <string name="no_internet">Pas de connexion Internet. Veuillez réessayer.</string>
     <string name="bip38_pw">Mot de passe BIP38</string>
     <string name="bip38_pw_error">Erreur mot de passe BIP38</string>
     <string name="please_select">Veuillez sélectionner...</string>
@@ -67,9 +67,9 @@
 
     <string name="invalid_amount">Montant invalide</string>
 
-    <string name="receive_address_to_clipboard">Copier cette adresse de réception dans le presse-papiers? Si oui, elle pourrait être lue par d\'autres applications.</string>
-    <string name="receive_address_to_share">Partager cette adresse de réception? Si oui, elle pourrait être lue par d\'autres applications.</string>
-    <string name="sure_to_delete">Êtes-vous sûr de vouloir annuler cette saisie?</string>
+    <string name="receive_address_to_clipboard">Copier cette adresse de réception dans le presse-papiers ? Si oui, elle pourrait être lue par d\'autres applications.</string>
+    <string name="receive_address_to_share">Partager cette adresse de réception ? Si oui, elle pourrait être lue par d\'autres applications.</string>
+    <string name="sure_to_delete">Êtes-vous sûr de vouloir annuler cette saisie ?</string>
 
     <string name="enter_xpub">Entrer un clé publique étendue ou une adresse bitcoin.</string>
     <string name="xpub_error">Erreur survenue lors de la création de votre portefeuille à partir des clés publiques étendues/adresses bitcoin. Veuillez réessayer.</string>
@@ -158,4 +158,14 @@
     <string name="permission_alert_dialog_title_camera">Demande autorisation caméra</string>
     <string name="permission_dialog_message_camera">Votre portefeuille a besoin d\'un accès à la caméra pour pouvoir scanner les codes QR.</string>
 
+    <string name="is_offline">Samourai est hors-ligne</string>
+    <string name="history_will_be_updated">Solde et Historique des transactions ne seront mis à jour qu\'une fois établie une connexion de données active</string>
+    <string name="you_received_s">Vous avez reçu</string>
+    <string name="paynym_follow_message">Ces frais couvrent le coût de la création d\'un type spécial de transaction sur la blockchain. Ceci permet à PayNym de demeurer décentralisé</string>
+    <string name="paynym_follow_fee_message">Des frais uniques de connexion d\'un montant de   seront facturés pour le suivi d\'un contact</string>
+    <string name="initializing_tor">initialisation de Tor…</string>
+    <string name="renew">ACTUALISER</string>
+    <string name="in_offline_mode">Le portefeuille Samourai est en mode hors-ligne.</string>
+    
+    
 </resources>
