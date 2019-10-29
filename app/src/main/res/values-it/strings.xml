@@ -19,6 +19,7 @@
 
     <string name="options_cat_prefs">Preferenze</string>
     <string name="options_cat_wallet">Il tuo wallet</string>
+    <string name="options_cat_offline">Transazioni offline</string>
     <string name="options_cat_other">Sentinel</string>
 
     <string name="options_currency">Tasso di scambio</string>
@@ -83,6 +84,8 @@
     <string name="options_scramble_pin2">Usa un pad numerico in ordine sparso per entrare nel tuo wallet.</string>
     <string name="options_pin">Codice PIN utente</string>
     <string name="options_pin2">Codice PIN impostato per accedere a Sentinel.</string>
+    <string name="options_broadcast_hex">Trasmetti esadecimale della transazione</string>
+    <string name="options_broadcast_hex2">Trasmetti transazione firmata sotto forma di esadecimale.</string>
 
     <string name="watchlist">Lista osservati</string>
     <string name="deposit">Deposita</string>
