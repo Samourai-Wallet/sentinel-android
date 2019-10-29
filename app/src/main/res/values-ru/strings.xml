@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="new_version_message">Добро пожаловать в Сентинель\n\nСентинель -- это Биткоин-кошелёк для исключительного приёма платежей. Сентинель не может отправлять биткоины. Отсканируйте любой расширенный публичный ключ XPUB и Сентинель будет продолжать наблюдать за адресами, предупреждая вас о всех входящих транзакциях и позволяя вам создавать новые адреса для того, чтобы принимать биткоины на вашем мобильном устройстве.\n\nСентинель -- это самый простой и самый безопасный путь для отслеживания и приёма платежей на ваш холодный кошелёк.\n\nСентинель не может отослать биткоины с вашего кошелька и ваши приватные ключи никаким образом не взаимодействуют с Сентинелем.</string>
+
+    <string name="decrypting_bip38">Расшифровываю пароль BIP38. Пожалуйста, подождите...</string>
+
+    <string name="action_send">Отправить</string>
+    <string name="action_stealth_send">Невидимая отправка</string>
+    <string name="action_receive">Получить</string>
+    <string name="action_tx">Транзакции</string>
+    <string name="action_settings">Настройки</string>
+
+    <string name="about_us">О Сентинеле</string>
+    <string name="about_title">О нас</string>
+
+    <string name="ok">ОК</string>
+    <string name="cancel">Отменить</string>
+
+    <string name="options_cat_prefs">Установки</string>
+    <string name="options_cat_wallet">Ваш кошелёк</string>
+    <string name="options_cat_offline">Офлайн транзакции</string>
+    <string name="options_cat_other">Сентинель</string>
+
+    <string name="options_currency">Цена</string>
+    <string name="options_currency2">Цена в валюте с выбранной биржи.</string>
+    <string name="options_blockexplorer">Обозреватель блоков</string>
+    <string name="options_blockexplorer2">Обозреватель блоков используется для просмотра подробной информации о транзакции.</string>
+    <string name="options_export">Экспортировать кошелёк</string>
+    <string name="options_export2">Экспортировать кошелёк и метаданные.</string>
+    <string name="options_restore">Восстановить кошелёк</string>
+    <string name="options_restore2">Восстановить кошелёк и метаданные из бэкапа.</string>
+    <string name="options_haptic">Сенсорный ввод PIN</string>
+    <string name="options_haptic_2">Вибрировать на каждой цифре при вводе PIN кода.</string>
+
+    <string name="timeline_today">Сегодня</string>
+    <string name="timeline_yesterday">Вчера</string>
+    <string name="timeline_older">Эти операции были давно</string>
+
+    <string name="you_received">Вы получили</string>
+    <string name="you_sent">Вы отправили</string>
+
+    <string name="copied_to_clipboard">Скопировано в буфер</string>
+    <string name="send_payment_code">Отправить платёжный код</string>
+
+    <string name="ask_you_sure_exit">Вы уверены, что хотите выйти из Сентинель?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <string name="pin_5_8">Пожалуйста, создайте PIN код более 5 и менее 8 символов. Вам понадобится этот код PIN для доступа в Сентинель на данном устройстве.</string>
+    <string name="pin_5_8_confirm">Пожалуйста, подтвердите 5-8 знаков PIN кода</string>
+    <string name="pin_error">Ошибка ввода кода</string>
+    <string name="no_internet">Нет соединения с Интернетом. Пожалуйста, попробуйте снова.</string>
+    <string name="bip38_pw">Пароль BIP38</string>
+    <string name="bip38_pw_error">Ошибка пароля BIP38</string>
+    <string name="please_select">Пожалуйста, выберите...</string>
+    <string name="pin_enter">Ввести PIN код</string>
+    <string name="please_wait">Пожалуйста, подождите...</string>
+    <string name="wallet_restored_ko">Ошибка восстановления кошелька.</string>
+
+    <string name="address_used_previously">Этот входящий адрес уже использовался.</string>
+
+    <string name="scan">Сканировать</string>
+    <string name="manual">Ввести</string>
+
+    <string name="tx_ok">Транзакция отправлена</string>
+
+    <string name="invalid_amount">Неверное количество</string>
+
+    <string name="receive_address_to_clipboard">Копировать этот входящий адрес в буфер обмена? Если он будет скопирован, он может стать доступным для других приложений.</string>
+    <string name="receive_address_to_share">Поделиться этим входящим адресом? Если вы им поделитесь, он может стать доступным для других приложений.</string>
+    <string name="sure_to_delete">Вы уверены, что хотите удалить эту запись?</string>
+
+    <string name="enter_xpub">Введите расширенный публичный ключ XPUB или биткоин-адрес.</string>
+    <string name="xpub_error">Произошла ошибка при создании кошелька из вашего расширенного публичного ключа XPUBs или биткоин-адреса. Пожалуйста, попробуйте снова.</string>
+
+    <string name="create_pin">Создать PIN код</string>
+    <string name="confirm_pin">Подтвердить PIN код</string>
+    <string name="entering_stealth">Обрабатываем PIN код. Пожалуйста, подождите.</string>
+
+    <string name="error_activating_stealth">Ошибка активации невидимого запуска. Если ошибка сохраняется, переустановите Сентинель.</string>
+
+    <string name="options_scramble_pin">Перемешать ввод PIN</string>
+    <string name="options_scramble_pin2">Использовать перемешанные цифровые клавиши для входа в Сентинель.</string>
+    <string name="options_pin">Пользовательский PIN код</string>
+    <string name="options_pin2">Пользовательский PIN код для входа в Сентинель.</string>
+    <string name="options_broadcast_hex">Отправить hex-транзакцию в сеть</string>
+    <string name="options_broadcast_hex2">Отправить в сеть подписанную в hex-формате транзакцию.</string>
+
+    <string name="watchlist">Список</string>
+    <string name="deposit">Пополнить</string>
+
+    <string name="xpub_label">Метка</string>
+    <string name="new_account">Новый аккаунт</string>
+
+    <string name="total_title">Всего</string>
+    <string name="deposit_into">Отправить в...</string>
+
+    <string name="password">Пароль</string>
+    <string name="confirm_password">Подтвердить пароль</string>
+    <string name="invalid_password">Пожалуйста, используйте пароль, содержащий по меньшей мере 6 символов.</string>
+    <string name="export_to_clipboard">Экспортировать в буфер</string>
+    <string name="export_to_email">Отправить по почте</string>
+    <string name="error_password">Введённые пароли не совпадают. Пожалуйста, попробуйте снова.</string>
+    <string name="encryption_error">Произошла ошибка при шифровании резервной копии вашего кошелька. Пожалуйста, попробуйте снова.</string>
+    <string name="encrypted_backup">Данные зашифрованного кошелька</string>
+    <string name="decryption_error">Произошла ошибка при расшифровке резервной копии вашего кошелька. Пожалуйста, попробуйте снова.</string>
+    <string name="restore_wallet_from_backup">Восстановить кошелёк из копии</string>
+
+    <string name="choose_email_client">Выберите почтовый клиент:</string>
+
+    <string name="bip32_account">BIP32 аккаунт</string>
+    <string name="bip44_account">BIP44/49 аккаунт</string>
+    <string name="bip49_account">BIP49 аккаунт</string>
+    <string name="bip84_account">BIP84 аккаунт</string>
+    <string name="base58_error">Нераспознанный формат</string>
+    <string name="invalid_entry">Неправильный XPUB или биткоин-адрес</string>
+
+    <string name="unknown_xpub">Глубина XPUB</string>
+
+    <string name="action_sweep">Заместить приватный ключ</string>
+    <string name="enter_privkey">Ввести приватный ключ</string>
+    <string name="cannot_recognize_privkey">Не могу распознать приватный ключ</string>
+    <string name="cannot_sweep_privkey">Ошибка замещения приватного ключа</string>
+    <string name="pushtx_returns_null">Ошибка отправки. Сервер вернул нулевое значение.</string>
+
+    <string name="xpub_add_ok">XPUB успешно добавлен</string>
+    <string name="xpub_add_ko">XPUB не добавлен</string>
+
+    <string name="select_bitcoin_address1">Биткоин-адрес</string>
+    <string name="select_bitcoin_address2">одиночный биткоин-адрес</string>
+
+    <string name="select_bip44_xpub1">Биткоин-кошелёк</string>
+    <string name="select_bip44_xpub2">биткоин-кошелёк через XPUB (BIP44)</string>
+
+    <string name="select_bip49_xpub1">Segwit Биткоин-кошелёк</string>
+    <string name="select_bip49_xpub2">биткоин-кошелёк через Segwit YPUB/ZPUB (BIP49/84)</string>
+
+    <string name="track_new">Отследить новый...</string>
+    <string name="received_bitcoin">Получено</string>
+
+    <string name="bitcoin_address">биткоин-адрес</string>
+    <string name="bech32_address">bech32 биткоин-адрес </string>
+
+    <string name="start">Старт</string>
+    <string name="get_started">Приступить</string>
+    <string name="add_first_address">Добавить новый биткоин-адрес или XPUB и Сентинель будет активирован</string>
+
+    <string name="tx_length_error">Samourai не обрабатывает транзакции размером более 100KB. Пожалуйста, попробуйте разделить вашу транзакцию.</string>
+    <string name="tx_hex">Транзакция в формате hex</string>
+    <string name="enter_tx_hex">Ввести транзакцию в hex-формате</string>
+    <string name="broadcast">Отправить транзакцию в сеть</string>
+
+    <string name="select_network">Выбрать тип сети...</string>
+    <string name="MainNet">MainNet</string>
+    <string name="TestNet">TestNet</string>
+
+    <string name="permission_alert_dialog_title_camera">Запрашиваем разрешение использовать камеру</string>
+    <string name="permission_dialog_message_camera">Ваш кошелёк должен иметь доступ к камере для сканирования QR кодов.</string>
+
+</resources>
