@@ -318,95 +318,86 @@ public class ReceiveActivity extends Activity {
         getMenuInflater().inflate(R.menu.receive_menu, menu);
 
         MenuItem itemShare = menu.findItem(R.id.action_share_receive).setVisible(true);
-        itemShare.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
+        itemShare.setOnMenuItemClickListener(item -> {
 
-                new AlertDialog.Builder(ReceiveActivity.this)
-                        .setTitle(R.string.app_name)
-                        .setMessage(R.string.receive_address_to_share)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            new AlertDialog.Builder(ReceiveActivity.this)
+                    .setTitle(R.string.app_name)
+                    .setMessage(R.string.receive_address_to_share)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
-                            public void onClick(DialogInterface dialog, int whichButton) {
+                        public void onClick(DialogInterface dialog, int whichButton) {
 
-                                String strFileName = AppUtil.getInstance(ReceiveActivity.this).getReceiveQRFilename();
-                                File file = new File(strFileName);
-                                if(!file.exists()) {
-                                    try {
-                                        file.createNewFile();
-                                    }
-                                    catch(Exception e) {
-                                        Toast.makeText(ReceiveActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                                file.setReadable(true, false);
-
-                                FileOutputStream fos = null;
+                            String strFileName = AppUtil.getInstance(ReceiveActivity.this).getReceiveQRFilename();
+                            File file = new File(strFileName);
+                            if(!file.exists()) {
                                 try {
-                                    fos = new FileOutputStream(file);
+                                    file.createNewFile();
                                 }
-                                catch(FileNotFoundException fnfe) {
+                                catch(Exception e) {
+                                    Toast.makeText(ReceiveActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            file.setReadable(true, false);
+
+                            FileOutputStream fos = null;
+                            try {
+                                fos = new FileOutputStream(file);
+                            }
+                            catch(FileNotFoundException fnfe) {
+                                ;
+                            }
+
+                            android.content.ClipboardManager clipboard = (android.content.ClipboardManager)ReceiveActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                            android.content.ClipData clip = null;
+                            clip = android.content.ClipData.newPlainText("Receive address", addr);
+                            clipboard.setPrimaryClip(clip);
+
+                            if(file != null && fos != null) {
+                                Bitmap bitmap = ((BitmapDrawable)ivQR.getDrawable()).getBitmap();
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 0, fos);
+
+                                try {
+                                    fos.close();
+                                }
+                                catch(IOException ioe) {
                                     ;
                                 }
 
-                                android.content.ClipboardManager clipboard = (android.content.ClipboardManager)ReceiveActivity.this.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
-                                android.content.ClipData clip = null;
-                                clip = android.content.ClipData.newPlainText("Receive address", addr);
-                                clipboard.setPrimaryClip(clip);
-
-                                if(file != null && fos != null) {
-                                    Bitmap bitmap = ((BitmapDrawable)ivQR.getDrawable()).getBitmap();
-                                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, fos);
-
-                                    try {
-                                        fos.close();
-                                    }
-                                    catch(IOException ioe) {
-                                        ;
-                                    }
-
-                                    Intent intent = new Intent();
-                                    intent.setAction(Intent.ACTION_SEND);
-                                    intent.setType("image/png");
-                                    if (android.os.Build.VERSION.SDK_INT >= 24) {
-                                        //From API 24 sending FIle on intent ,require custom file provider
-                                        intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(
-                                                ReceiveActivity.this,
-                                                getApplicationContext()
-                                                        .getPackageName() + ".provider", file));
-                                    } else {
-                                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-                                    }
-                                    startActivity(Intent.createChooser(intent, ReceiveActivity.this.getText(R.string.send_payment_code)));
+                                Intent intent = new Intent();
+                                intent.setAction(Intent.ACTION_SEND);
+                                intent.setType("image/png");
+                                if (android.os.Build.VERSION.SDK_INT >= 24) {
+                                    //From API 24 sending FIle on intent ,require custom file provider
+                                    intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(
+                                            ReceiveActivity.this,
+                                            getApplicationContext()
+                                                    .getPackageName() + ".provider", file));
+                                } else {
+                                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
                                 }
-
+                                startActivity(Intent.createChooser(intent, ReceiveActivity.this.getText(R.string.send_payment_code)));
                             }
 
-                        }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        }
 
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }).setNegativeButton(R.string.no, (dialog, whichButton) -> {
                         ;
-                    }
-                }).show();
+                    }).show();
 
-                return false;
-            }
+            return false;
         });
 
         MenuItem itemRefresh = menu.findItem(R.id.action_refresh).setVisible(false);
-        itemRefresh.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
+        itemRefresh.setOnMenuItemClickListener(item -> {
 
-                if (canRefresh) {
-                    addr = SamouraiSentinel.getInstance(ReceiveActivity.this).getReceiveAddress();
-                    canRefresh = false;
-                    displayQRCode();
-                }
-
-                return false;
+            if (canRefresh) {
+                addr = SamouraiSentinel.getInstance(ReceiveActivity.this).getReceiveAddress();
+                canRefresh = false;
+                displayQRCode();
             }
+
+            return false;
         });
 
         _menu = menu;
@@ -486,40 +477,34 @@ public class ReceiveActivity extends Activity {
 
         final Handler handler = new Handler();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final JSONObject jsonObject = APIFactory.getInstance(ReceiveActivity.this).getAddressInfo(addr);
+        new Thread(() -> {
+            try {
+                final JSONObject jsonObject = APIFactory.getInstance(ReceiveActivity.this).getAddressInfo(addr);
 
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if(jsonObject != null && jsonObject.has("addresses") && jsonObject.getJSONArray("addresses").length() > 0) {
-                                    JSONArray addrs = jsonObject.getJSONArray("addresses");
-                                    JSONObject _addr = addrs.getJSONObject(0);
-                                    if(_addr.has("n_tx") && _addr.getLong("n_tx") > 0L) {
-                                        Toast.makeText(ReceiveActivity.this, R.string.address_used_previously, Toast.LENGTH_SHORT).show();
-                                        canRefresh = true;
-                                        _menu.findItem(R.id.action_refresh).setVisible(true);
-                                    }
-                                    else {
-                                        canRefresh = false;
-                                        _menu.findItem(R.id.action_refresh).setVisible(false);
-                                    }
-                                }
-
-                            } catch (Exception e) {
+                handler.post(() -> {
+                    try {
+                        if(jsonObject != null && jsonObject.has("addresses") && jsonObject.getJSONArray("addresses").length() > 0) {
+                            JSONArray addrs = jsonObject.getJSONArray("addresses");
+                            JSONObject _addr = addrs.getJSONObject(0);
+                            if(_addr.has("n_tx") && _addr.getLong("n_tx") > 0L) {
+                                Toast.makeText(ReceiveActivity.this, R.string.address_used_previously, Toast.LENGTH_SHORT).show();
+                                canRefresh = true;
+                                _menu.findItem(R.id.action_refresh).setVisible(true);
+                            }
+                            else {
                                 canRefresh = false;
                                 _menu.findItem(R.id.action_refresh).setVisible(false);
                             }
                         }
-                    });
-                } catch (Exception e) {
-                    canRefresh = false;
-                    _menu.findItem(R.id.action_refresh).setVisible(false);
-                }
+
+                    } catch (Exception e) {
+                        canRefresh = false;
+                        _menu.findItem(R.id.action_refresh).setVisible(false);
+                    }
+                });
+            } catch (Exception e) {
+                canRefresh = false;
+                _menu.findItem(R.id.action_refresh).setVisible(false);
             }
         }).start();
     }
