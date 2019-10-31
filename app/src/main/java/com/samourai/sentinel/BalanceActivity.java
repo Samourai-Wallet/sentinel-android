@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -107,12 +108,11 @@ public class BalanceActivity extends AppCompatActivity {
 
     private static String[] account_selections = null;
     private static ArrayAdapter<String> adapter = null;
-    private static ActionBar.OnNavigationListener navigationListener = null;
 
     public static final String ACTION_INTENT = "com.samourai.sentinel.BalanceFragment.REFRESH";
 
     private ProgressDialog progress = null;
-
+    private Spinner accountSpinner;
     protected BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -136,31 +136,31 @@ public class BalanceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_balance);
 
-//        BalanceActivity.this.getActionBar().setTitle(R.string.app_name);
-
-        //
-        // account selection
-        //
         setSupportActionBar(findViewById(R.id.toolbar));
+
+        accountSpinner = findViewById(R.id.account_spinner);
+
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.app_name);
         account_selections = new String[1];
         account_selections[0] = "";
         adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
-//        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        accountSpinner.setAdapter(adapter);
         setSupportActionBar(findViewById(R.id.toolbar));
-        navigationListener = new ActionBar.OnNavigationListener() {
-            @Override
-            public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 
-                SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(itemPosition);
+        accountSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(position);
 
                 refreshTx(false);
-
-                return false;
             }
-        };
-//        getActionBar().setListNavigationCallbacks(adapter, navigationListener);
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         LayoutInflater inflator = BalanceActivity.this.getLayoutInflater();
         tvBalanceBar = (LinearLayout) inflator.inflate(R.layout.balance_layout, null);
@@ -913,7 +913,7 @@ public class BalanceActivity extends AppCompatActivity {
                                 dialog.dismiss();
 
                                 SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(which + 1);
-//                                getActionBar().setSelectedNavigationItem(which + 1);
+                                accountSpinner.setSelection(which + 1);
 
                                 if (isSweep) {
                                     doSweep();
@@ -1023,8 +1023,8 @@ public class BalanceActivity extends AppCompatActivity {
                         }
 
                         adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
-//                        getActionBar().setListNavigationCallbacks(adapter, navigationListener);
                         adapter.notifyDataSetChanged();
+                        accountSpinner.setAdapter(adapter);
                         if (account_selections.length == 1) {
                             SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(0);
                         }
