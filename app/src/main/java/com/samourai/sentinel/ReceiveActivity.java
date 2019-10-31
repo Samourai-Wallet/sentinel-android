@@ -18,6 +18,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -314,11 +315,7 @@ public class ReceiveActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-
-//        menu.findItem(R.id.action_sweep).setVisible(false);
-        menu.findItem(R.id.action_settings).setVisible(false);
-        menu.findItem(R.id.action_sweep).setVisible(false);
+        getMenuInflater().inflate(R.menu.receive_menu, menu);
 
         MenuItem itemShare = menu.findItem(R.id.action_share_receive).setVisible(true);
         itemShare.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
