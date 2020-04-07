@@ -72,7 +72,6 @@ public class DojoUtil {
             String url = getUrl(dojoParams);
             if (url.charAt(url.length() - 1) != '/') {
                 url = url + "/";
-
                 JSONObject obj = new JSONObject(dojoParams);
                 if (obj.has("pairing") && obj.getJSONObject("pairing").has("url")) {
                     obj.getJSONObject("pairing").put("url", url);
@@ -80,7 +79,7 @@ public class DojoUtil {
                 }
             }
             if (SamouraiSentinel.getInstance().isTestNet()) {
-                WebUtil.SAMOURAI_API2_TOR = url;
+                WebUtil.SAMOURAI_API2_TESTNET_TOR = url;
             } else {
                 WebUtil.SAMOURAI_API2_TOR = url;
             }

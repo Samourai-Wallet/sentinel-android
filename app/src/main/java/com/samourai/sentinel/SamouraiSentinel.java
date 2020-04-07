@@ -272,7 +272,11 @@ public class SamouraiSentinel {
             obj.put("receives", ReceiveLookAtUtil.getInstance().toJSON());
 
             if(DojoUtil.getInstance(context).getDojoParams() != null){
-                obj.put("dojo", DojoUtil.getInstance(context).toJSON().toString());
+                try {
+                    obj.put("dojo", DojoUtil.getInstance(context).toJSON().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
 
