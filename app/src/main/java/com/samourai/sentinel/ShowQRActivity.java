@@ -10,7 +10,7 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;

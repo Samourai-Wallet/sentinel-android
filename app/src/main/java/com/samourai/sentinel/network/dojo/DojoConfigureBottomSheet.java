@@ -9,12 +9,11 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.constraint.Group;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.DialogFragment;
+import androidx.constraintlayout.widget.Group;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.samourai.sentinel.InsertSegwitActivity;
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.codescanner.CameraFragmentBottomSheet;

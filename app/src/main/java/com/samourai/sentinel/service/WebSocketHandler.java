@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Looper;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 //import android.util.Log;
 
@@ -12,14 +12,12 @@ import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
-import com.neovisionaries.ws.client.WebSocketFrame;
 
 import com.samourai.sentinel.MainActivity2;
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.NotificationsFactory;
-import com.samourai.sentinel.util.ReceiveLookAtUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,8 +26,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class WebSocketHandler {
 

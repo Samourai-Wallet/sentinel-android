@@ -9,12 +9,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.content.LocalBroadcastManager;
-import android.view.KeyEvent;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.widget.Toast;
 //import android.util.Log;
 
-import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.service.BackgroundManager;
 import com.samourai.sentinel.service.WebSocketService;

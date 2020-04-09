@@ -24,7 +24,7 @@
 package com.samourai.sentinel.codescanner;
 
 import android.graphics.Matrix;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 
 final class Rect {

@@ -24,8 +24,8 @@
 package com.samourai.sentinel.codescanner;
 
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 /**
  * Common class for code scanner runtime exceptions

@@ -7,8 +7,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -25,7 +25,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.support.v4.app.NotificationCompat.GROUP_ALERT_SUMMARY;
+import static androidx.core.app.NotificationCompat.GROUP_ALERT_SUMMARY;
 import static com.samourai.sentinel.SentinelApplication.TOR_CHANNEL_ID;
 
 
