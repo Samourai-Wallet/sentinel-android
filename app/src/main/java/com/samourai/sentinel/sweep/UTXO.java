@@ -1,5 +1,7 @@
 package com.samourai.sentinel.sweep;
 
+import com.samourai.sentinel.sweep.MyTransactionOutPoint;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -7,6 +9,8 @@ import java.util.List;
 //import org.apache.commons.lang3.tuple.Pair;
 
 public class UTXO {
+
+    private String path = null;
 
     private List<MyTransactionOutPoint> outpoints = null;
 
@@ -24,6 +28,14 @@ public class UTXO {
 
     public void setOutpoints(List<MyTransactionOutPoint> outpoints) {
         this.outpoints = outpoints;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public long getValue() {
@@ -49,6 +61,27 @@ public class UTXO {
             if (o1.getValue() > o2.getValue()) {
                 return BEFORE;
             } else if (o1.getValue() < o2.getValue()) {
+                return AFTER;
+            } else {
+                return EQUAL;
+            }
+
+        }
+
+    }
+
+    // sorts in descending order by amount
+    public static class OutpointComparator implements Comparator<MyTransactionOutPoint> {
+
+        public int compare(MyTransactionOutPoint o1, MyTransactionOutPoint o2) {
+
+            final int BEFORE = -1;
+            final int EQUAL = 0;
+            final int AFTER = 1;
+
+            if (o1.getValue().longValue() > o2.getValue().longValue()) {
+                return BEFORE;
+            } else if (o1.getValue().longValue() < o2.getValue().longValue()) {
                 return AFTER;
             } else {
                 return EQUAL;
