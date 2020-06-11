@@ -1,19 +1,27 @@
 package com.samourai.sentinel.hd;
 
 import android.content.Context;
+import android.util.Log;
 //import android.util.Log;
 
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.crypto.DeterministicKey;
+import org.bitcoinj.crypto.HDKeyDerivation;
+import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.crypto.MnemonicException;
 
 import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.util.PrefsUtil;
 
 import org.apache.commons.codec.DecoderException;
+import org.bitcoinj.params.TestNet3Params;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HD_WalletFactory	{

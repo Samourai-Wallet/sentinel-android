@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+
+    <item
+        android:id="@+id/utxo_details_action_send"
+        android:icon="@drawable/ic_send_24dp"
+        android:orderInCategory="100"
+        android:title="Send"
+        app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/utxo_details_action_spendable"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Mark as Spendable" />
+
+    <item
+        android:id="@+id/utxo_details_action_do_not_spend"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Mark as do not spend" />
+
+
+</menu>

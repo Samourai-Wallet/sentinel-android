@@ -1,4 +1,4 @@
-package com.samourai.sentinel;
+package com.samourai.sentinel.balance;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
@@ -16,9 +16,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -42,6 +44,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
+import com.samourai.sentinel.ExodusActivity;
+import com.samourai.sentinel.R;
+import com.samourai.sentinel.ReceiveActivity;
+import com.samourai.sentinel.SamouraiSentinel;
+import com.samourai.sentinel.SettingsActivity;
+import com.samourai.sentinel.XPUBListActivity;
 import com.samourai.sentinel.access.AccessFactory;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.api.Tx;
@@ -52,6 +60,8 @@ import com.samourai.sentinel.hd.HD_WalletFactory;
 import com.samourai.sentinel.network.dojo.DojoUtil;
 import com.samourai.sentinel.network.dojo.Network;
 import com.samourai.sentinel.permissions.PermissionsUtil;
+import com.samourai.sentinel.send.SendActivity;
+import com.samourai.sentinel.service.JobRefreshService;
 import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.sweep.PrivKeyReader;
 import com.samourai.sentinel.sweep.SweepUtil;
@@ -65,6 +75,7 @@ import com.samourai.sentinel.util.MonetaryUtil;
 import com.samourai.sentinel.util.PrefsUtil;
 import com.samourai.sentinel.util.TimeOutUtil;
 import com.samourai.sentinel.util.TypefaceUtil;
+import com.samourai.sentinel.utxos.UTXOSActivity;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
@@ -75,7 +86,6 @@ import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.BIP38PrivateKey;
-import org.bitcoinj.crypto.MnemonicException;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -83,6 +93,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 //import android.util.Log;
 
@@ -110,22 +123,23 @@ public class BalanceActivity extends AppCompatActivity {
     private static ArrayAdapter<String> adapter = null;
 
     public static final String ACTION_INTENT = "com.samourai.sentinel.BalanceFragment.REFRESH";
+    public static final String ACTION_INTENT_COMPLETE = "com.samourai.sentinel.BalanceFragment.ON_REFRESH_COMPLETE";
 
     private ProgressDialog progress = null;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Spinner accountSpinner;
     protected BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.i("GOT INTEN", "inte ".concat(intent.toString()));
 
             if (ACTION_INTENT.equals(intent.getAction())) {
 
-                BalanceActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshTx(false);
-                    }
-                });
+                BalanceActivity.this.runOnUiThread(() -> refreshTx());
 
+            }
+            if (ACTION_INTENT_COMPLETE.equals(intent.getAction())) {
+                BalanceActivity.this.runOnUiThread(() -> setTx());
             }
 
         }
@@ -152,8 +166,8 @@ public class BalanceActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(position);
-
-                refreshTx(false);
+//                refreshTx();
+                setTx();
             }
 
             @Override
@@ -202,60 +216,45 @@ public class BalanceActivity extends AppCompatActivity {
         txList = (ListView) findViewById(R.id.txList);
         txAdapter = new TransactionAdapter();
         txList.setAdapter(txAdapter);
-        txList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+        txList.setOnItemClickListener((AdapterView.OnItemClickListener) (parent, view, position, id) -> {
 
-                if (position == 0) {
-                    return;
-                }
+            if (position == 0) {
+                return;
+            }
 
-                long viewId = view.getId();
-                View v = (View) view.getParent();
-                Tx tx = txs.get(position - 1);
-                ImageView ivTxStatus = (ImageView) v.findViewById(R.id.TransactionStatus);
-                TextView tvConfirmationCount = (TextView) v.findViewById(R.id.ConfirmationCount);
+            long viewId = view.getId();
+            View v = (View) view.getParent();
+            Tx tx = txs.get(position - 1);
+            ImageView ivTxStatus = (ImageView) v.findViewById(R.id.TransactionStatus);
+            TextView tvConfirmationCount = (TextView) v.findViewById(R.id.ConfirmationCount);
 
-                if (viewId == R.id.ConfirmationCount || viewId == R.id.TransactionStatus) {
+            if (viewId == R.id.ConfirmationCount || viewId == R.id.TransactionStatus) {
 
-                    if (txStates.containsKey(tx.getHash()) && txStates.get(tx.getHash()) == true) {
-                        txStates.put(tx.getHash(), false);
-                        displayTxStatus(false, tx.getConfirmations(), tvConfirmationCount, ivTxStatus);
-                    } else {
-                        txStates.put(tx.getHash(), true);
-                        displayTxStatus(true, tx.getConfirmations(), tvConfirmationCount, ivTxStatus);
-                    }
-
+                if (txStates.containsKey(tx.getHash()) && txStates.get(tx.getHash()) == true) {
+                    txStates.put(tx.getHash(), false);
+                    displayTxStatus(false, tx.getConfirmations(), tvConfirmationCount, ivTxStatus);
                 } else {
+                    txStates.put(tx.getHash(), true);
+                    displayTxStatus(true, tx.getConfirmations(), tvConfirmationCount, ivTxStatus);
+                }
 
-                    String strTx = tx.getHash();
-                    if (strTx != null) {
-                        int sel = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BLOCK_EXPLORER, 0);
-                        CharSequence url = BlockExplorerUtil.getInstance().getBlockExplorerUrls()[sel];
+            } else {
 
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url + strTx));
-                        startActivity(browserIntent);
-                    }
+                String strTx = tx.getHash();
+                if (strTx != null) {
+                    int sel = PrefsUtil.getInstance(BalanceActivity.this).getValue(PrefsUtil.BLOCK_EXPLORER, 0);
+                    CharSequence url = BlockExplorerUtil.getInstance().getBlockExplorerUrls()[sel];
 
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url + strTx));
+                    startActivity(browserIntent);
                 }
 
             }
+
         });
 
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshTx(true);
-                    }
-                });
-
-            }
-        });
+        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(() -> new Handler().post(() -> refreshTx()));
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
@@ -270,8 +269,24 @@ public class BalanceActivity extends AppCompatActivity {
         }
 
         restoreWatchOnly();
-
+        loadWalletMeta();
     }
+
+    private void loadWalletMeta() {
+        Disposable disposable = SamouraiSentinel.getInstance(getApplication()).getUTXOs()
+                .subscribe((s, throwable) -> {
+                    if (s != null && !s.isEmpty() && throwable == null) {
+                        APIFactory.getInstance(getApplication()).parseUnspentOutputs(s);
+                    }
+                });
+        Disposable disposable1 = SamouraiSentinel.getInstance(getApplication())
+                .loadUTXOMeta()
+                .subscribe(() -> {
+                }, Throwable::printStackTrace);
+        compositeDisposable.add(disposable1);
+        compositeDisposable.add(disposable);
+    }
+
 
     @Override
     public void onResume() {
@@ -279,6 +294,9 @@ public class BalanceActivity extends AppCompatActivity {
 
         IntentFilter filter = new IntentFilter(ACTION_INTENT);
         LocalBroadcastManager.getInstance(BalanceActivity.this).registerReceiver(receiver, filter);
+
+        IntentFilter filterComplete = new IntentFilter(ACTION_INTENT_COMPLETE);
+        LocalBroadcastManager.getInstance(BalanceActivity.this).registerReceiver(receiver, filterComplete);
 
         AppUtil.getInstance(BalanceActivity.this).checkTimeOut();
 
@@ -310,6 +328,14 @@ public class BalanceActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             doSettings();
+        }
+        if (id == R.id.utxos_menu) {
+            Intent intent = new Intent(this, UTXOSActivity.class);
+            startActivity(intent);
+        }
+        if (id == R.id.send_activity) {
+            Intent intent = new Intent(this, SendActivity.class);
+            startActivity(intent);
         }
         if (id == R.id.action_network) {
             startActivity(new Intent(this, Network.class));
@@ -541,71 +567,32 @@ public class BalanceActivity extends AppCompatActivity {
 
     }
 
-    public void refreshTx(final boolean dragged) {
+    public void refreshTx() {
 
-        final Handler handler = new Handler();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
+        swipeRefreshLayout.setRefreshing(true);
+        Intent intent = new Intent(this, JobRefreshService.class);
+        JobRefreshService.enqueueWork(getApplicationContext(), intent);
 
-                APIFactory.getInstance(getApplicationContext()).stayingAlive();
+        if (!AppUtil.getInstance(getApplication().getApplicationContext()).isServiceRunning(WebSocketService.class) && !DojoUtil.getInstance(getApplicationContext()).isDojoEnabled()) {
+            startService(new Intent(getApplication().getApplicationContext(), WebSocketService.class));
+        }
 
-                runOnUiThread(() -> {
-                    swipeRefreshLayout.setRefreshing(true);
-                });
 
-                int idx = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount();
+    }
 
-                List<String> _xpubs = SamouraiSentinel.getInstance(BalanceActivity.this).getAllAddrsSorted();
-                if (idx == 0) {
-                    APIFactory.getInstance(BalanceActivity.this).getXPUB(_xpubs.toArray(new String[_xpubs.size()]));
-                } else {
-                    APIFactory.getInstance(BalanceActivity.this).getXPUB(new String[]{_xpubs.get(idx - 1)});
-                }
-
-                if (idx == 0) {
-                    txs = APIFactory.getInstance(BalanceActivity.this).getAllXpubTxs();
-                } else {
-                    txs = APIFactory.getInstance(BalanceActivity.this).getXpubTxs().get(_xpubs.get(idx - 1));
-                }
-
-                try {
-                    if (HD_WalletFactory.getInstance(BalanceActivity.this).get() != null) {
-
-                        HD_Wallet hdw = HD_WalletFactory.getInstance(BalanceActivity.this).get();
-
-                        for (int i = 0; i < hdw.getAccounts().size(); i++) {
-                            HD_WalletFactory.getInstance(BalanceActivity.this).get().getAccount(i).getReceive().setAddrIdx(AddressFactory.getInstance().getHighestTxReceiveIdx(i));
-                        }
-
-                    }
-                } catch (IOException ioe) {
-                    ;
-                } catch (MnemonicException.MnemonicLengthException mle) {
-                    ;
-                }
-
-                if (!AppUtil.getInstance(BalanceActivity.this.getApplicationContext()).isServiceRunning(WebSocketService.class) && !DojoUtil.getInstance(getApplicationContext()).isDojoEnabled()) {
-                    startService(new Intent(BalanceActivity.this.getApplicationContext(), WebSocketService.class));
-                }
-
-                PrefsUtil.getInstance(BalanceActivity.this).setValue(PrefsUtil.FIRST_RUN, false);
-
-                handler.post(new Runnable() {
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-
-                        txAdapter.notifyDataSetChanged();
-                        displayBalance();
-                    }
-                });
-
-                Looper.loop();
-
-            }
-        }).start();
+    public void setTx() {
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        int idx = SamouraiSentinel.getInstance(BalanceActivity.this).getCurrentSelectedAccount();
+        if (idx == 0) {
+            txs = APIFactory.getInstance(BalanceActivity.this).getAllXpubTxs();
+        } else {
+            txs = APIFactory.getInstance(BalanceActivity.this).getTxs(idx - 1);
+        }
+        txAdapter.notifyDataSetChanged();
+        displayBalance();
 
     }
 
@@ -656,6 +643,17 @@ public class BalanceActivity extends AppCompatActivity {
     public String getDisplayUnits() {
 
         return MonetaryUtil.getInstance().getBTCUnits();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        Disposable disposable = SamouraiSentinel.getInstance(getApplicationContext())
+                .saveUTXOMeta()
+                .subscribe(() -> {
+                }, throwable -> {
+                });
+        super.onDestroy();
 
     }
 
@@ -1029,7 +1027,7 @@ public class BalanceActivity extends AppCompatActivity {
                             SamouraiSentinel.getInstance(BalanceActivity.this).setCurrentSelectedAccount(0);
                         }
 
-                        refreshTx(false);
+                        refreshTx();
 
                         try {
                             SamouraiSentinel.getInstance(BalanceActivity.this).serialize(SamouraiSentinel.getInstance(BalanceActivity.this).toJSON(), null);

@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.samourai.sentinel.BuildConfig;
 import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.SentinelApplication;
+import com.samourai.sentinel.balance.BalanceActivity;
 import com.samourai.sentinel.network.dojo.DojoUtil;
 import com.samourai.sentinel.segwit.bech32.Bech32Util;
 import com.samourai.sentinel.sweep.FeeUtil;
@@ -385,8 +386,8 @@ public class APIFactory {
                         // Construct the output
                         MyTransactionOutPoint outPoint = new MyTransactionOutPoint(txHash, txOutputN, value, scriptBytes, address);
                         outPoint.setConfirmations(confirmations);
-
                         if (utxos.containsKey(key)) {
+
                             HashMap<String, UTXO> _existing = utxos.get(key);
 
                             if (_existing.containsKey(script)) {
@@ -535,17 +536,17 @@ public class APIFactory {
         for (String key : utxos.keySet()) {
 
             UTXO u = new UTXO();
-            if (key.equals(xpub_active)) {
-                HashMap<String, UTXO> utxoHashMap = utxos.get(key);
-                for (String utxoValueKeys : utxoHashMap.keySet()) {
-                    for (MyTransactionOutPoint out : utxoHashMap.get(utxoValueKeys).getOutpoints()) {
-                        u.getOutpoints().add(out);
-                        u.setPath(utxoHashMap.get(utxoValueKeys).getPath());
-                    }
-                    if (u.getOutpoints().size() > 0) {
-                        unspents.add(u);
-                    }
+//            if (key.equals(xpub_active)) {
+            HashMap<String, UTXO> utxoHashMap = utxos.get(key);
+            for (String utxoValueKeys : utxoHashMap.keySet()) {
+                for (MyTransactionOutPoint out : utxoHashMap.get(utxoValueKeys).getOutpoints()) {
+                    u.getOutpoints().add(out);
+                    u.setPath(utxoHashMap.get(utxoValueKeys).getPath());
                 }
+                if (u.getOutpoints().size() > 0) {
+                    unspents.add(u);
+                }
+//                }
             }
 
         }
@@ -553,6 +554,7 @@ public class APIFactory {
     }
 
     public List<UTXO> getUTXOsByXpub(int index) {
+        Log.i("UTXO", "JDJDJD ".concat(String.valueOf(index)));
         List<UTXO> unspents = new ArrayList<UTXO>();
         String xpub_active = "";
         List<String> _xpubs = SamouraiSentinel.getInstance(context).getAllAddrsSorted();
@@ -562,6 +564,8 @@ public class APIFactory {
         } else {
             xpub_active = _xpubs.get(index - 1);
         }
+        Log.i("UTXO", "JDJDJD  xpub_active".concat(String.valueOf(xpub_active)));
+
         for (String key : utxos.keySet()) {
 
             UTXO u = new UTXO();
@@ -583,7 +587,9 @@ public class APIFactory {
     }
 
     public List<Tx> getTxs(int selected) {
-        return xpub_txs.get(selected);
+        final List<String> xpubList = SamouraiSentinel.getInstance(context).getAllAddrsSorted();
+        String selectedAddress = xpubList.get(selected);
+        return xpub_txs.get(selectedAddress);
     }
 
 
@@ -808,6 +814,10 @@ public class APIFactory {
 
         return false;
 
+    }
+
+    public HashMap<String, String> getUnspentPaths() {
+        return unspentPaths;
     }
 
 

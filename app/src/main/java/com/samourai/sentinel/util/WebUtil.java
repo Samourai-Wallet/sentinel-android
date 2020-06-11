@@ -105,6 +105,9 @@ public class WebUtil {
         }
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.connectTimeout(60,TimeUnit.HOURS);
+        builder.readTimeout(60,TimeUnit.HOURS);
+        builder.readTimeout(60,TimeUnit.HOURS);
 
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
@@ -230,6 +233,7 @@ public class WebUtil {
         if (URL.contains("onion")) {
             getHostNameVerifier(builder);
             builder.connectTimeout(90, TimeUnit.SECONDS);
+            builder.readTimeout(90, TimeUnit.SECONDS);
         }
 
         if (BuildConfig.DEBUG) {

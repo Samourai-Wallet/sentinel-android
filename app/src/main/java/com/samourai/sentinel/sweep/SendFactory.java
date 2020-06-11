@@ -4,7 +4,6 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.samourai.sentinel.SamouraiSentinel;
-import com.samourai.sentinel.hd.HD_WalletFactory;
 
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;

@@ -13,6 +13,9 @@ public class Tx {
     private long ts = 0L;
     private Map<Integer,String> tags = null;
 
+    //For UI list sections
+    public String section = "";
+
     public Tx(String hash, String address, double amount, long date, long confirmations) {
         strHash = hash;
         strAddress = address;
@@ -102,5 +105,10 @@ public class Tx {
     public void setTags(Map<Integer,String> tags) {
         this.tags = tags;
     }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
 
 }

@@ -20,6 +20,16 @@
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
+     <item android:id="@+id/utxos_menu"
+        android:title="Utoxo's"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+
+    <item android:id="@+id/send_activity"
+        android:title="Send"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 
     <item android:id="@+id/action_network"
         android:icon="@drawable/ic_network_check_white_24dp"

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.samourai.sentinel.access.AccessFactory;
+import com.samourai.sentinel.balance.BalanceActivity;
 import com.samourai.sentinel.codescanner.CameraFragmentBottomSheet;
 import com.samourai.sentinel.util.FormatsUtil;
 

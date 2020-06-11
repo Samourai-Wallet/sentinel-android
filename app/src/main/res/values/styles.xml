@@ -48,4 +48,25 @@
 
 
 
+    <style name="SamouraiAppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:colorAccent">@color/grey_accent</item>
+        <item name="colorAccent">@color/grey_accent</item>
+        <item name="android:windowBackground">@color/windowDark</item>
+        <item name="android:statusBarColor">@color/grey_accent</item>
+        <item name="android:colorControlActivated">@color/blue</item>
+        <item name="android:navigationBarColor">@color/windowDark</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:actionModeBackground">@color/grey_accent</item>
+        <item name="actionModeBackground">@color/grey_accent</item>
+
+    </style>
+
+    <style name="bottom_sheet_note" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
 </resources>

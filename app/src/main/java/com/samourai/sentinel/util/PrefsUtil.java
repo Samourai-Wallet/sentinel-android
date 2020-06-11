@@ -19,7 +19,11 @@ public class PrefsUtil {
     public static final String XPUB = "xpub";
     public static final String SCRAMBLE_PIN = "scramblePin";
 	public static final String HAPTIC_PIN = "hapticPin";
+	public static final String CURRENT_FEE_TYPE = "currentFeeType";
 	public static final String TESTNET = "testnet";
+	public static final String USE_RICOCHET = "useRicochet";
+	public static final String RICOCHET_STAGGERED = "ricochetStaggeredDelivery";
+	public static final String USE_LIKE_TYPED_CHANGE = "useLikeTypedChange";
 
 	private static Context context = null;
 	private static PrefsUtil instance = null;

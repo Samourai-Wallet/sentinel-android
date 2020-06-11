@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_send_menu_account"
+        android:title=""
+        android:visible="false" />
+    <item android:id="@+id/action_scan_qr"
+        android:icon="@drawable/ic_crop_free_black_24dp"
+        android:visible="true"
+        android:title=""
+        app:showAsAction="always" />
+
+<!--    <item android:id="@+id/select_paynym"-->
+<!--        android:icon="@drawable/ic_action_account_circle"-->
+<!--        android:visible="true"-->
+<!--        android:title=""-->
+<!--        app:showAsAction="always" />-->
+
+<!--    <item android:id="@+id/action_batch"-->
+<!--        android:title="@string/options_batch"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:showAsAction="never"-->
+<!--        />-->
+
+<!--    <item android:id="@+id/action_utxo"-->
+<!--        android:title="@string/options_utxo"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:showAsAction="never"-->
+<!--        />-->
+<!--    <item android:id="@+id/action_fees"-->
+<!--        android:title="@string/options_fees"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:showAsAction="never"-->
+<!--        />-->
+<!--    <item android:id="@+id/action_ricochet"-->
+<!--        android:title="@string/action_ricochet"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:showAsAction="never"-->
+<!--        />-->
+<!--    <item android:id="@+id/action_empty_ricochet"-->
+<!--        android:title="@string/action_empty_ricochet"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:showAsAction="never"-->
+<!--        />-->
+
+<!--    <item android:id="@+id/action_support"-->
+<!--        android:title="@string/action_support"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:showAsAction="never"-->
+<!--        />-->
+
+</menu>

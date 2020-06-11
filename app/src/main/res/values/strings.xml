@@ -150,6 +150,7 @@
     <string name="tx_hex">Transaction hex</string>
     <string name="enter_tx_hex">Enter transaction in hex format</string>
     <string name="broadcast">Broadcast transaction</string>
+    <string name="address">Address</string>
 
     <string name="select_network">Select network…</string>
     <string name="MainNet">MainNet</string>
@@ -179,5 +180,72 @@
     <string name="tor_initializing">Tor initializing</string>
     <string name="enable">Enable</string>
     <string name="disabled">Disabled</string>
+    <string name="action_utxo_amounts">View amounts by address type</string>
+    <string name="status">Status</string>
+    <string name="address_type">Address type</string>
+    <string name="txid_to_clipboard">Copy this transaction id  to the clipboard? If copied, it may be visible to other applications.</string>
+
+    <string name="this_utxo_is_marked_as_spendable">This UTXO is marked as Spendable</string>
+    <string name="this_utxo_is_marked_as_blocked">This UTXO is marked as Blocked</string>
+
+    <string name="refresh">Refresh</string>
+    <string name="selection_contains_blocked_utxo">Your selection contains blocked utxos. please remove and try again.</string>
+    <string name="dust">DUST</string>
+    <string name="active">Active</string>
+    <string name="do_not_spend">Do Not Spend</string>
+    <string name="spendable">Spendable</string>
+
+    <string name="ricochet_hops_msg">Additional hops between your wallet and the final destination for increased fungibility</string>
+    <string name="create_an_on_demand_coinjoin_transaction_for_enhanced_privacy_and_surveillance_protection">Create an on demand CoinJoin transaction for enhanced privacy and surveillance protection</string>
+    <string name="review_transaction">REVIEW TRANSACTION</string>
+
+    <string name="stowaway">Stowaway</string>
+    <string name="stonewall">Stonewall</string>
+    <string name="urgent">Urgent</string>
+    <string name="normal">Normal</string>
+    <string name="low">Low</string>
+    <string name="ricochet_nlocktime_ok">Your staggered Ricochet has been forwarded for broadcast. Please wait until the block height permits the broadcasting of all the transactions in the series.</string>
+    <string name="ricochet_nlocktime_ko">Your staggered Ricochet could not be forwarded for broadcast. Please try again.</string>
+
+    <string name="unrecognized_cahoots">Unrecognized #Cahoots</string>
+    <string name="cannot_compose_cahoots">Cannot compose #Cahoots</string>
+    <string name="start_stowaway">Begin Stowaway as spender</string>
+    <string name="start_stonewall">Begin STONEWALL as spender</string>
+    <string name="amount_sats">Enter amount in sats</string>
+    <string name="zero_bits">0 bits</string>
+    <string name="not_available">N/A</string>
+    <string name="show_tx">Display transaction</string>
+    <string name="unrecognized_step">Unrecognized #Cahoots step</string>
+    <string name="cannot_process_stowaway">Cannot process Stowaway</string>
+    <string name="cannot_process_stonewall">Cannot process STONEWALL</string>
+    <string name="cannot_process_cahoots">Cannot process #Cahoots</string>
+    <string name="total_available_amount">Total available amount</string>
+
+    <string name="insufficient_funds">Insufficient funds</string>
+    <string name="invalid_address">Invalid address</string>
+    <string name="amount">Amount</string>
+
+
+
+    <string name="to">To</string>
+    <string name="destination">Address or payment channel</string>
+    <string name="cannot_select_utxo">Cannot select unspent outputs</string>
+    <string name="do_not_repeat_sent_to">Check box to not warn about repeat sends to this address.</string>
+    <string name="options_utxo">Show unspent outputs</string>
+    <string name="current_fee_selection">Your fee selection is set to:</string>
+    <string name="current_hi_fee_value">Current high fee:</string>
+    <string name="current_mid_fee_value">Current normal fee:</string>
+    <string name="current_lo_fee_value">Current low fee:</string>
+    <string name="slash_sat">sat/b</string>
+    <string name="set_sat">Set your custom fee in sat/b.</string>
+    <string name="custom_fee_too_low">Custom fee is set too low.</string>
+    <string name="custom_fee_too_high">Custom fee is set too high.</string>
+    <string name="change_is_dust">The change from this transaction is a dust amount. Try again and either modify the spend amount or spend the entire balance.</string>
+
+
+    <string name="error_bip126_output">Error determining output address</string>
+    <string name="error_change_output">Error determining change address</string>
+
+
 
 </resources>

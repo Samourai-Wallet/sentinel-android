@@ -39,6 +39,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.api.APIFactory;
+import com.samourai.sentinel.send.SendActivity;
 import com.samourai.sentinel.sweep.MyTransactionOutPoint;
 import com.samourai.sentinel.sweep.UTXO;
 import com.samourai.sentinel.util.AppUtil;
@@ -160,8 +161,46 @@ public class UTXOSActivity extends AppCompatActivity implements ActionMode.Callb
             }
         });
 
-        final List<String> xpubList = SamouraiSentinel.getInstance(getApplication()).getAllAddrsSorted();
 
+        setAccounts();
+    }
+
+    private void setAccounts() {
+        final List<String> xpubList = SamouraiSentinel.getInstance(this).getAllAddrsSorted();
+        if (xpubList.size() == 1) {
+            account_selections = new String[1];
+            if ((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("tpub")) && SamouraiSentinel.getInstance(this).getXPUBs().containsKey(xpubList.get(0))) {
+                account_selections[0] = SamouraiSentinel.getInstance(this).getXPUBs().get(xpubList.get(0));
+            } else if ((xpubList.get(0).startsWith("xpub") || xpubList.get(0).startsWith("ypub") || xpubList.get(0).startsWith("tpub") || xpubList.get(0).startsWith("upub")) && SamouraiSentinel.getInstance(this).getBIP49().containsKey(xpubList.get(0))) {
+                account_selections[0] = SamouraiSentinel.getInstance(this).getBIP49().get(xpubList.get(0));
+            } else if ((xpubList.get(0).startsWith("zpub") || xpubList.get(0).startsWith("vpub")) && SamouraiSentinel.getInstance(this).getBIP84().containsKey(xpubList.get(0))) {
+                account_selections[0] = SamouraiSentinel.getInstance(this).getBIP84().get(xpubList.get(0));
+            } else {
+                account_selections[0] = SamouraiSentinel.getInstance(this).getLegacy().get(xpubList.get(0));
+            }
+        } else {
+            account_selections = new String[xpubList.size() + 1];
+            account_selections[0] = this.getString(R.string.total_title);
+            for (int i = 0; i < xpubList.size(); i++) {
+                if ((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("tpub")) && SamouraiSentinel.getInstance(this).getXPUBs().containsKey(xpubList.get(i))) {
+                    account_selections[i + 1] = SamouraiSentinel.getInstance(this).getXPUBs().get(xpubList.get(i));
+                } else if ((xpubList.get(i).startsWith("xpub") || xpubList.get(i).startsWith("ypub") || xpubList.get(i).startsWith("tpub") || xpubList.get(i).startsWith("upub")) && SamouraiSentinel.getInstance(this).getBIP49().containsKey(xpubList.get(i))) {
+                    account_selections[i + 1] = SamouraiSentinel.getInstance(this).getBIP49().get(xpubList.get(i));
+                } else if ((xpubList.get(i).startsWith("zpub") || xpubList.get(i).startsWith("vpub")) && SamouraiSentinel.getInstance(this).getBIP84().containsKey(xpubList.get(i))) {
+                    account_selections[i + 1] = SamouraiSentinel.getInstance(this).getBIP84().get(xpubList.get(i));
+                } else {
+                    account_selections[i + 1] = SamouraiSentinel.getInstance(this).getLegacy().get(xpubList.get(i));
+                }
+            }
+        }
+       int selected =   SamouraiSentinel.getInstance(UTXOSActivity.this).getCurrentSelectedAccount();
+        accountsAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
+        accountSpinner.setAdapter(accountsAdapter);
+        accountsAdapter.notifyDataSetChanged();
+        if (account_selections.length == 1) {
+            SamouraiSentinel.getInstance(this).setCurrentSelectedAccount(0);
+        }
+        accountSpinner.setSelection(selected);
 
     }
 
@@ -384,7 +423,6 @@ public class UTXOSActivity extends AppCompatActivity implements ActionMode.Callb
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(stringObjectMap -> {
                     List<UTXOCoin> items = (List<UTXOCoin>) stringObjectMap.get("utxos");
-                    LogUtil.info(TAG, "loadUTXOs: ".concat(String.valueOf(items.size())));
                     try {
                         unFilteredUTXOS = new ArrayList<>();
                         unFilteredUTXOS.addAll(items);
@@ -397,7 +435,7 @@ public class UTXOSActivity extends AppCompatActivity implements ActionMode.Callb
                     totalP2SH_P2WPKH = (long) stringObjectMap.get("totalP2SH_P2WPKH");
                     totalP2PKH = (long) stringObjectMap.get("totalP2PKH");
                     if (!loadSilently) {
-                        utxoProgressBar.setVisibility(View.GONE);
+                        utxoProgressBar.setVisibility(View.INVISIBLE);
                     }
 
 
@@ -405,7 +443,7 @@ public class UTXOSActivity extends AppCompatActivity implements ActionMode.Callb
                     err.printStackTrace();
                     if (!loadSilently) {
                         utxoSwipeRefresh.setRefreshing(false);
-                        utxoProgressBar.setVisibility(View.GONE);
+                        utxoProgressBar.setVisibility(View.INVISIBLE);
                     }
                 });
         compositeDisposable.add(disposable);
@@ -420,18 +458,14 @@ public class UTXOSActivity extends AppCompatActivity implements ActionMode.Callb
 
 
             int idx = SamouraiSentinel.getInstance(getApplication()).getCurrentSelectedAccount();
-
             Map<String, Object> dataSet = new HashMap<>();
             List<UTXO> utxos = new ArrayList<>();
             if (idx == 0) {
-                LogUtil.debug("idx", "CK");
                 utxos = APIFactory.getInstance(getApplicationContext()).getUtxos();
 
             } else {
-//                JSONObject utxoObj   = APIFactory.getInstance(getApplication()).getUnspentOutputs(idx-1);
-                utxos = APIFactory.getInstance(getApplicationContext()).getUTXOsByXpub(idx - 1);
+                utxos = APIFactory.getInstance(getApplicationContext()).getUTXOsByXpub(idx);
             }
-            Log.i("utxos", String.valueOf(utxos.size()));
             long amount = 0L;
             for (UTXO utxo : utxos) {
                 for (MyTransactionOutPoint out : utxo.getOutpoints()) {
@@ -702,10 +736,9 @@ public class UTXOSActivity extends AppCompatActivity implements ActionMode.Callb
                     return false;
                 }
                 if (id != null) {
-//                    Intent intent = new Intent(UTXOSActivity.this, SendActivity.class);
-//                    intent.putExtra("preselected", id);
-//                    intent.putExtra("_account", account);
-//                    startActivity(intent);
+                    Intent intent = new Intent(UTXOSActivity.this, SendActivity.class);
+                    intent.putExtra("preselected", id);
+                    startActivity(intent);
                 }
                 break;
             }
@@ -775,12 +808,12 @@ public class UTXOSActivity extends AppCompatActivity implements ActionMode.Callb
 
     private void saveWalletState() {
 
-       Disposable disposable = SamouraiSentinel.getInstance(getApplicationContext())
+        Disposable disposable = SamouraiSentinel.getInstance(getApplicationContext())
                 .saveUTXOMeta()
                 .subscribe(() -> {
 
                 }, Throwable::printStackTrace);
-       compositeDisposable.add(disposable);
+        compositeDisposable.add(disposable);
     }
 
 
@@ -906,7 +939,7 @@ public class UTXOSActivity extends AppCompatActivity implements ActionMode.Callb
 
             if (UTXOUtil.getInstance().get(utxoIdxHash) != null) {
                 holder.tagsLayout.setVisibility(View.VISIBLE);
-                for (String tagString: UTXOUtil.getInstance().get(utxoIdxHash)) {
+                for (String tagString : UTXOUtil.getInstance().get(utxoIdxHash)) {
                     View tag = createTag(getBaseContext(), tagString);
                     holder.tagsLayout.addView(tag);
                 }
@@ -926,7 +959,8 @@ public class UTXOSActivity extends AppCompatActivity implements ActionMode.Callb
             });
 
         }
-//
+
+        //
         private View createTag(Context context, String tag) {
             float scale = getResources().getDisplayMetrics().density;
             LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(

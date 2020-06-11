@@ -15,6 +15,7 @@ import android.widget.Toast;
 //import android.util.Log;
 
 import com.samourai.sentinel.api.APIFactory;
+import com.samourai.sentinel.balance.BalanceActivity;
 import com.samourai.sentinel.service.BackgroundManager;
 import com.samourai.sentinel.service.WebSocketService;
 import com.samourai.sentinel.util.AppUtil;
