@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.auth0.android.jwt.JWT;
+import com.google.gson.Gson;
 import com.samourai.sentinel.BuildConfig;
 import com.samourai.sentinel.SamouraiSentinel;
+import com.samourai.sentinel.SentinelApplication;
 import com.samourai.sentinel.network.dojo.DojoUtil;
 import com.samourai.sentinel.segwit.bech32.Bech32Util;
 import com.samourai.sentinel.sweep.FeeUtil;
@@ -15,6 +17,7 @@ import com.samourai.sentinel.sweep.UTXO;
 import com.samourai.sentinel.tor.TorManager;
 import com.samourai.sentinel.util.AddressFactory;
 import com.samourai.sentinel.util.AppUtil;
+import com.samourai.sentinel.util.LogUtil;
 import com.samourai.sentinel.util.WebUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -34,6 +38,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import okhttp3.FormBody;
 
 import static com.samourai.sentinel.util.LogUtil.debug;
@@ -51,18 +56,19 @@ public class APIFactory {
 
     private static long xpub_balance = 0L;
     private static HashMap<String, Long> xpub_amounts = null;
-    private static HashMap<String,List<Tx>> xpub_txs = null;
-    private static HashMap<String,Integer> unspentAccounts = null;
-    private static HashMap<String,Integer> unspentBIP49 = null;
-    private static HashMap<String,Integer> unspentBIP84 = null;
-    private static HashMap<String,String> unspentPaths = null;
-    private static HashMap<String,UTXO> utxos = null;
+    private static HashMap<String, List<Tx>> xpub_txs = null;
+    private static HashMap<String, Integer> unspentAccounts = null;
+    private static HashMap<String, Integer> unspentBIP49 = null;
+    private static HashMap<String, Integer> unspentBIP84 = null;
+    private static HashMap<String, String> unspentPaths = null;
+    private static HashMap<String, HashMap<String, UTXO>> utxos = null;
 
     private static APIFactory instance = null;
     private static Context context = null;
 
     private APIFactory() {
-        ;
+
+
     }
 
     public static APIFactory getInstance(Context ctx) {
@@ -77,7 +83,7 @@ public class APIFactory {
             unspentAccounts = new HashMap<String, Integer>();
             unspentBIP49 = new HashMap<String, Integer>();
             unspentBIP84 = new HashMap<String, Integer>();
-            utxos = new HashMap<String, UTXO>();
+            utxos = new HashMap<>();
             instance = new APIFactory();
         }
 
@@ -127,17 +133,17 @@ public class APIFactory {
         return jsonObject;
     }
 
-    public void parseXPUB(JSONObject jsonObject, boolean complete) throws JSONException  {
+    public void parseXPUB(JSONObject jsonObject, boolean complete) throws JSONException {
 
         if (jsonObject != null) {
 
             long latest_block = 0L;
 
-            if(jsonObject.has("info"))  {
-                JSONObject infoObj = (JSONObject)jsonObject.get("info");
-                if(infoObj.has("latest_block"))  {
-                    JSONObject blockObj = (JSONObject)infoObj.get("latest_block");
-                    if(blockObj.has("height"))  {
+            if (jsonObject.has("info")) {
+                JSONObject infoObj = (JSONObject) jsonObject.get("info");
+                if (infoObj.has("latest_block")) {
+                    JSONObject blockObj = (JSONObject) infoObj.get("latest_block");
+                    if (blockObj.has("height")) {
                         latest_block = blockObj.getLong("height");
 //                        Log.i("APIFactory", "latest_block " + latest_block);
                     }
@@ -148,22 +154,20 @@ public class APIFactory {
 
                 JSONArray addressesArray = (JSONArray) jsonObject.get("addresses");
                 JSONObject addrObj = null;
-                for(int i = 0; i < addressesArray.length(); i++)  {
-                    addrObj = (JSONObject)addressesArray.get(i);
-                    if(addrObj.has("final_balance") && addrObj.has("address"))  {
-                        xpub_amounts.put((String)addrObj.get("address"), addrObj.getLong("final_balance"));
-                        if(((String)addrObj.get("address")).startsWith("xpub") || ((String)addrObj.get("address")).startsWith("ypub") || ((String)addrObj.get("address")).startsWith("zpub") || ((String)addrObj.get("address")).startsWith("tpub") || ((String)addrObj.get("address")).startsWith("upub") || ((String)addrObj.get("address")).startsWith("vpub"))    {
-                            if(AddressFactory.getInstance().xpub2account().containsKey((String) addrObj.get("address")))    {
-                                if(addrObj.has("account_index"))    {
+                for (int i = 0; i < addressesArray.length(); i++) {
+                    addrObj = (JSONObject) addressesArray.get(i);
+                    if (addrObj.has("final_balance") && addrObj.has("address")) {
+                        xpub_amounts.put((String) addrObj.get("address"), addrObj.getLong("final_balance"));
+                        if (((String) addrObj.get("address")).startsWith("xpub") || ((String) addrObj.get("address")).startsWith("ypub") || ((String) addrObj.get("address")).startsWith("zpub") || ((String) addrObj.get("address")).startsWith("tpub") || ((String) addrObj.get("address")).startsWith("upub") || ((String) addrObj.get("address")).startsWith("vpub")) {
+                            if (AddressFactory.getInstance().xpub2account().containsKey((String) addrObj.get("address"))) {
+                                if (addrObj.has("account_index")) {
                                     AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("account_index"));
-                                }
-                                else    {
+                                } else {
                                     AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), 0);
                                 }
-                                if(addrObj.has("change_index"))    {
+                                if (addrObj.has("change_index")) {
                                     AddressFactory.getInstance().setHighestTxChangeIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), addrObj.getInt("change_index"));
-                                }
-                                else    {
+                                } else {
                                     AddressFactory.getInstance().setHighestTxReceiveIdx(AddressFactory.getInstance().xpub2account().get((String) addrObj.get("address")), 0);
                                 }
                             }
@@ -171,18 +175,18 @@ public class APIFactory {
                     }
                 }
 
-                if(!complete)    {
+                if (!complete) {
                     return;
                 }
             }
 
-            if(jsonObject.has("txs"))  {
+            if (jsonObject.has("txs")) {
 
-                JSONArray txArray = (JSONArray)jsonObject.get("txs");
+                JSONArray txArray = (JSONArray) jsonObject.get("txs");
                 JSONObject txObj = null;
-                for(int i = 0; i < txArray.length(); i++)  {
+                for (int i = 0; i < txArray.length(); i++) {
 
-                    txObj = (JSONObject)txArray.get(i);
+                    txObj = (JSONObject) txArray.get(i);
                     long height = 0L;
                     long amount = 0L;
                     long ts = 0L;
@@ -193,33 +197,31 @@ public class APIFactory {
                     if (txObj.has("block_height")) {
                         height = txObj.getLong("block_height");
 //                        Log.i("APIFactory", "height " + height);
-                    }
-                    else  {
+                    } else {
                         height = -1L;  // 0 confirmations
                     }
-                    if(txObj.has("hash"))  {
-                        hash = (String)txObj.get("hash");
+                    if (txObj.has("hash")) {
+                        hash = (String) txObj.get("hash");
                     }
-                    if(txObj.has("result"))  {
+                    if (txObj.has("result")) {
                         amount = txObj.getLong("result");
                     }
-                    if(txObj.has("time"))  {
+                    if (txObj.has("time")) {
                         ts = txObj.getLong("time");
                     }
 
-                    if(txObj.has("inputs"))  {
-                        JSONArray inputArray = (JSONArray)txObj.get("inputs");
+                    if (txObj.has("inputs")) {
+                        JSONArray inputArray = (JSONArray) txObj.get("inputs");
                         JSONObject inputObj = null;
-                        for(int j = 0; j < inputArray.length(); j++)  {
-                            inputObj = (JSONObject)inputArray.get(j);
-                            if(inputObj.has("prev_out"))  {
-                                JSONObject prevOutObj = (JSONObject)inputObj.get("prev_out");
-                                if(prevOutObj.has("xpub"))  {
-                                    JSONObject xpubObj = (JSONObject)prevOutObj.get("xpub");
-                                    addr = (String)xpubObj.get("m");
-                                }
-                                else  {
-                                    if(SamouraiSentinel.getInstance(context).getLegacy().containsKey((String)prevOutObj.get("addr")))    {
+                        for (int j = 0; j < inputArray.length(); j++) {
+                            inputObj = (JSONObject) inputArray.get(j);
+                            if (inputObj.has("prev_out")) {
+                                JSONObject prevOutObj = (JSONObject) inputObj.get("prev_out");
+                                if (prevOutObj.has("xpub")) {
+                                    JSONObject xpubObj = (JSONObject) prevOutObj.get("xpub");
+                                    addr = (String) xpubObj.get("m");
+                                } else {
+                                    if (SamouraiSentinel.getInstance(context).getLegacy().containsKey((String) prevOutObj.get("addr"))) {
 //                                        Log.i("APIFactory:", "legacy tx " + (String)prevOutObj.get("addr"));
                                         addr = (String) prevOutObj.get("addr");
                                     } else {
@@ -230,22 +232,20 @@ public class APIFactory {
                         }
                     }
 
-                    if(txObj.has("out"))  {
-                        JSONArray outArray = (JSONArray)txObj.get("out");
+                    if (txObj.has("out")) {
+                        JSONArray outArray = (JSONArray) txObj.get("out");
                         JSONObject outObj = null;
-                        for(int j = 0; j < outArray.length(); j++)  {
-                            outObj = (JSONObject)outArray.get(j);
-                            if(outObj.has("xpub"))  {
-                                JSONObject xpubObj = (JSONObject)outObj.get("xpub");
-                                addr = (String)xpubObj.get("m");
-                            }
-                            else  {
-                                if(SamouraiSentinel.getInstance(context).getLegacy().containsKey((String)outObj.get("addr")))    {
+                        for (int j = 0; j < outArray.length(); j++) {
+                            outObj = (JSONObject) outArray.get(j);
+                            if (outObj.has("xpub")) {
+                                JSONObject xpubObj = (JSONObject) outObj.get("xpub");
+                                addr = (String) xpubObj.get("m");
+                            } else {
+                                if (SamouraiSentinel.getInstance(context).getLegacy().containsKey((String) outObj.get("addr"))) {
 //                                    Log.i("APIFactory:", "legacy tx " + (String)outObj.get("addr"));
-                                    addr = (String)outObj.get("addr");
-                                }
-                                else    {
-                                    _addr = (String)outObj.get("addr");
+                                    addr = (String) outObj.get("addr");
+                                } else {
+                                    _addr = (String) outObj.get("addr");
                                 }
                             }
                         }
@@ -271,15 +271,15 @@ public class APIFactory {
 
     public synchronized JSONObject getAddressInfo(String addr) {
 
-        return getXPUB(new String[] { addr });
+        return getXPUB(new String[]{addr});
 
     }
 
-    public long getXpubBalance()  {
+    public long getXpubBalance() {
         return xpub_balance;
     }
 
-    public void setXpubBalance(long value)  {
+    public void setXpubBalance(long value) {
         xpub_balance = value;
     }
 
@@ -304,41 +304,33 @@ public class APIFactory {
         return ret;
     }
 
-    public synchronized JSONObject getUnspentOutputs(String[] xpubs) {
+    public synchronized void getUnspentOutputs(List<String> xpubs) {
 
         String _url = WebUtil.getAPIUrl(context);
-
-        JSONObject jsonObject = null;
 
         try {
 
             String response = null;
-
-
-            FormBody body = new FormBody.Builder()
-                    .add("active", StringUtils.join(xpubs, URLEncoder.encode("|", "UTF-8")))
-                    .build();
-
-
-            response = WebUtil.getInstance(context).postURL(_url + "unspent?", body);
-            Log.d("APIFactory", "UTXO:" + response);
-
+            String xpubActive = "active=".concat(StringUtils.join(xpubs, URLEncoder.encode("|", "UTF-8")));
+            String url = _url + "unspent?" + xpubActive.concat("&at=".concat(getAccessToken()));
+            response = WebUtil.getInstance(context).getURL(url);
+            LogUtil.debug("APIFactory", "UTXO:" + response);
             parseUnspentOutputs(response);
-
         } catch (Exception e) {
-            jsonObject = null;
             e.printStackTrace();
         }
 
-        return jsonObject;
     }
 
-    private synchronized boolean parseUnspentOutputs(String unspents) {
+    public synchronized boolean parseUnspentOutputs(String unspents) {
+
 
         if (unspents != null) {
 
             try {
                 JSONObject jsonObj = new JSONObject(unspents);
+
+                Log.i("jsonObj", jsonObj.toString(2));
 
                 if (jsonObj == null || !jsonObj.has("unspent_outputs")) {
                     return false;
@@ -347,6 +339,9 @@ public class APIFactory {
                 if (utxoArray == null || utxoArray.length() == 0) {
                     return false;
                 }
+                Disposable disposable = SamouraiSentinel.getInstance(context).saveUTXOs(jsonObj)
+                        .subscribe(() -> {
+                        });
 
                 for (int i = 0; i < utxoArray.length(); i++) {
 
@@ -368,18 +363,19 @@ public class APIFactory {
                             address = new Script(scriptBytes).getToAddress(SamouraiSentinel.getInstance().getCurrentNetworkParams()).toString();
                         }
 
-                        if(outDict.has("xpub"))    {
-                            JSONObject xpubObj = (JSONObject)outDict.get("xpub");
-                            String path = (String)xpubObj.get("path");
-                            String m = (String)xpubObj.get("m");
+                        String key = outDict.getString("addr");
+
+                        if (outDict.has("xpub")) {
+                            JSONObject xpubObj = (JSONObject) outDict.get("xpub");
+                            key = xpubObj.getString("m");
+                            String path = (String) xpubObj.get("path");
+                            String m = (String) xpubObj.get("m");
                             unspentPaths.put(address, path);
                             if (SamouraiSentinel.getInstance().getBIP49().containsKey(m)) {
                                 unspentBIP49.put(address, 0);   // assume account 0
-                            }
-                            else if(SamouraiSentinel.getInstance().getBIP84().containsKey(m))    {
+                            } else if (SamouraiSentinel.getInstance().getBIP84().containsKey(m)) {
                                 unspentBIP84.put(address, 0);   // assume account 0
-                            }
-                            else    {
+                            } else {
                                 unspentAccounts.put(address, AddressFactory.getInstance(context).xpub2account().get(m));
                             }
                         } else {
@@ -390,16 +386,30 @@ public class APIFactory {
                         MyTransactionOutPoint outPoint = new MyTransactionOutPoint(txHash, txOutputN, value, scriptBytes, address);
                         outPoint.setConfirmations(confirmations);
 
-                        if (utxos.containsKey(script)) {
-                            utxos.get(script).getOutpoints().add(outPoint);
+                        if (utxos.containsKey(key)) {
+                            HashMap<String, UTXO> _existing = utxos.get(key);
+
+                            if (_existing.containsKey(script)) {
+                                _existing.get(script).getOutpoints().add(outPoint);
+                            } else {
+                                UTXO utxo = new UTXO();
+                                utxo.getOutpoints().add(outPoint);
+                                _existing.put(script, utxo);
+                            }
+                            utxos.put(key, _existing);
+
                         } else {
+                            HashMap<String, UTXO> _existing = new HashMap<>();
                             UTXO utxo = new UTXO();
                             utxo.getOutpoints().add(outPoint);
-                            utxos.put(script, utxo);
+                            _existing.put(script, utxo);
+                            utxos.put(key, _existing);
                         }
+
 
                     } catch (Exception e) {
                         ;
+                        e.printStackTrace();
                     }
 
                 }
@@ -408,6 +418,7 @@ public class APIFactory {
 
             } catch (JSONException je) {
                 ;
+                je.printStackTrace();
             }
 
         }
@@ -510,7 +521,73 @@ public class APIFactory {
         APP_TOKEN = apiToken;
     }
 
-    private class TxMostRecentDateComparator implements Comparator<Tx> {
+    public List<UTXO> getUtxos() {
+        List<UTXO> unspents = new ArrayList<UTXO>();
+        int idx = SamouraiSentinel.getInstance(context).getCurrentSelectedAccount();
+        String xpub_active = "";
+        List<String> _xpubs = SamouraiSentinel.getInstance(context).getAllAddrsSorted();
+
+        if (idx == 0) {
+            xpub_active = _xpubs.get(0);
+        } else {
+            xpub_active = _xpubs.get(idx - 1);
+        }
+        for (String key : utxos.keySet()) {
+
+            UTXO u = new UTXO();
+            if (key.equals(xpub_active)) {
+                HashMap<String, UTXO> utxoHashMap = utxos.get(key);
+                for (String utxoValueKeys : utxoHashMap.keySet()) {
+                    for (MyTransactionOutPoint out : utxoHashMap.get(utxoValueKeys).getOutpoints()) {
+                        u.getOutpoints().add(out);
+                        u.setPath(utxoHashMap.get(utxoValueKeys).getPath());
+                    }
+                    if (u.getOutpoints().size() > 0) {
+                        unspents.add(u);
+                    }
+                }
+            }
+
+        }
+        return unspents;
+    }
+
+    public List<UTXO> getUTXOsByXpub(int index) {
+        List<UTXO> unspents = new ArrayList<UTXO>();
+        String xpub_active = "";
+        List<String> _xpubs = SamouraiSentinel.getInstance(context).getAllAddrsSorted();
+
+        if (index == 0) {
+            xpub_active = _xpubs.get(0);
+        } else {
+            xpub_active = _xpubs.get(index - 1);
+        }
+        for (String key : utxos.keySet()) {
+
+            UTXO u = new UTXO();
+            if (key.equals(xpub_active)) {
+                HashMap<String, UTXO> utxoHashMap = utxos.get(key);
+                for (String utxoValueKeys : utxoHashMap.keySet()) {
+                    for (MyTransactionOutPoint out : utxoHashMap.get(utxoValueKeys).getOutpoints()) {
+                        u.getOutpoints().add(out);
+                        u.setPath(utxoHashMap.get(utxoValueKeys).getPath());
+                    }
+                    if (u.getOutpoints().size() > 0) {
+                        unspents.add(u);
+                    }
+                }
+            }
+
+        }
+        return unspents;
+    }
+
+    public List<Tx> getTxs(int selected) {
+        return xpub_txs.get(selected);
+    }
+
+
+    private static class TxMostRecentDateComparator implements Comparator<Tx> {
 
         public int compare(Tx t1, Tx t2) {
 
@@ -580,21 +657,20 @@ public class APIFactory {
     }
 
 
-    public boolean stayingAlive()   {
+    public boolean stayingAlive() {
 
-        if(!AppUtil.getInstance(context).isOfflineMode() && APITokenRequired())    {
+        if (!AppUtil.getInstance(context).isOfflineMode() && APITokenRequired()) {
 
-            if(APIFactory.getInstance(context).getAccessToken() == null)    {
+            if (APIFactory.getInstance(context).getAccessToken() == null) {
                 APIFactory.getInstance(context).getToken(false);
             }
 
-            if(APIFactory.getInstance(context).getAccessToken() != null)    {
+            if (APIFactory.getInstance(context).getAccessToken() != null) {
                 JWT jwt = new JWT(APIFactory.getInstance(context).getAccessToken());
-                if(jwt != null && jwt.isExpired(APIFactory.getInstance(context).getAccessTokenRefresh()))    {
-                    if(APIFactory.getInstance(context).getToken(false))  {
+                if (jwt != null && jwt.isExpired(APIFactory.getInstance(context).getAccessTokenRefresh())) {
+                    if (APIFactory.getInstance(context).getToken(false)) {
                         return true;
-                    }
-                    else    {
+                    } else {
                         return false;
                     }
                 }
@@ -602,8 +678,7 @@ public class APIFactory {
 
             return false;
 
-        }
-        else    {
+        } else {
             return true;
         }
 
@@ -631,10 +706,10 @@ public class APIFactory {
 
                 String response = null;
 
-    //            if(AppUtil.getInstance(context).isOfflineMode())    {
-    //                return true;
-    //            }
-    //            else
+                //            if(AppUtil.getInstance(context).isOfflineMode())    {
+                //                return true;
+                //            }
+                //            else
                 if (!TorManager.getInstance(context).isRequired()) {
                     // use POST
                     StringBuilder args = new StringBuilder();
@@ -648,7 +723,7 @@ public class APIFactory {
                     StringBuilder args = new StringBuilder();
                     args.append("apikey=");
                     args.append(new String(getXORKey()));
-                    response = WebUtil.getInstance(context).tor_postURL(_url + "auth/login?".concat(args.toString()),"" );
+                    response = WebUtil.getInstance(context).tor_postURL(_url + "auth/login?".concat(args.toString()), "");
                     info("APIFactory", "API token response:" + response);
                 }
 
@@ -674,7 +749,6 @@ public class APIFactory {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            debug("FUCK",e.getMessage());
         }
 
         return true;
