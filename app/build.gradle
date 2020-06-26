@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -19,8 +21,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         applicationVariants.all { variant ->
-            variant.buildConfigField "String", "XOR_1", "\""+getApiKey("XOR_1")+"\""
-            variant.buildConfigField "String", "XOR_2", "\""+getApiKey("XOR_2")+"\""
+            variant.buildConfigField "String", "XOR_1", "\"" + getApiKey("XOR_1") + "\""
+            variant.buildConfigField "String", "XOR_2", "\"" + getApiKey("XOR_2") + "\""
         }
     }
     lintOptions {
@@ -65,6 +67,9 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
@@ -87,31 +92,60 @@ dependencies {
         transitive = true
     }
 
-    implementation ('com.github.Samourai-Wallet:extlibj:0.0.11') {
+    implementation('com.github.Samourai-Wallet:extlibj:0.0.11') {
 
-        exclude group:'com.google.code.findbugs', module:'jsr305'
-        exclude group:'com.google.protobuf', module:'protobuf-java'
-        exclude group:'net.jcip', module:'jcip-annotations'
-        exclude group:'com.squareup.okhttp', module:'okhttp'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+        exclude group: 'com.google.protobuf', module: 'protobuf-java'
+        exclude group: 'net.jcip', module: 'jcip-annotations'
+        exclude group: 'com.squareup.okhttp', module: 'okhttp'
         //
-        exclude group:'org.apache.commons', module:'commons-lang3'
-        exclude group:'org.json', module:'json'
+        exclude group: 'org.apache.commons', module: 'commons-lang3'
+        exclude group: 'org.json', module: 'json'
     }
-    implementation ('com.github.Samourai-Wallet:boltzmann-java:develop-SNAPSHOT') {
+    implementation('com.github.Samourai-Wallet:boltzmann-java:develop-SNAPSHOT') {
         exclude group: 'it.unimi.dsi', module: 'fastutil'
     }
     implementation 'com.yanzhenjie.zbar:camera:1.0.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.auth0.android:jwtdecode:1.1.1'
 
-    implementation 'com.squareup.okhttp3:okhttp:3.13.1'
+
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.1.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.1.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+
+    def lifecycle_version = "2.2.0"
+    def arch_version = "2.1.0"
+
+    def koin_version = '2.1.6'
+
+    // V2 Deps
+
+
+    // Android x Deps
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation 'io.paperdb:paperdb:2.7.1'
+
+
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0"
+    implementation 'com.squareup.okhttp3:okhttp:4.4.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     implementation project(path: ':tor')
 
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
-    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.core:core-ktx:1.3.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0'
+
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    implementation "org.koin:koin-androidx-ext:$koin_version"
 
 }
 repositories {
@@ -119,7 +153,7 @@ repositories {
 }
 
 
-def getApiKey(key){
+def getApiKey(key) {
     def Properties props = new Properties()
     props.load(new FileInputStream(new File('samourai.api')))
     return props[key]
