@@ -11,8 +11,6 @@
     </style>
 
 
-
-
     <style name="AppTheme.Launcher" parent="Theme.AppCompat.NoActionBar">
         <item name="android:statusBarColor">
             @color/window
@@ -31,6 +29,7 @@
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColor">@color/text_secondary</item>
         <item name="android:navigationBarColor">@color/primary_dark</item>
+
     </style>
     <style name="AppThemeV2Alert" parent="Theme.AppCompat.Dialog.Alert">
         <item name="android:windowBackground">@color/window</item>
@@ -45,7 +44,6 @@
         <item name="android:homeAsUpIndicator">@drawable/ic_close_black_24dp</item>
 
     </style>
-
 
 
     <style name="SamouraiAppTheme" parent="Theme.AppCompat.NoActionBar">
@@ -68,5 +66,61 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
+
+
+    <!-- v3 Theme -->
+
+
+    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.Bridge">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/v3_primary</item>
+        <item name="android:textColor">@color/v3_textColor</item>
+        <item name="statusBarBackground">@color/v3_primary</item>
+        <item name="android:statusBarColor">@color/v3_primary</item>
+        <item name="colorSecondary">@color/v3_secondary</item>
+        <item name="colorAccent">@color/v3_accent</item>
+        <item name="colorSecondaryVariant">#0039CB</item>
+        <item name="colorSurface">@color/v3_background</item>
+        <item name="android:colorBackground">@color/v3_background</item>
+        <item name="colorError">#F44336</item>
+
+        <!-- Dialog theme overlay attribute -->
+        <item name="materialAlertDialogTheme">@style/AppThemeOverlay.Dialog</item>
+
+    </style>
+
+    <style name="AppThemeOverlay.Dialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/SentinelThemeDialog</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/TitleTextStyle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/BodyTextStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+    </style>
+
+    <style name="SentinelThemeDialog" parent="MaterialAlertDialog.MaterialComponents">
+        <item name="shapeAppearance">?attr/shapeAppearanceMediumComponent</item>
+        <item name="alpha">1</item>
+    </style>
+
+    <style name="TitleTextStyle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">#fafafa</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BodyTextStyle" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textColor">#c7c7c7</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/v3_positive_green</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/v3_negative_red</item>
+    </style>
+
+    <!---->
 
 </resources>

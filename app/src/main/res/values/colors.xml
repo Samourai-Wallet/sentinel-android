@@ -22,7 +22,7 @@
     <color name="warning_yellow">#B6B260</color>
     <color name="green_ui_2">#0ecf96</color>
 
-    <color name="disabled_white" >#41FFFFFF</color>
+    <color name="disabled_white">#41FFFFFF</color>
 
     <color name="cyan_ui_2">#58b9b8</color>
 
@@ -38,7 +38,24 @@
 
     <color name="item_separator_grey">#333940</color>
 
-    <color name="disabled_grey" >#797979</color>
+    <color name="disabled_grey">#797979</color>
+
+
+    <!--V3 Color Palettes-->
+    <color name="v3_window">#2e2e2e</color>
+    <color name="v3_primary">#4a4a4a</color>
+    <color name="v3_primary_dark">#03A9F4</color>
+    <color name="v3_accent">#03A9F4</color>
+    <color name="v3_textColor">#EAEAEA</color>
+    <color name="v3_textColorSecondary">#B1B1B1</color>
+    <color name="v3_secondary">#2962FF</color>
+    <color name="v3_white">#FFFFFF</color>
+    <color name="v3_background">#FC272727</color>
+
+    <color name="v3_negative_red">#BC1616</color>
+    <color name="v3_positive_green">#1DA830</color>
+
+    <!--END V3 Color Palettes-->
 
 
 </resources>
