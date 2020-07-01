@@ -1,5 +1,6 @@
 package com.samourai.sentinel.data.repository
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.samourai.sentinel.data.CollectionModel
 import com.samourai.sentinel.data.db.DbHandler
@@ -29,7 +30,8 @@ class CollectionRepository {
     }
 
     fun update(collectionModel: CollectionModel, index: Int) {
-        collections[index] = collectionModel;
+        collections[index] = collectionModel
+        Log.i("collection","${collections[index]}")
         this.sync()
     }
 
@@ -45,7 +47,7 @@ class CollectionRepository {
         GlobalScope.launch(Dispatchers.IO) {
             dbHandler.getCollectionStore()?.write("collections", collections);
         }
-        this.emit();
+        this.emit()
     }
 
 

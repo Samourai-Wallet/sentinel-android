@@ -4,13 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.auth0.android.jwt.JWT;
-import com.google.gson.Gson;
 import com.samourai.sentinel.BuildConfig;
 import com.samourai.sentinel.SamouraiSentinel;
-import com.samourai.sentinel.SentinelApplication;
-import com.samourai.sentinel.balance.BalanceActivity;
-import com.samourai.sentinel.network.dojo.DojoUtil;
-import com.samourai.sentinel.segwit.bech32.Bech32Util;
+import com.samourai.sentinel.ui.dojo.DojoUtil;
+import com.samourai.sentinel.core.segwit.bech32.Bech32Util;
 import com.samourai.sentinel.sweep.FeeUtil;
 import com.samourai.sentinel.sweep.MyTransactionOutPoint;
 import com.samourai.sentinel.sweep.SuggestedFee;
@@ -30,7 +27,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.util.ArrayList;

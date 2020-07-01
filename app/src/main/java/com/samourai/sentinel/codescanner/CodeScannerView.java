@@ -26,7 +26,13 @@ package com.samourai.sentinel.codescanner;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.os.Build;
 import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
@@ -36,6 +42,8 @@ import androidx.annotation.Px;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StyleRes;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -80,6 +88,9 @@ public final class CodeScannerView extends ViewGroup {
     private int mAutoFocusButtonColor;
     private int mFlashButtonColor;
     private int mFocusAreaSize;
+
+
+
 
     /**
      * A view to display code scanner preview
@@ -619,4 +630,5 @@ public final class CodeScannerView extends ViewGroup {
             setFlashEnabled(enabled);
         }
     }
+
 }

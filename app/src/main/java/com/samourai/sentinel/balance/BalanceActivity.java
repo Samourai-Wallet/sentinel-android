@@ -50,15 +50,15 @@ import com.samourai.sentinel.ReceiveActivity;
 import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.SettingsActivity;
 import com.samourai.sentinel.XPUBListActivity;
-import com.samourai.sentinel.access.AccessFactory;
+import com.samourai.sentinel.core.access.AccessFactory;
 import com.samourai.sentinel.api.APIFactory;
 import com.samourai.sentinel.api.Tx;
 import com.samourai.sentinel.codescanner.CameraFragmentBottomSheet;
 import com.samourai.sentinel.hd.HD_Account;
 import com.samourai.sentinel.hd.HD_Wallet;
 import com.samourai.sentinel.hd.HD_WalletFactory;
-import com.samourai.sentinel.network.dojo.DojoUtil;
-import com.samourai.sentinel.network.dojo.Network;
+import com.samourai.sentinel.ui.dojo.DojoUtil;
+import com.samourai.sentinel.ui.dojo.NetworkActivity;
 import com.samourai.sentinel.permissions.PermissionsUtil;
 import com.samourai.sentinel.send.SendActivity;
 import com.samourai.sentinel.service.JobRefreshService;
@@ -150,7 +150,7 @@ public class BalanceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_balance);
 
-        setSupportActionBar(findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbarCollectionDetails));
 
         accountSpinner = findViewById(R.id.account_spinner);
 
@@ -160,7 +160,7 @@ public class BalanceActivity extends AppCompatActivity {
         account_selections[0] = "";
         adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, account_selections);
         accountSpinner.setAdapter(adapter);
-        setSupportActionBar(findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbarCollectionDetails));
 
         accountSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -338,7 +338,7 @@ public class BalanceActivity extends AppCompatActivity {
             startActivity(intent);
         }
         if (id == R.id.action_network) {
-            startActivity(new Intent(this, Network.class));
+            startActivity(new Intent(this, NetworkActivity.class));
         } else if (id == R.id.action_sweep) {
             confirmAccountSelection(true);
         } else {
