@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarCollectionDetails"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center|center_vertical"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|center_horizontal"
+                android:text="30.0332 BTC"
+                android:textSize="24sp" />
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|center_horizontal"
+                android:layout_marginTop="4dp"
+                android:textSize="14sp"
+                android:text="1234 USD" />
+
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/collectionRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        android:paddingHorizontal="54dp"
+        android:text="New"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/v2_accent"
+        app:elevation="12dp"
+        app:icon="@drawable/ic_baseline_wallet_24"
+        app:iconTint="@color/white"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.MediumComponent" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
