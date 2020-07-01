@@ -1,11 +1,10 @@
-package com.samourai.sentinel.segwit.bech32;
+package com.samourai.sentinel.core.segwit.bech32;
 
 import com.samourai.sentinel.SamouraiSentinel;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.TransactionOutput;
-import org.bitcoinj.params.TestNet3Params;
 import org.bouncycastle.util.encoders.Hex;
 
 public class Bech32Util {

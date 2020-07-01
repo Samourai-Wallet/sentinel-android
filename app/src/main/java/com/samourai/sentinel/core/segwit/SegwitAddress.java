@@ -1,6 +1,6 @@
-package com.samourai.sentinel.segwit;
+package com.samourai.sentinel.core.segwit;
 
-import com.samourai.sentinel.segwit.bech32.Bech32Segwit;
+import com.samourai.sentinel.core.segwit.bech32.Bech32Segwit;
 
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.ECKey;

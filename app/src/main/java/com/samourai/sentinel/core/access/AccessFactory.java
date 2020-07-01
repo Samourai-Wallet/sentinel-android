@@ -1,4 +1,4 @@
-package com.samourai.sentinel.access;
+package com.samourai.sentinel.core.access;
 
 import android.content.Context;
 

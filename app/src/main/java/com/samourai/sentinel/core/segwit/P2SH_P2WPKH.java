@@ -1,14 +1,11 @@
-package com.samourai.sentinel.segwit;
+package com.samourai.sentinel.core.segwit;
 
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.script.Script;
-import org.bouncycastle.crypto.digests.RIPEMD160Digest;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 

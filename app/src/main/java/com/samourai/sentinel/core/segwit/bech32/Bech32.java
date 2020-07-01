@@ -1,4 +1,4 @@
-package com.samourai.sentinel.segwit.bech32;
+package com.samourai.sentinel.core.segwit.bech32;
 
 import org.apache.commons.lang3.tuple.Pair;
 

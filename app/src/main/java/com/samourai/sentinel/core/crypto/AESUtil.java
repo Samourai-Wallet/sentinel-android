@@ -1,4 +1,4 @@
-package com.samourai.sentinel.crypto;
+package com.samourai.sentinel.core.crypto;
 
 import com.samourai.sentinel.util.CharSequenceX;
 
