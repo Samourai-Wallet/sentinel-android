@@ -72,7 +72,7 @@
         android:paddingHorizontal="54dp"
         android:text="New"
         android:textColor="@color/white"
-        app:backgroundTint="@color/v2_accent"
+        app:backgroundTint="@color/v3_accent"
         app:elevation="12dp"
         app:icon="@drawable/ic_baseline_wallet_24"
         app:iconTint="@color/white"

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="520dp"
+        android:layout_gravity="bottom"
+        android:background="@color/v3_window">
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Scan the QR code of any public key such as a bitcoin or an extended public key"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@+id/frameLayout"
+            app:layout_constraintStart_toStartOf="@+id/frameLayout"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+            <com.samourai.sentinel.codescanner.CodeScannerView
+                android:id="@+id/scannerViewXpub"
+                android:layout_width="320dp"
+                android:layout_height="320dp"
+                android:layout_marginBottom="16dp"
+                app:autoFocusButtonColor="@android:color/white"
+                app:autoFocusButtonVisible="false"
+                app:flashButtonColor="@android:color/white"
+                app:flashButtonVisible="true"
+                app:frameAspectRatioHeight="1.8"
+                app:frameAspectRatioWidth="1.8"
+                app:frameColor="@android:color/white"
+                app:frameCornersRadius="8dp"
+                app:frameCornersSize="24dp"
+                app:frameSize="0.7"
+                app:frameThickness="0dp"
+                app:maskColor="#00FFFFFF" />
+
+            <View
+                android:layout_width="320dp"
+                android:layout_height="320dp"
+                android:background="@drawable/camera_round_border" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
+
+        
