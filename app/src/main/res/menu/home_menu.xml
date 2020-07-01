@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/home_menu_actions"
+        android:title="" />
+
+    <item
+        android:id="@+id/activity_home_menu_network"
+        app:actionLayout="@layout/home_menu_network_item_layout"
+        android:title=""
+        app:showAsAction="always" />
+
+
+</menu>
