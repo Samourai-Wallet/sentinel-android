@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 //import android.widget.Toast;
 
-import com.samourai.sentinel.network.dojo.Network;
+import com.samourai.sentinel.ui.dojo.NetworkActivity;
 import com.samourai.sentinel.permissions.PermissionsUtil;
 import com.samourai.sentinel.util.AppUtil;
 
@@ -70,7 +70,7 @@ public class InitActivity extends Activity {
             AppUtil.getInstance(InitActivity.this).doRestore();
         }
         if (id == R.id.action_network_init) {
-            startActivity(new Intent(this, Network.class));
+            startActivity(new Intent(this, NetworkActivity.class));
         }
         else {
             ;

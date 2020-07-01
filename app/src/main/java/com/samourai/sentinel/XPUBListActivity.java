@@ -69,7 +69,7 @@ public class XPUBListActivity extends AppCompatActivity {
             PrefsUtil.getInstance(XPUBListActivity.this).setValue(PrefsUtil.XPUB, "");
             AppUtil.getInstance(XPUBListActivity.this).restartApp();
         }
-        setSupportActionBar(findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbarCollectionDetails));
 
         xpubList = (SwipeMenuListView)findViewById(R.id.xpubList);
         xpubAdapter = new XPUBAdapter();

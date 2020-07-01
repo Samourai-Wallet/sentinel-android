@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.dm.zbar.android.scanner.ZBarConstants;
-import com.samourai.sentinel.access.AccessFactory;
+import com.samourai.sentinel.core.access.AccessFactory;
 import com.samourai.sentinel.balance.BalanceActivity;
 import com.samourai.sentinel.codescanner.CameraFragmentBottomSheet;
 import com.samourai.sentinel.util.FormatsUtil;
@@ -48,7 +48,7 @@ public class InsertActivity extends AppCompatActivity {
 
 //        setTitle();
 
-        setSupportActionBar(findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbarCollectionDetails));
         if(getSupportActionBar()!=null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.track_new);

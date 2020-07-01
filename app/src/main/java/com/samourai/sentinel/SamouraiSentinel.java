@@ -5,13 +5,11 @@ import android.content.SharedPreferences;
 import android.util.Log;
 //import android.util.Log;
 
-import com.samourai.sentinel.api.APIFactory;
-import com.samourai.sentinel.crypto.AESUtil;
-import com.samourai.sentinel.network.dojo.DojoUtil;
-import com.samourai.sentinel.segwit.P2SH_P2WPKH;
-import com.samourai.sentinel.segwit.SegwitAddress;
+import com.samourai.sentinel.core.crypto.AESUtil;
+import com.samourai.sentinel.ui.dojo.DojoUtil;
+import com.samourai.sentinel.core.segwit.P2SH_P2WPKH;
+import com.samourai.sentinel.core.segwit.SegwitAddress;
 import com.samourai.sentinel.util.AddressFactory;
-import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.BlockedUTXO;
 import com.samourai.sentinel.util.CharSequenceX;
 import com.samourai.sentinel.util.MapUtil;
@@ -36,8 +34,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -47,10 +43,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SamouraiSentinel {

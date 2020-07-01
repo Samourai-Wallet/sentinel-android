@@ -2,9 +2,7 @@ package com.samourai.sentinel;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Vibrator;
@@ -16,8 +14,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.samourai.sentinel.access.AccessFactory;
-import com.samourai.sentinel.access.ScrambledPin;
+import com.samourai.sentinel.core.access.AccessFactory;
+import com.samourai.sentinel.core.access.ScrambledPin;
 import com.samourai.sentinel.util.AppUtil;
 import com.samourai.sentinel.util.Hash;
 import com.samourai.sentinel.util.PrefsUtil;
