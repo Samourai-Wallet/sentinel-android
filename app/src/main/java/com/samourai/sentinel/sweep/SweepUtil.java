@@ -20,8 +20,8 @@ import java.util.List;
 import com.samourai.sentinel.R;
 import com.samourai.sentinel.SamouraiSentinel;
 import com.samourai.sentinel.api.APIFactory;
-import com.samourai.sentinel.segwit.P2SH_P2WPKH;
-import com.samourai.sentinel.segwit.SegwitAddress;
+import com.samourai.sentinel.core.segwit.P2SH_P2WPKH;
+import com.samourai.sentinel.core.segwit.SegwitAddress;
 
 public class SweepUtil  {
 

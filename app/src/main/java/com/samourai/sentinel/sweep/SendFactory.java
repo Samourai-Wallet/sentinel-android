@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.samourai.sentinel.R;
-import com.samourai.sentinel.segwit.P2SH_P2WPKH;
-import com.samourai.sentinel.segwit.bech32.Bech32Util;
+import com.samourai.sentinel.core.segwit.P2SH_P2WPKH;
+import com.samourai.sentinel.core.segwit.bech32.Bech32Util;
 import com.samourai.sentinel.util.FormatsUtil;
 
 public class SendFactory	{
