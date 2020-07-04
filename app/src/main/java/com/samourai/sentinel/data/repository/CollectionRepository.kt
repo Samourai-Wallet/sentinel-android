@@ -2,7 +2,7 @@ package com.samourai.sentinel.data.repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.samourai.sentinel.data.CollectionModel
+import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.db.DbHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -13,30 +13,35 @@ import kotlin.collections.ArrayList
 
 class CollectionRepository {
 
-    val collections: ArrayList<CollectionModel> = arrayListOf();
-    val collectionsLiveData: MutableLiveData<ArrayList<CollectionModel>> = MutableLiveData();
+    val pubKeyCollections: ArrayList<PubKeyCollection> = arrayListOf();
+    val collectionsLiveData: MutableLiveData<ArrayList<PubKeyCollection>> = MutableLiveData();
 
     private val dbHandler: DbHandler by inject(DbHandler::class.java)
 
-    fun addNew(collectionModel: CollectionModel) {
-        collectionModel.id = UUID.randomUUID().toString()
-        collections.add(collectionModel);
+    fun addNew(pubKeyCollection: PubKeyCollection) {
+        pubKeyCollection.id = UUID.randomUUID().toString()
+        pubKeyCollections.add(pubKeyCollection);
         this.sync()
     }
 
     fun delete(index: Int) {
-        collections.removeAt(index);
+        pubKeyCollections.removeAt(index);
         this.sync()
     }
 
-    fun update(collectionModel: CollectionModel, index: Int) {
-        collections[index] = collectionModel
-        Log.i("collection","${collections[index]}")
+    fun update(pubKeyCollection: PubKeyCollection, index: Int) {
+        pubKeyCollections[index] = pubKeyCollection
+        Log.i("collection:update", "${pubKeyCollections[index]}")
         this.sync()
+    }
+
+
+    fun findById(id: String): PubKeyCollection? {
+       return pubKeyCollections.find { it.id == id }
     }
 
     init {
-        this.read();
+        this.read()
     }
 
     /**
@@ -45,7 +50,7 @@ class CollectionRepository {
      */
     private fun sync() {
         GlobalScope.launch(Dispatchers.IO) {
-            dbHandler.getCollectionStore()?.write("collections", collections);
+            dbHandler.getCollectionStore()?.write("collections", pubKeyCollections);
         }
         this.emit()
     }
@@ -53,24 +58,24 @@ class CollectionRepository {
 
     fun read() = GlobalScope.launch(Dispatchers.IO) {
         try {
-            val readValue: ArrayList<CollectionModel> = dbHandler.getCollectionStore()?.read("collections")
+            val readValue: ArrayList<PubKeyCollection> = dbHandler.getCollectionStore()?.read("collections")
                     ?: arrayListOf();
             if (readValue.size != 0) {
-                collections.clear()
-                collections.addAll(readValue);
+                pubKeyCollections.clear()
+                pubKeyCollections.addAll(readValue);
             } else {
-                collections.clear();
+                pubKeyCollections.clear();
             }
         } catch (e: Exception) {
-            collections.clear()
+            pubKeyCollections.clear()
             throw  e;
         }
-        collectionsLiveData.postValue(collections);
+        collectionsLiveData.postValue(pubKeyCollections);
     }
 
 
     private fun emit() {
-        collectionsLiveData.postValue(collections);
+        collectionsLiveData.postValue(pubKeyCollections);
     }
 
 }

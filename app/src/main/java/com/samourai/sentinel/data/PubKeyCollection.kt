@@ -3,7 +3,7 @@ package com.samourai.sentinel.data
 import java.util.*
 import kotlin.collections.ArrayList
 
-data class CollectionModel(
+data class PubKeyCollection(
         var collectionLabel: String = "",
         var balance: Long = 0L,
         var id:String = "",
