@@ -72,6 +72,19 @@
 
             </androidx.recyclerview.widget.RecyclerView>
 
+            <Button
+                android:id="@+id/addNewPublicKey"
+                android:layout_width="wrap_content"
+                android:text="Add another public key"
+                android:padding="12dp"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="end"
+                android:textStyle="normal"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/v3_textColorSecondary"
+                android:layout_height="match_parent" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
