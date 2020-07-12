@@ -1,4 +1,4 @@
-package com.samourai.sentinel.hd;
+package com.samourai.sentinel.core.hd;
 
 //import android.util.Log;
 

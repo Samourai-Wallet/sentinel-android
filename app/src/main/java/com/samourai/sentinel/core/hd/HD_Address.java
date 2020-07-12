@@ -1,4 +1,4 @@
-package com.samourai.sentinel.hd;
+package com.samourai.sentinel.core.hd;
 
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.ECKey;
