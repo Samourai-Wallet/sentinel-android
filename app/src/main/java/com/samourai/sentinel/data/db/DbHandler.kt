@@ -14,8 +14,8 @@ class DbHandler() {
     private val storeLocation = "${this.context.filesDir.path}/app_wallet"
 
 
-    fun getTxStore(): Book {
-        return Paper.bookOn(storeLocation, "sentinel.txs")!!
+    fun getTxStore(collectionId:String): Book {
+        return Paper.bookOn(storeLocation, "${collectionId}.txs")!!
     }
 
     fun getUTXOsStore(): Book? {
