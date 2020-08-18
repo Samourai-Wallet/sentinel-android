@@ -20,6 +20,7 @@ import android.provider.ContactsContract;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
+import android.util.Log;
 
 import java.util.Collection;
 import java.util.EnumMap;
@@ -198,10 +199,11 @@ public final class QRCodeEncoder {
 
         Map<EncodeHintType, Object> hints = null;
         String encoding = guessAppropriateEncoding(contents);
+        hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
         if (encoding != null) {
-            hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
             hints.put(EncodeHintType.CHARACTER_SET, encoding);
         }
+        hints.put(EncodeHintType.MARGIN, 1);
         MultiFormatWriter writer = new MultiFormatWriter();
         BitMatrix result = writer.encode(contents, format, dimension, dimension, hints);
         int width = result.getWidth();
