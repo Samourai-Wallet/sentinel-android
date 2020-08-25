@@ -1,0 +1,6 @@
+/build
+/.idea
+*.iml
+/src/main/assets/geoip
+/src/main/assets/geoip6
+/src/main/assets/torrc
