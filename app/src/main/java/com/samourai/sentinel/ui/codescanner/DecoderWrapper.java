@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.samourai.sentinel.codescanner;
+package com.samourai.sentinel.ui.codescanner;
 
 import android.hardware.Camera;
 import androidx.annotation.NonNull;
