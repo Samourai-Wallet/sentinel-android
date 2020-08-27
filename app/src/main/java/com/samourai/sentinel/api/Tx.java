@@ -24,7 +24,7 @@ public class Tx {
         this.confirmations = confirmations;
     }
 /*
-    public Tx(String hash, String note, String direction, double amount, long date, Map<Integer,String> tags) {
+    public com.samourai.sentinel.data.Tx(String hash, String note, String direction, double amount, long date, Map<Integer,String> tags) {
         strHash = hash;
         strNote = note;
         strDirection = direction;
@@ -33,7 +33,7 @@ public class Tx {
         this.tags = tags;
     }
 
-    public Tx(String note, String direction, double amount, long date, Map<Integer,String> tags) {
+    public com.samourai.sentinel.data.Tx(String note, String direction, double amount, long date, Map<Integer,String> tags) {
         strNote = note;
         strDirection = direction;
         this.amount = amount;
