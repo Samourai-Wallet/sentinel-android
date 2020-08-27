@@ -1,5 +1,7 @@
 # Sentinel for Android
 
+# This repository is now maintained at https://code.samourai.io/wallet/sentinel-android 
+
 ### Build:
 
 Import as Android Studio project. Should build "as is".
