@@ -13,10 +13,9 @@ import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.samourai.sentinel.MainActivity2;
-import com.samourai.sentinel.R;
-import com.samourai.sentinel.SamouraiSentinel;
-import com.samourai.sentinel.crypto.AESUtil;
+//import com.samourai.sentinel.MainActivity2;
+ import com.samourai.sentinel.R;
+ import com.samourai.sentinel.core.crypto.AESUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,16 +68,16 @@ public class AppUtil {
 
 
     public void restartApp() {
-        Intent intent = new Intent(context, MainActivity2.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+//        Intent intent = new Intent(context, MainActivity2.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//        context.startActivity(intent);
     }
 
     public void restartApp(boolean verified) {
-        Intent intent = new Intent(context, MainActivity2.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("verified", verified);
-        context.startActivity(intent);
+//        Intent intent = new Intent(context, MainActivity2.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.putExtra("verified", verified);
+//        context.startActivity(intent);
     }
 
     public void setIsInForeground(boolean foreground) {
@@ -151,45 +150,45 @@ public class AppUtil {
                                                         .setSingleChoiceItems(export_methods, 0, new DialogInterface.OnClickListener() {
                                                                     public void onClick(DialogInterface dialog, int which) {
 
-                                                                        String encrypted = null;
-                                                                        try {
-                                                                            encrypted = AESUtil.encrypt(SamouraiSentinel.getInstance(context).toJSON().toString(), new CharSequenceX(pw), AESUtil.DefaultPBKDF2Iterations);
-                                                                        } catch (Exception e) {
-                                                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                                        } finally {
-                                                                            if (encrypted == null) {
-                                                                                Toast.makeText(context, R.string.encryption_error, Toast.LENGTH_SHORT).show();
-                                                                                return;
-                                                                            }
-                                                                            else    {
-
-                                                                                try {
-                                                                                    JSONObject jsonObj = new JSONObject();
-                                                                                    jsonObj.put("version", 1);
-                                                                                    jsonObj.put("payload", encrypted);
-                                                                                    encrypted = jsonObj.toString();
-                                                                                }
-                                                                                catch(JSONException je) {
-                                                                                    ;
-                                                                                }
-
-                                                                            }
-
-                                                                        }
-
-                                                                        if (which == 0) {
-                                                                            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
-                                                                            android.content.ClipData clip = null;
-                                                                            clip = android.content.ClipData.newPlainText("Wallet backup", encrypted);
-                                                                            clipboard.setPrimaryClip(clip);
-                                                                            Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
-                                                                        } else {
-                                                                            Intent email = new Intent(Intent.ACTION_SEND);
-                                                                            email.putExtra(Intent.EXTRA_SUBJECT, "Sentinel backup");
-                                                                            email.putExtra(Intent.EXTRA_TEXT, encrypted);
-                                                                            email.setType("message/rfc822");
-                                                                            context.startActivity(Intent.createChooser(email, context.getText(R.string.choose_email_client)));
-                                                                        }
+//                                                                        String encrypted = null;
+//                                                                        try {
+//                                                                            encrypted = AESUtil.encrypt(SamouraiSentinel.getInstance(context).toJSON().toString(), new CharSequenceX(pw), AESUtil.DefaultPBKDF2Iterations);
+//                                                                        } catch (Exception e) {
+//                                                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                                                                        } finally {
+//                                                                            if (encrypted == null) {
+//                                                                                Toast.makeText(context, R.string.encryption_error, Toast.LENGTH_SHORT).show();
+//                                                                                return;
+//                                                                            }
+//                                                                            else    {
+//
+//                                                                                try {
+//                                                                                    JSONObject jsonObj = new JSONObject();
+//                                                                                    jsonObj.put("version", 1);
+//                                                                                    jsonObj.put("payload", encrypted);
+//                                                                                    encrypted = jsonObj.toString();
+//                                                                                }
+//                                                                                catch(JSONException je) {
+//                                                                                    ;
+//                                                                                }
+//
+//                                                                            }
+//
+//                                                                        }
+//
+//                                                                        if (which == 0) {
+//                                                                            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+//                                                                            android.content.ClipData clip = null;
+//                                                                            clip = android.content.ClipData.newPlainText("Wallet backup", encrypted);
+//                                                                            clipboard.setPrimaryClip(clip);
+//                                                                            Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
+//                                                                        } else {
+//                                                                            Intent email = new Intent(Intent.ACTION_SEND);
+//                                                                            email.putExtra(Intent.EXTRA_SUBJECT, "Sentinel backup");
+//                                                                            email.putExtra(Intent.EXTRA_TEXT, encrypted);
+//                                                                            email.setType("message/rfc822");
+//                                                                            context.startActivity(Intent.createChooser(email, context.getText(R.string.choose_email_client)));
+//                                                                        }
 
                                                                         dialog.dismiss();
                                                                     }
@@ -304,27 +303,22 @@ public class AppUtil {
 
                                                 try {
 
-                                                    JSONObject json = new JSONObject(decryptedPayload);
-                                                    if(json != null && (json.has("xpubs") || json.has("legacy")))    {
-                                                        SamouraiSentinel.getInstance(context).parseJSON(json);
+//                                                    JSONObject json = new JSONObject(decryptedPayload);
+//                                                    if(json != null && (json.has("xpubs") || json.has("legacy")))    {
+//                                                        SamouraiSentinel.getInstance(context).parseJSON(json);
+//
+//                                                        try {
+//                                                            SamouraiSentinel.getInstance(context).serialize(SamouraiSentinel.getInstance(context).toJSON(), null);
+//                                                        } catch (IOException ioe) {
+//                                                            ;
+//                                                        } catch (JSONException je) {
+//                                                            ;
+//                                                        }
+//
+//                                                        AppUtil.getInstance(context).restartApp();
+//                                                    }
 
-                                                        try {
-                                                            SamouraiSentinel.getInstance(context).serialize(SamouraiSentinel.getInstance(context).toJSON(), null);
-                                                        } catch (IOException ioe) {
-                                                            ;
-                                                        } catch (JSONException je) {
-                                                            ;
-                                                        }
-
-                                                        AppUtil.getInstance(context).restartApp();
-                                                    }
-
-                                                }
-                                                catch(JSONException je) {
-                                                    je.printStackTrace();
-                                                    Toast.makeText(context, R.string.decryption_error, Toast.LENGTH_SHORT).show();
-                                                }
-                                                finally {
+                                                } finally {
                                                     if (progress != null && progress.isShowing()) {
                                                         progress.dismiss();
                                                         progress = null;

@@ -1,17 +1,9 @@
 package com.samourai.sentinel.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.samourai.sentinel.BuildConfig;
-import com.samourai.sentinel.SamouraiSentinel;
-import com.samourai.sentinel.tor.TorManager;
 
-import org.json.JSONObject;
-
-import java.sql.Time;
-import java.time.Duration;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -162,7 +154,7 @@ public class WebUtil {
 
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .proxy(TorManager.getInstance(this.context).getProxy())
+//                .proxy(TorManager.getInstance(this.context).getProxy())
                 .connectTimeout(90, TimeUnit.SECONDS)
                 .readTimeout(90, TimeUnit.SECONDS);
 
@@ -196,7 +188,7 @@ public class WebUtil {
 
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .proxy(TorManager.getInstance(this.context).getProxy())
+//                .proxy(TorManager.getInstance(this.context).getProxy())
                 .connectTimeout(90, TimeUnit.SECONDS)
                 .readTimeout(90, TimeUnit.SECONDS);
 
@@ -227,8 +219,8 @@ public class WebUtil {
     public String tor_postURL(String URL, FormBody args) throws Exception {
 
 
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .proxy(TorManager.getInstance(this.context).getProxy());
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+//                .proxy(TorManager.getInstance(this.context).getProxy());
 
         if (URL.contains("onion")) {
             getHostNameVerifier(builder);
@@ -293,12 +285,13 @@ public class WebUtil {
     }
 
     public static String getAPIUrl(Context context) {
-        if (TorManager.getInstance(context).isRequired()) {
-            return SamouraiSentinel.getInstance().isTestNet() ? SAMOURAI_API2_TESTNET_TOR : SAMOURAI_API2_TOR;
-        } else {
-            return SamouraiSentinel.getInstance().isTestNet() ? SAMOURAI_API2_TESTNET : SAMOURAI_API2;
-        }
+//        if (TorManager.getInstance(context).isRequired()) {
+//            return SamouraiSentinel.getInstance().isTestNet() ? SAMOURAI_API2_TESTNET_TOR : SAMOURAI_API2_TOR;
+//        } else {
+//            return SamouraiSentinel.getInstance().isTestNet() ? SAMOURAI_API2_TESTNET : SAMOURAI_API2;
+//        }
 
+        return  "";
     }
 
 }

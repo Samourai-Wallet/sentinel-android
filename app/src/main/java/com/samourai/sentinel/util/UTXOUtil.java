@@ -1,6 +1,7 @@
 package com.samourai.sentinel.util;
 
-import com.samourai.sentinel.SamouraiSentinel;
+
+import com.samourai.sentinel.core.SentinelState;
 
 import org.bitcoinj.core.Address;
 import org.json.JSONArray;
@@ -249,7 +250,7 @@ public class UTXOUtil {
         if (FormatsUtil.getInstance().isValidBech32(address)) {
             // is bech32: p2wpkh BIP84
             return AddressTypes.SEGWIT_NATIVE;
-        } else if (Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), address).isP2SHAddress()) {
+        } else if (Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress()) {
             // is P2SH wrapped segwit BIP49
             return AddressTypes.SEGWIT_COMPAT;
         } else {

@@ -5,11 +5,9 @@ import android.widget.Toast;
 
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.MnemonicException;
-import com.samourai.sentinel.access.AccessFactory;
-import com.samourai.sentinel.hd.HD_Address;
-import com.samourai.sentinel.hd.HD_WalletFactory;
 
-import org.json.JSONException;
+import com.samourai.sentinel.core.hd.HD_Address;
+import com.samourai.sentinel.core.hd.HD_WalletFactory;
 
 import java.io.IOException;
 import java.util.HashMap;

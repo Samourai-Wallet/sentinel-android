@@ -2,9 +2,9 @@ package com.samourai.sentinel.util;
 
 import android.util.Patterns;
 
-import com.samourai.sentinel.SamouraiSentinel;
-import com.samourai.sentinel.segwit.bech32.Bech32;
-import com.samourai.sentinel.segwit.bech32.Bech32Segwit;
+import com.samourai.sentinel.core.SentinelState;
+import com.samourai.sentinel.core.segwit.bech32.Bech32;
+import com.samourai.sentinel.core.segwit.bech32.Bech32Segwit;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.bitcoinj.core.Address;
@@ -193,7 +193,7 @@ public class FormatsUtil {
 		else	{
 
 			try {
-				addr = new Address(SamouraiSentinel.getInstance().getCurrentNetworkParams(), address);
+				addr = new Address(SentinelState.Companion.getNetworkParam(), address);
 				if(addr != null) {
 					ret = true;
 				}
