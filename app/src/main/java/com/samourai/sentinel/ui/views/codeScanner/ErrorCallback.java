@@ -21,44 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.samourai.sentinel.ui.codescanner;
+package com.samourai.sentinel.ui.views.codeScanner;
 
-final class Point {
-    private final int mX;
-    private final int mY;
+import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 
-    public Point(final int x, final int y) {
-        mX = x;
-        mY = y;
-    }
 
-    public int getX() {
-        return mX;
-    }
+/**
+ * Code scanner error callback
+ */
+public interface ErrorCallback {
+    /**
+     * Callback to suppress errors
+     */
+    ErrorCallback SUPPRESS = new Utils.SuppressErrorCallback();
 
-    public int getY() {
-        return mY;
-    }
-
-    @Override
-    public int hashCode() {
-        return mX ^ ((mY << (Integer.SIZE / 2)) | (mY >>> (Integer.SIZE / 2)));
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj == this) {
-            return true;
-        } else if (obj instanceof Point) {
-            final Point other = (Point) obj;
-            return mX == other.mX && mY == other.mY;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "(" + mX + "; " + mY + ")";
-    }
+    /**
+     * Called when error has occurred
+     * <br>
+     * Note that this method always called on a worker thread
+     *
+     * @param error Exception that has been thrown
+     * @see Handler
+     * @see Looper#getMainLooper()
+     * @see Activity#runOnUiThread(Runnable)
+     */
+    @WorkerThread
+    void onError(@NonNull Exception error);
 }

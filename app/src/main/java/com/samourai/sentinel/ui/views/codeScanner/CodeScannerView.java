@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.samourai.sentinel.ui.codescanner;
+package com.samourai.sentinel.ui.views.codeScanner;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

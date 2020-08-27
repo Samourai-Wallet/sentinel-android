@@ -1,5 +1,5 @@
 
-package com.samourai.sentinel.ui.codescanner;
+package com.samourai.sentinel.ui.views.codeScanner;
 
 import android.Manifest;
 import android.app.Activity;

@@ -21,23 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.samourai.sentinel.ui.codescanner;
+package com.samourai.sentinel.ui.views.codeScanner;
+
+import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
+
+import com.google.zxing.Result;
+
 
 /**
- * Code scanner auto focus mode
- *
- * @see CodeScanner#setAutoFocusMode(AutoFocusMode)
+ * Callback of the decoding process
  */
-public enum AutoFocusMode {
+public interface DecodeCallback {
     /**
-     * Auto focus camera with the specified interval
+     * Called when decoder has successfully decoded the code
+     * <br>
+     * Note that this method always called on a worker thread
      *
-     * @see CodeScanner#setAutoFocusInterval(long)
+     * @param result Encapsulates the result of decoding a barcode within an image
+     * @see Handler
+     * @see Looper#getMainLooper()
+     * @see Activity#runOnUiThread(Runnable)
      */
-    SAFE,
-
-    /**
-     * Continuous auto focus, may not work on some devices
-     */
-    CONTINUOUS
+    @WorkerThread
+    void onDecoded(@NonNull Result result);
 }

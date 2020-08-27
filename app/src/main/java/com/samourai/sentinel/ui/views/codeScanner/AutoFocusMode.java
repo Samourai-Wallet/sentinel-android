@@ -21,34 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.samourai.sentinel.ui.codescanner;
-
-import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
-import androidx.annotation.NonNull;
-import androidx.annotation.WorkerThread;
-
+package com.samourai.sentinel.ui.views.codeScanner;
 
 /**
- * Code scanner error callback
+ * Code scanner auto focus mode
+ *
+ * @see CodeScanner#setAutoFocusMode(AutoFocusMode)
  */
-public interface ErrorCallback {
+public enum AutoFocusMode {
     /**
-     * Callback to suppress errors
+     * Auto focus camera with the specified interval
+     *
+     * @see CodeScanner#setAutoFocusInterval(long)
      */
-    ErrorCallback SUPPRESS = new Utils.SuppressErrorCallback();
+    SAFE,
 
     /**
-     * Called when error has occurred
-     * <br>
-     * Note that this method always called on a worker thread
-     *
-     * @param error Exception that has been thrown
-     * @see Handler
-     * @see Looper#getMainLooper()
-     * @see Activity#runOnUiThread(Runnable)
+     * Continuous auto focus, may not work on some devices
      */
-    @WorkerThread
-    void onError(@NonNull Exception error);
+    CONTINUOUS
 }
