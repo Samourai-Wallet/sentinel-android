@@ -2,8 +2,7 @@ package com.samourai.sentinel.sweep;
 
 import android.content.Context;
 
-import com.samourai.sentinel.SamouraiSentinel;
-import com.samourai.sentinel.util.WebUtil;
+ import com.samourai.sentinel.util.WebUtil;
 
 public class PushTx {
 
