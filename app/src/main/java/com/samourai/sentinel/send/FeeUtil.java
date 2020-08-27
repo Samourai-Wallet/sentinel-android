@@ -3,7 +3,7 @@ package com.samourai.sentinel.send;
 import android.util.Log;
 
 
-import com.samourai.sentinel.SamouraiSentinel;
+ import com.samourai.sentinel.core.SentinelState;
 import com.samourai.sentinel.sweep.MyTransactionOutPoint;
 import com.samourai.sentinel.util.FormatsUtil;
 
@@ -184,7 +184,7 @@ public class FeeUtil  {
             if(FormatsUtil.getInstance().isValidBech32(out.getAddress()))    {
                 p2wpkh++;
             }
-            else if(Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), out.getAddress()).isP2SHAddress())    {
+            else if(Address.fromBase58(SentinelState.Companion.getNetworkParam(), out.getAddress()).isP2SHAddress())    {
                 p2sh_p2wpkh++;
             }
             else   {

@@ -5,8 +5,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.samourai.sentinel.R;
-import com.samourai.sentinel.SamouraiSentinel;
-import com.samourai.sentinel.hd.HD_WalletFactory;
+
+import com.samourai.sentinel.core.SentinelState;
+import com.samourai.sentinel.core.hd.HD_WalletFactory;
 import com.samourai.sentinel.core.segwit.SegwitAddress;
 import com.samourai.sentinel.core.segwit.bech32.Bech32Util;
 import com.samourai.sentinel.sweep.MyTransactionInput;
@@ -96,7 +97,7 @@ public class SendFactory	{
                     address = Bech32Util.getInstance().getAddressFromScript(Hex.toHexString(scriptBytes));
                 }
                 else    {
-                    address = new Script(scriptBytes).getToAddress(SamouraiSentinel.getInstance().getCurrentNetworkParams()).toString();
+                    address = new Script(scriptBytes).getToAddress(SentinelState.Companion.getNetworkParam()).toString();
                 }
 //                Log.i("SendFactory", "address from script:" + address);
                 ECKey ecKey = null;
@@ -153,14 +154,14 @@ public class SendFactory	{
                     }
                 }
                 else    {
-                    address = new Script(scriptBytes).getToAddress(SamouraiSentinel.getInstance().getCurrentNetworkParams()).toString();
+                    address = new Script(scriptBytes).getToAddress(SentinelState.Companion.getNetworkParam()).toString();
                 }
 
                 Log.i("address from script", address);
 
                 ECKey ecKey = null;
                 try {
-                    DumpedPrivateKey pk = new DumpedPrivateKey(SamouraiSentinel.getInstance().getCurrentNetworkParams(), privKeyReader.getKey().getPrivateKeyAsWiF(SamouraiSentinel.getInstance().getCurrentNetworkParams()));
+                    DumpedPrivateKey pk = new DumpedPrivateKey(SentinelState.Companion.getNetworkParam(), privKeyReader.getKey().getPrivateKeyAsWiF(SentinelState.Companion.getNetworkParam()));
                     ecKey = pk.getKey();
 //                    Log.i("SendFactory", "ECKey address:" + ecKey.toAddress(SamouraiWallet.getInstance().getCurrentNetworkParams()).toString());
                 } catch (AddressFormatException afe) {
@@ -212,7 +213,7 @@ public class SendFactory	{
         }
 
         List<TransactionOutput> outputs = new ArrayList<TransactionOutput>();
-        Transaction tx = new Transaction(SamouraiSentinel.getInstance().getCurrentNetworkParams());
+        Transaction tx = new Transaction(SentinelState.Companion.getNetworkParam());
 
         for(Iterator<Map.Entry<String, BigInteger>> iterator = receivers.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry<String, BigInteger> mapEntry = iterator.next();
@@ -231,14 +232,14 @@ public class SendFactory	{
             Script toOutputScript = null;
             if(!FormatsUtil.getInstance().isValidBitcoinAddress(toAddress) && FormatsUtilGeneric.getInstance().isValidBIP47OpReturn(toAddress))    {
                 toOutputScript = new ScriptBuilder().op(ScriptOpCodes.OP_RETURN).data(Hex.decode(toAddress)).build();
-                output = new TransactionOutput(SamouraiSentinel.getInstance().getCurrentNetworkParams(), null, Coin.valueOf(0L), toOutputScript.getProgram());
+                output = new TransactionOutput(SentinelState.Companion.getNetworkParam(), null, Coin.valueOf(0L), toOutputScript.getProgram());
             }
             else if(FormatsUtil.getInstance().isValidBech32(toAddress))   {
                 output = Bech32Util.getInstance().getTransactionOutput(toAddress, value.longValue());
             }
             else    {
-                toOutputScript = ScriptBuilder.createOutputScript(org.bitcoinj.core.Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), toAddress));
-                output = new TransactionOutput(SamouraiSentinel.getInstance().getCurrentNetworkParams(), null, Coin.valueOf(value.longValue()), toOutputScript.getProgram());
+                toOutputScript = ScriptBuilder.createOutputScript(org.bitcoinj.core.Address.fromBase58(SentinelState.Companion.getNetworkParam(), toAddress));
+                output = new TransactionOutput(SentinelState.Companion.getNetworkParam(), null, Coin.valueOf(value.longValue()), toOutputScript.getProgram());
             }
 
             outputs.add(output);
@@ -252,7 +253,7 @@ public class SendFactory	{
                 continue;
             }
 
-            MyTransactionInput input = new MyTransactionInput(SamouraiSentinel.getInstance().getCurrentNetworkParams(), null, new byte[0], outPoint, outPoint.getTxHash().toString(), outPoint.getTxOutputN());
+            MyTransactionInput input = new MyTransactionInput(SentinelState.Companion.getNetworkParam(), null, new byte[0], outPoint, outPoint.getTxHash().toString(), outPoint.getTxOutputN());
 //            if(PrefsUtil.getInstance(context).getValue(PrefsUtil.RBF_OPT_IN, false) == true)    {
 //                input.setSequenceNumber(SamouraiWallet.RBF_SEQUENCE_VAL.longValue());
 //            }
@@ -306,12 +307,12 @@ public class SendFactory	{
                 }
             }
             else    {
-                address = new Script(connectedPubKeyScript).getToAddress(SamouraiSentinel.getInstance().getCurrentNetworkParams()).toString();
+                address = new Script(connectedPubKeyScript).getToAddress(SentinelState.Companion.getNetworkParam()).toString();
             }
 
-            if(FormatsUtil.getInstance().isValidBech32(address) || Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), address).isP2SHAddress())    {
+            if(FormatsUtil.getInstance().isValidBech32(address) || Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())    {
 
-                final SegwitAddress segwitAddress = new SegwitAddress(key.getPubKey(), SamouraiSentinel.getInstance().getCurrentNetworkParams());
+                final SegwitAddress segwitAddress = new SegwitAddress(key.getPubKey(), SentinelState.Companion.getNetworkParam());
 //                System.out.println("pubKey:" + Hex.toHexString(key.getPubKey()));
 //                final Script scriptPubKey = p2shp2wpkh.segWitOutputScript();
 //                System.out.println("scriptPubKey:" + Hex.toHexString(scriptPubKey.getProgram()));
@@ -327,7 +328,7 @@ public class SendFactory	{
                 witness.setPush(1, key.getPubKey());
                 transaction.setWitness(i, witness);
 
-                if(!FormatsUtil.getInstance().isValidBech32(address) && Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), address).isP2SHAddress())    {
+                if(!FormatsUtil.getInstance().isValidBech32(address) && Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())    {
                     final ScriptBuilder sigScript = new ScriptBuilder();
                     sigScript.data(redeemScript.getProgram());
                     transaction.getInput(i).setScriptSig(sigScript.build());
@@ -436,7 +437,7 @@ public class SendFactory	{
             if(FormatsUtil.getInstance().isValidBech32(utxoAddress))    {
                 changeType = 84;
             }
-            else if(Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), utxoAddress).isP2SHAddress())   {
+            else if(Address.fromBase58(SentinelState.Companion.getNetworkParam(), utxoAddress).isP2SHAddress())   {
                 changeType = 49;
             }
             else    {
@@ -449,7 +450,7 @@ public class SendFactory	{
             if(FormatsUtil.getInstance().isValidBech32(address))    {
                 mixedType = 84;
             }
-            else if(Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), address).isP2SHAddress())   {
+            else if(Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())   {
                 mixedType = 49;
             }
             else    {
@@ -490,7 +491,7 @@ public class SendFactory	{
         List<MyTransactionOutPoint> recycleOutPoints = new ArrayList<MyTransactionOutPoint>();
         List<UTXO> recycleUTXOs = new ArrayList<UTXO>();
 
-        BigInteger bDust = firstPassOutpoints == null ? BigInteger.ZERO : SamouraiSentinel.bDust;
+        BigInteger bDust = firstPassOutpoints == null ? BigInteger.ZERO : SentinelState.Companion.getBDust();
 
         // select utxos until > spendAmount * 2
         // create additional change output(s)
@@ -591,7 +592,7 @@ public class SendFactory	{
             debug("SendFactory", "biFee pair:" + biFee.toString());
         }
 
-        if(changeDue.subtract(biFee.divide(BigInteger.valueOf(2L))).compareTo(SamouraiSentinel.bDust) > 0)    {
+        if(changeDue.subtract(biFee.divide(BigInteger.valueOf(2L))).compareTo(SentinelState.Companion.getBDust()) > 0)    {
             changeDue = changeDue.subtract(biFee.divide(BigInteger.valueOf(2L)));
             debug("SendFactory", "fee set1:" + biFee.divide(BigInteger.valueOf(2L)).toString());
         }
@@ -602,7 +603,7 @@ public class SendFactory	{
         if(outputs0 != null && outputs0.size() == 2)    {
             TransactionOutput changeOutput0 = outputs0.get(1);
             BigInteger changeDue0 = BigInteger.valueOf(changeOutput0.getValue().longValue());
-            if(changeDue0.subtract(biFee.divide(BigInteger.valueOf(2L))).compareTo(SamouraiSentinel.bDust) > 0)    {
+            if(changeDue0.subtract(biFee.divide(BigInteger.valueOf(2L))).compareTo(SentinelState.Companion.getBDust()) > 0)    {
                 changeDue0 = changeDue0.subtract(biFee.divide(BigInteger.valueOf(2L)));
                 debug("SendFactory", "fee set0:" + biFee.divide(BigInteger.valueOf(2L)).toString());
             }
@@ -626,8 +627,8 @@ public class SendFactory	{
                 txSpendOutput = Bech32Util.getInstance().getTransactionOutput(_address, spendAmount.longValue());
             }
             else    {
-                outputScript = ScriptBuilder.createOutputScript(org.bitcoinj.core.Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), _address));
-                txSpendOutput = new TransactionOutput(SamouraiSentinel.getInstance().getCurrentNetworkParams(), null, Coin.valueOf(spendAmount.longValue()), outputScript.getProgram());
+                outputScript = ScriptBuilder.createOutputScript(org.bitcoinj.core.Address.fromBase58(SentinelState.Companion.getNetworkParam(), _address));
+                txSpendOutput = new TransactionOutput(SentinelState.Companion.getNetworkParam(), null, Coin.valueOf(spendAmount.longValue()), outputScript.getProgram());
             }
             txOutputs.add(txSpendOutput);
 
@@ -636,8 +637,8 @@ public class SendFactory	{
                 txChangeOutput = Bech32Util.getInstance().getTransactionOutput(changeAddress, changeDue.longValue());
             }
             else    {
-                outputScript = ScriptBuilder.createOutputScript(org.bitcoinj.core.Address.fromBase58(SamouraiSentinel.getInstance().getCurrentNetworkParams(), changeAddress));
-                txChangeOutput = new TransactionOutput(SamouraiSentinel.getInstance().getCurrentNetworkParams(), null, Coin.valueOf(changeDue.longValue()), outputScript.getProgram());
+                outputScript = ScriptBuilder.createOutputScript(org.bitcoinj.core.Address.fromBase58(SentinelState.Companion.getNetworkParam(), changeAddress));
+                txChangeOutput = new TransactionOutput(SentinelState.Companion.getNetworkParam(), null, Coin.valueOf(changeDue.longValue()), outputScript.getProgram());
             }
             txOutputs.add(txChangeOutput);
         }

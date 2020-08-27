@@ -1,16 +1,6 @@
 package com.samourai.sentinel.send;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
-
-import com.samourai.sentinel.tor.TorManager;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
 
 public class PushTx {
 

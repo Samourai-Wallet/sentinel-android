@@ -1,6 +1,7 @@
 package com.samourai.sentinel.core.segwit.bech32;
 
-import com.samourai.sentinel.SamouraiSentinel;
+
+import com.samourai.sentinel.core.SentinelState;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.bitcoinj.core.Coin;
@@ -38,7 +39,7 @@ public class Bech32Util {
 
         String hrp = null;
 
-        return Bech32Segwit.encode(SamouraiSentinel.getInstance().isTestNet() ? "tb" : "bc", (byte)0x00, Hex.decode(script.substring(4).getBytes()));
+        return Bech32Segwit.encode(SentinelState.Companion.isTestNet() ? "tb" : "bc", (byte)0x00, Hex.decode(script.substring(4).getBytes()));
     }
 
     public TransactionOutput getTransactionOutput(String address, long value) throws Exception    {
@@ -50,13 +51,13 @@ public class Bech32Util {
             byte[] scriptPubKey = null;
 
             try {
-                Pair<Byte, byte[]> pair = Bech32Segwit.decode(SamouraiSentinel.getInstance().isTestNet() ? "tb" : "bc", address);
+                Pair<Byte, byte[]> pair = Bech32Segwit.decode(SentinelState.Companion.isTestNet() ? "tb" : "bc", address);
                 scriptPubKey = Bech32Segwit.getScriptPubkey(pair.getLeft(), pair.getRight());
             }
             catch(Exception e) {
                 return null;
             }
-            output = new TransactionOutput(SamouraiSentinel.getInstance().getCurrentNetworkParams(), null, Coin.valueOf(value), scriptPubKey);
+            output = new TransactionOutput(SentinelState.Companion.getNetworkParam(), null, Coin.valueOf(value), scriptPubKey);
         }
 
         return output;
