@@ -65,7 +65,6 @@ public class AccessFactory {
     }
 
     public boolean isTimedOut() {
-        Log.i("isTimedOut", String.valueOf((System.currentTimeMillis() - lastPin) > TIMEOUT_DELAY));
         return (System.currentTimeMillis() - lastPin) > TIMEOUT_DELAY;
     }
 

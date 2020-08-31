@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import static com.samourai.sentinel.util.LogUtil.debug;
+import timber.log.Timber;
 
 
 public class SendFactory	{
@@ -157,7 +157,6 @@ public class SendFactory	{
                     address = new Script(scriptBytes).getToAddress(SentinelState.Companion.getNetworkParam()).toString();
                 }
 
-                Log.i("address from script", address);
 
                 ECKey ecKey = null;
                 try {
@@ -367,7 +366,7 @@ public class SendFactory	{
         if(set0 == null)    {
             return null;
         }
-        debug("SendFactory", "set0 utxo returned:" + set0.getRight().toString());
+        Timber.d( "set0 utxo returned:" + set0.getRight().toString());
 
         long set0Value = 0L;
         for(UTXO u : set0.getRight())   {
@@ -381,16 +380,16 @@ public class SendFactory	{
             }
         }
 
-        debug("SendFactory", "set0 value:" + set0Value);
-        debug("SendFactory", "utxosBis value:" + utxosBisValue);
+        Timber.d( "set0 value:" + set0Value);
+        Timber.d( "utxosBis value:" + utxosBisValue);
 
         List<UTXO> _utxo = null;
         if(set0.getRight() != null && set0.getRight().size() > 0 && set0Value > spendAmount.longValue())    {
-            debug("SendFactory", "set0 selected for 2nd pass");
+            Timber.d( "set0 selected for 2nd pass");
             _utxo = set0.getRight();
         }
         else if(utxosBis != null && utxosBisValue > spendAmount.longValue())   {
-            debug("SendFactory", "utxosBis selected for 2nd pass");
+            Timber.d( "utxosBis selected for 2nd pass");
             _utxo = utxosBis;
         }
         else    {
@@ -470,12 +469,12 @@ public class SendFactory	{
         for(UTXO utxo : utxos)   {
             totalOutpointsAmount += utxo.getValue();
         }
-        debug("SendFactory", "total outputs amount:" + totalOutpointsAmount);
-        debug("SendFactory", "spend amount:" + spendAmount.toString());
-        debug("SendFactory", "utxos:" + utxos.size());
+        Timber.d("total outputs amount:" + totalOutpointsAmount);
+        Timber.d( "spend amount:" + spendAmount.toString());
+        Timber.d("utxos:" + utxos.size());
 
         if(totalOutpointsAmount <= spendAmount.longValue())    {
-            debug("SendFactory", "spend amount must be > total amount available");
+            Timber.d( "spend amount must be > total amount available");
             return null;
         }
 
@@ -512,7 +511,7 @@ public class SendFactory	{
                 else if(!seenOutpoints.containsKey(hash))    {
                     seenOutpoints.put(hash,op);
                     selectedValue = selectedValue.add(BigInteger.valueOf(op.getValue().longValue()));
-                    debug("SendFactory", "selected:" + i + "," + op.getTxHash().toString() + "," + op.getValue().longValue());
+                    Timber.d( "selected:" + i + "," + op.getTxHash().toString() + "," + op.getValue().longValue());
                     utxoIsSelected = true;
                 }
                 else if(op.getValue().longValue() > seenOutpoints.get(hash).getValue().longValue()) {
@@ -520,7 +519,7 @@ public class SendFactory	{
                     seenOutpoints.put(hash,op);
                     selectedValue = selectedValue.subtract(BigInteger.valueOf(seenOutpoints.get(hash).getValue().longValue()));
                     selectedValue = selectedValue.add(BigInteger.valueOf(op.getValue().longValue()));
-                    debug("SendFactory", "selected (replace):"+ i + "," + op.getTxHash().toString() + "," + op.getValue().longValue());
+                    Timber.d("selected (replace):"+ i + "," + op.getTxHash().toString() + "," + op.getValue().longValue());
                     utxoIsSelected = true;
                 }
                 else    {
@@ -574,27 +573,27 @@ public class SendFactory	{
         selectedOutpoints.clear();
         selectedOutpoints.addAll(_selectedOutpoints);
 
-        debug("SendFactory", "utxos idx:" + idx);
+        Timber.d( "utxos idx:" + idx);
 
         List<UTXO> _utxos = new ArrayList<>(utxos.subList(idx, utxos.size()));
-        debug("SendFactory", "utxos after selection:" + _utxos.size());
+        Timber.d( "utxos after selection:" + _utxos.size());
         _utxos.addAll(recycleUTXOs);
-        debug("SendFactory", "utxos after adding recycled:" + _utxos.size());
+        Timber.d( "utxos after adding recycled:" + _utxos.size());
         BigInteger changeDue = selectedValue.subtract(spendAmount);
 
         if(firstPassOutpoints != null)    {
             Triple<Integer,Integer,Integer> outputTypes = FeeUtil.getInstance().getOutpointCount(new Vector<MyTransactionOutPoint>(selectedOutpoints));
             biFee = FeeUtil.getInstance().estimatedFeeSegwit(firstPassOutpointTypes.getLeft() + outputTypes.getLeft(), firstPassOutpointTypes.getMiddle() + outputTypes.getMiddle(), firstPassOutpointTypes.getRight() + outputTypes.getRight(), 4);
-            debug("SendFactory", "biFee:" + biFee.toString());
+            Timber.d( "biFee:" + biFee.toString());
             if(biFee.mod(BigInteger.valueOf(2L)).compareTo(BigInteger.ZERO) != 0)    {
                 biFee = biFee.add(BigInteger.ONE);
             }
-            debug("SendFactory", "biFee pair:" + biFee.toString());
+            Timber.d( "biFee pair:" + biFee.toString());
         }
 
         if(changeDue.subtract(biFee.divide(BigInteger.valueOf(2L))).compareTo(SentinelState.Companion.getBDust()) > 0)    {
             changeDue = changeDue.subtract(biFee.divide(BigInteger.valueOf(2L)));
-            debug("SendFactory", "fee set1:" + biFee.divide(BigInteger.valueOf(2L)).toString());
+            Timber.d( "fee set1:" + biFee.divide(BigInteger.valueOf(2L)).toString());
         }
         else    {
             return null;
@@ -605,7 +604,7 @@ public class SendFactory	{
             BigInteger changeDue0 = BigInteger.valueOf(changeOutput0.getValue().longValue());
             if(changeDue0.subtract(biFee.divide(BigInteger.valueOf(2L))).compareTo(SentinelState.Companion.getBDust()) > 0)    {
                 changeDue0 = changeDue0.subtract(biFee.divide(BigInteger.valueOf(2L)));
-                debug("SendFactory", "fee set0:" + biFee.divide(BigInteger.valueOf(2L)).toString());
+                Timber.d( "fee set0:" + biFee.divide(BigInteger.valueOf(2L)).toString());
             }
             else    {
                 return null;
@@ -649,12 +648,12 @@ public class SendFactory	{
         long inValue = 0L;
         for(MyTransactionOutPoint outpoint : selectedOutpoints)   {
             inValue += outpoint.getValue().longValue();
-            debug("SendFactory", "input:" + outpoint.getTxHash().toString() + "-" + outpoint.getTxOutputN() + "," + outpoint.getValue().longValue());
+            Timber.d( "input:" + outpoint.getTxHash().toString() + "-" + outpoint.getTxOutputN() + "," + outpoint.getValue().longValue());
         }
         long outValue = 0L;
         for(TransactionOutput tOut : txOutputs)   {
             outValue += tOut.getValue().longValue();
-            debug("SendFactory", "output:" + tOut.toString() + "," + tOut.getValue().longValue());
+            Timber.d( "output:" + tOut.toString() + "," + tOut.getValue().longValue());
         }
 
         Triple<ArrayList<MyTransactionOutPoint>, ArrayList<TransactionOutput>, ArrayList<UTXO>> ret = Triple.of(new ArrayList<MyTransactionOutPoint>(), new ArrayList<TransactionOutput>(), new ArrayList<UTXO>());
@@ -667,8 +666,8 @@ public class SendFactory	{
 
         outValue += biFee.longValue();
 
-        debug("SendFactory", "inputs:" + inValue);
-        debug("SendFactory", "outputs:" + outValue);
+        Timber.d( "inputs:" + inValue);
+        Timber.d( "outputs:" + outValue);
 
         return ret;
 
@@ -717,17 +716,17 @@ public class SendFactory	{
 
     public static ECKey getPrivKey(String address, int account)    {
 
-//        debug("SendFactory", "get privkey for:" + address);
+//        Timber.d( "get privkey for:" + address);
 
         ECKey ecKey = null;
 
 //        try {
 //            String path = APIFactory.getInstance(context).getUnspentPaths().get(address);
-//            debug("SendFactory", "address path:" + path);
+//            Timber.d( "address path:" + path);
 //            if(path != null)    {
 //                String[] s = path.split("/");
 //                if(FormatsUtil.getInstance().isValidBech32(address))    {
-//                    debug("SendFactory", "address type:" + "bip84");
+//                    Timber.d( "address type:" + "bip84");
 //                    HD_Address addr = null;
 //                    if(account == 0)    {
 //                        addr = BIP84Util.getInstance(context).getWallet().getAccount(account).getChain(Integer.parseInt(s[1])).getAddressAt(Integer.parseInt(s[2]));
@@ -738,12 +737,12 @@ public class SendFactory	{
 //                    ecKey = addr.getECKey();
 //                }
 //                else if(Address.fromBase58(SamouraiWallet.getInstance().getCurrentNetworkParams(), address).isP2SHAddress())    {
-//                    debug("SendFactory", "address type:" + "bip49");
+//                    Timber.d( "address type:" + "bip49");
 //                    HD_Address addr = BIP49Util.getInstance(context).getWallet().getAccount(0).getChain(Integer.parseInt(s[1])).getAddressAt(Integer.parseInt(s[2]));
 //                    ecKey = addr.getECKey();
 //                }
 //                else    {
-//                    debug("SendFactory", "address type:" + "bip44");
+//                    Timber.d( "address type:" + "bip44");
 //                    int account_no = APIFactory.getInstance(context).getUnspentAccounts().get(address);
 //                    HD_Address hd_address = AddressFactory.getInstance(context).get(account_no, Integer.parseInt(s[1]), Integer.parseInt(s[2]));
 //                    String strPrivKey = hd_address.getPrivateKeyString();
@@ -752,10 +751,10 @@ public class SendFactory	{
 //                }
 //            }
 //            else    {
-//                debug("SendFactory", "address type:" + "bip47");
-//                debug("SendFactory", "address:" + address);
+//                Timber.d( "address type:" + "bip47");
+//                Timber.d( "address:" + address);
 //                String pcode = BIP47Meta.getInstance().getPCode4Addr(address);
-//                debug("SendFactory", "pcode:" + pcode);
+//                Timber.d( "pcode:" + pcode);
 //                int idx = BIP47Meta.getInstance().getIdx4Addr(address);
 //                PaymentAddress addr = BIP47Util.getInstance(context).getReceiveAddress(new PaymentCode(pcode), idx);
 //                ecKey = addr.getReceiveECKey();
