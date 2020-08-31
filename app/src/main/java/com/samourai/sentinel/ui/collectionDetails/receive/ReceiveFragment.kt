@@ -31,11 +31,9 @@ import com.samourai.sentinel.core.segwit.P2SH_P2WPKH
 import com.samourai.sentinel.data.AddressTypes
 import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.ui.SentinelActivity
-import com.samourai.sentinel.ui.collectionDetails.transactions.TransactionsViewModel
 import com.samourai.sentinel.ui.views.confirm
 import com.samourai.sentinel.util.MonetaryUtil
 import com.samourai.wallet.segwit.SegwitAddress
-import kotlinx.android.synthetic.main.grid.view.*
 import org.koin.java.KoinJavaComponent
 import java.io.File
 import java.io.FileNotFoundException
