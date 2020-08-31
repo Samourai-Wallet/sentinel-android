@@ -76,11 +76,11 @@ dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'commons-codec:commons-codec:1.4'
-    implementation 'commons-io:commons-io:2.5'
-    implementation 'com.google.guava:guava:16.0.1'
-    implementation 'org.apache.commons:commons-lang3:3.3'
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.55'
+    implementation 'commons-codec:commons-codec:1.12'
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'com.google.guava:guava:24.1-jre'
+    implementation 'org.apache.commons:commons-lang3:3.4'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.56'
     implementation 'com.lambdaworks:scrypt:1.4.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation('com.google.zxing:core:3.4.0') {
