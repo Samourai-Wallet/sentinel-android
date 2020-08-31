@@ -1,20 +1,18 @@
 package com.samourai.sentinel.data
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class Tx(
         val hash: String,
         val time: Long,
-        @JsonIgnore
-        var associatedPubKey: String="",
+        var associatedPubKey: String = "",
         val version: Int,
         val locktime: Int,
-        val result: Long,
+        val result: Long?,
         val inputs: List<Inputs>,
         val out: List<Out>,
-        val block_height: Long,
+        val block_height: Long?,
         var confirmations: Long = 0
 ) {
     fun isBelongsToPubKey(pubKey: String): Boolean {
@@ -25,7 +23,7 @@ data class Tx(
             if (it.prev_out?.addr == pubKey) {
                 belongsTo = true
             } else if (it.prev_out?.xpub != null) {
-                if (it.prev_out.xpub.m == pubKey) {
+                if (it.prev_out.xpub.m?.toLowerCase() == pubKey) {
                     belongsTo = true
                 }
             }
@@ -34,7 +32,7 @@ data class Tx(
             if (it.addr == pubKey) {
                 belongsTo = true
             } else if (it.xpub != null) {
-                if (it.xpub.m == pubKey) {
+                if (it.xpub.m?.toLowerCase() == pubKey) {
                     belongsTo = true
                 }
             }
@@ -67,7 +65,7 @@ data class Xpub(
 data class prevOut(
         val addr: String?,
         val txid: String,
-        val value: Int,
+        val value: Long,
         val vout: Int,
         val xpub: Xpub?
 )
@@ -78,7 +76,8 @@ data class Wallet(
 )
 
 data class Info(
-        val latest_block: LatestBlock
+        val latest_block: LatestBlock,
+        val fees: JSONObject?
 )
 
 data class LatestBlock(
@@ -87,11 +86,26 @@ data class LatestBlock(
         val time: Long
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+data class Address(
+        @SerializedName("account_index")
+        var accountIndex: Int? = null,
+        @SerializedName("address")
+        var address: String? = null,
+        @SerializedName("change_index")
+        var changeIndex: Int? = null,
+        @SerializedName("final_balance")
+        var finalBalance: Long? = null,
+        @SerializedName("n_tx")
+        var nTx: Int? = null
+)
+
+
 data class WalletResponse(
         val info: Info,
+        val addresses: List<Address>?,
         val txs: List<Tx>,
-        val wallet: Wallet
+        val wallet: Wallet,
+        val unspent_outputs: List<Utxo>?
 )
 
 
