@@ -38,13 +38,15 @@ open class ApiService {
     lateinit var client: OkHttpClient
 
     init {
-        buildClient()
-        apiScope
+        try {
+            buildClient()
+        } catch (e: Exception) {
+        }
     }
 
 
-    private fun buildClient(excludeApiKey: Boolean = false) {
-        client = buildClient(excludeApiKey, getAPIUrl(), this, prefsUtil.authorization)
+    private fun buildClient(excludeApiKey: Boolean = false, excludeAuthenticator: Boolean = false) {
+            client = buildClient(excludeApiKey, getAPIUrl(), this, prefsUtil.authorization, excludeAuthenticator)
     }
 
 
@@ -67,7 +69,7 @@ open class ApiService {
     }
 
     suspend fun checkImportStatus(pubKey: String) = withContext(Dispatchers.IO) {
-        buildClient()
+        buildClient(excludeAuthenticator = true)
         val request = Request.Builder()
                 .url("${getAPIUrl()}/xpub/${pubKey}/import/status")
                 .build()
@@ -90,7 +92,7 @@ open class ApiService {
     }
 
     suspend fun importXpub(pubKey: String, segwit: String): Response {
-        buildClient()
+        buildClient(excludeAuthenticator = true)
         /**
          * Import process a long running process , this depends on the xpub
          *
@@ -129,7 +131,7 @@ open class ApiService {
     suspend fun getWallet(pubKey: String): Response {
         buildClient()
         val request = Request.Builder()
-                .url("vmn/wallet?active=${pubKey}")
+                .url("${getAPIUrl()}/wallet?active=${pubKey}")
                 .build()
         return client.newCall(request).await()
     }
@@ -161,22 +163,29 @@ open class ApiService {
     class InvalidResponse : Throwable(message = "Invalid response")
 
     companion object {
-        fun buildClient(excludeApiKey: Boolean = false, url: String?,
-                        apiService: ApiService?,
-                        authToken: String?): OkHttpClient {
+        fun buildClient(
+                excludeApiKey: Boolean = false, url: String?,
+                apiService: ApiService?,
+                authToken: String?,
+                excludeAuthenticator: Boolean = false,
+        ): OkHttpClient {
             val builder = OkHttpClient.Builder()
             if (BuildConfig.DEBUG) {
                 builder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             }
-            builder.callTimeout(1, TimeUnit.SECONDS)
-            builder.readTimeout(1, TimeUnit.SECONDS)
-            builder.readTimeout(1, TimeUnit.SECONDS)
-            builder.connectTimeout(1, TimeUnit.SECONDS)
+            builder.callTimeout(60, TimeUnit.SECONDS)
+            builder.readTimeout(60, TimeUnit.SECONDS)
+            builder.readTimeout(90, TimeUnit.SECONDS)
+            builder.connectTimeout(120, TimeUnit.SECONDS)
             if (url != null && apiService != null) {
-                builder.authenticator(TokenAuthenticator(apiService))
+                if (!excludeAuthenticator)
+                    builder.authenticator(TokenAuthenticator(apiService))
             }
             if (SentinelState.isTorStarted()) {
-                builder.connectTimeout(90, TimeUnit.SECONDS)
+                builder.callTimeout(90, TimeUnit.SECONDS)
+                builder.readTimeout(90, TimeUnit.SECONDS)
+                builder.readTimeout(90, TimeUnit.SECONDS)
+                builder.connectTimeout(120, TimeUnit.SECONDS)
                 getHostNameVerifier(builder)
                 builder.proxy(SentinelState.torProxy)
             }
@@ -190,7 +199,7 @@ open class ApiService {
                     override fun intercept(chain: Interceptor.Chain): Response {
                         val original = chain.request()
                         val newBuilder = original.newBuilder()
-                        if (!authToken.isNullOrEmpty()) {
+                        if (!authToken.isNullOrEmpty() && SentinelState.isDojoEnabled()) {
                             newBuilder.url(original.url.newBuilder()
                                     .addQueryParameter("at", authToken)
                                     .build())
