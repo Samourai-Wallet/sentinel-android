@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/bottom_nav_receive"
+        android:icon="@drawable/ic_baseline_receive_24"
+        android:title="Receive" />
+
+
+    <item
+        android:id="@+id/bottom_nav_transaction"
+        android:icon="@drawable/ic_baseline_transactions_24"
+        android:title="Transaction" />
+
+
+    <item
+        android:id="@+id/bottom_nav_send"
+        android:icon="@drawable/ic_baseline_sent_24"
+        android:title="Sent" />
+
+
+</menu>
