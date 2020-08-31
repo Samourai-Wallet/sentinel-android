@@ -11,6 +11,7 @@ import kotlinx.coroutines.*
 import okhttp3.Response
 import org.json.JSONObject
 import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 import java.io.File
 
 /**
@@ -23,24 +24,15 @@ class DojoUtility {
     private var dojoPayload: DojoPairing? = null
     private var apiKey: String? = null
     private var isAuthenticated = false;
-    private val context: Context by inject(Context::class.java)
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java)
     private val dbHandler: DbHandler by inject(DbHandler::class.java)
     private val apiService: ApiService by inject(ApiService::class.java)
 
-     private var dojoStore: PayloadRecord
+    private var dojoStore: PayloadRecord
 
     init {
         dojoStore = dbHandler.getDojoStore()
-        CoroutineScope(Dispatchers.Default).launch {
-            dojoPayload = readPayload()
-            if (dojoPayload != null) {
-                prefsUtil.apiEndPointTor = dojoPayload?.pairing?.url
-                prefsUtil.apiEndPoint = dojoPayload?.pairing?.url
-                apiKey = dojoPayload?.pairing?.apikey
-                apiService.setAccessToken(prefsUtil.refreshToken)
-            }
-        }
+        read()
     }
 
     suspend fun setDojo(pairing: String): Response {
@@ -85,13 +77,13 @@ class DojoUtility {
     }
 
     private suspend fun writePayload(dojoPairing: DojoPairing) = withContext(Dispatchers.IO) {
-        val stringPayload = dojoPairing.toJSON()
-        dbHandler.getDojoStore().write(stringPayload, true)
+        dbHandler.getDojoStore().write(dojoPairing, true)
     }
 
     private fun readPayload(): DojoPairing? {
         return if (dojoStore.file.exists()) {
-            dbHandler.getDojoStore().read<DojoPairing>()
+            Timber.d("${dbHandler.getDojoStore().read<DojoPairing>()}")
+            return dbHandler.getDojoStore().read<DojoPairing>()
         } else {
             null
         }
@@ -118,6 +110,24 @@ class DojoUtility {
 
     fun getApiKey(): String? {
         return apiKey;
+    }
+
+    fun read() {
+        CoroutineScope(Dispatchers.Default).launch {
+            dojoPayload = readPayload()
+            if (dojoPayload != null) {
+                prefsUtil.apiEndPointTor = dojoPayload?.pairing?.url
+                prefsUtil.apiEndPoint = dojoPayload?.pairing?.url
+                apiKey = dojoPayload?.pairing?.apikey
+                apiService.setAccessToken(prefsUtil.refreshToken)
+            }
+        }
+    }
+
+    fun store() {
+        CoroutineScope(Dispatchers.Default).launch {
+            dojoPayload?.let { writePayload(it) }
+        }
     }
 
 }
