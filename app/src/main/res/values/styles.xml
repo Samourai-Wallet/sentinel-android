@@ -29,8 +29,8 @@
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColor">@color/text_secondary</item>
         <item name="android:navigationBarColor">@color/primary_dark</item>
-
     </style>
+
     <style name="AppThemeV2Alert" parent="Theme.AppCompat.Dialog.Alert">
         <item name="android:windowBackground">@color/window</item>
         <item name="android:colorPrimary">@color/primary</item>
@@ -58,7 +58,6 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/grey_accent</item>
         <item name="actionModeBackground">@color/grey_accent</item>
-
     </style>
 
     <style name="bottom_sheet_note" parent="Theme.Design.BottomSheetDialog">
@@ -69,9 +68,7 @@
 
 
     <!-- v3 Theme -->
-
-
-    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.Bridge">
+    <style name="AppThemeV3" parent="Theme.MaterialComponents.DayNight.Bridge">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/v3_primary</item>
@@ -84,10 +81,26 @@
         <item name="colorSurface">@color/v3_background</item>
         <item name="android:colorBackground">@color/v3_background</item>
         <item name="colorError">#F44336</item>
-
+        <item name="toolbarStyle">@style/ToolbarV3</item>
+        <item name="android:spinnerItemStyle">@style/spinnerItemStyle</item>
         <!-- Dialog theme overlay attribute -->
         <item name="materialAlertDialogTheme">@style/AppThemeOverlay.Dialog</item>
+    </style>
 
+
+    <style name="ToolbarV3" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Toolbar" parent="">
+        <item name="colorPrimary">@color/v3_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="AppThemeOverlay.Dialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
@@ -121,6 +134,40 @@
         <item name="android:textColor">@color/v3_negative_red</item>
     </style>
 
-    <!---->
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowAnimationStyle">@style/Animation.Design.BottomSheetDialog</item>
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/v3_primary</item>
+        <item name="android:textColor">@color/v3_textColor</item>
+        <item name="statusBarBackground">@color/v3_primary</item>
+        <item name="colorSecondary">@color/v3_secondary</item>
+        <item name="colorAccent">@color/v3_accent</item>
+        <item name="colorSecondaryVariant">#0039CB</item>
+    </style>
+
+
+    <style name="Animation.Design.BottomSheetDialog" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/bottom_sheet_slide_in</item>
+        <item name="android:windowExitAnimation">@anim/bottom_sheet_slide_out</item>
+    </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet_background</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+
+    <style name="AppTheme.Splash" parent="AppThemeV3">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:statusBarColor">@color/v3_background</item>
+        <item name="statusBarBackground">@color/v3_background</item>
+    </style>
 
 </resources>

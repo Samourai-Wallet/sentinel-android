@@ -5,6 +5,7 @@
 
     <string name="decrypting_bip38">Decrypting BIP38 password. Please wait...</string>
 
+    <string name="app_title">Sentinel</string>
     <string name="action_send">Send</string>
     <string name="action_stealth_send">Stealth send</string>
     <string name="action_receive">Receive</string>
@@ -30,8 +31,8 @@
     <string name="options_export2">Export wallet and metadata.</string>
     <string name="options_restore">Restore wallet</string>
     <string name="options_restore2">Restore wallet and metadata from backup.</string>
-    <string name="options_haptic">Haptic PIN entry</string>
-    <string name="options_haptic_2">Vibrate each digit on PIN code entry.</string>
+    <string name="options_haptic">Haptic Feedback</string>
+    <string name="options_haptic_2">Haptics enhance interactions and convey useful information to users through the sense of touch.</string>
 
     <string name="timeline_today">Today</string>
     <string name="timeline_yesterday">Yesterday</string>
@@ -226,7 +227,6 @@
     <string name="amount">Amount</string>
 
 
-
     <string name="to">To</string>
     <string name="destination">Address or payment channel</string>
     <string name="cannot_select_utxo">Cannot select unspent outputs</string>
@@ -245,7 +245,36 @@
 
     <string name="error_bip126_output">Error determining output address</string>
     <string name="error_change_output">Error determining change address</string>
+    <string name="title_activity_home">Home</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
 
+    <string name="title_activity_collection_details">MainActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="pub_key_scan_instruction">Scan the QR/Paste code of any public key such as a bitcoin or an extended public key</string>
+    <string name="dojo_scan_instruction">Scan the QR/Paste Dojo payload</string>
+    <string name="permission_denied">Camera access denied, please grant camera access to use scan QR codes.</string>
+    <string name="import_channel_name">Import notification</string>
+    <string name="import_channel_description">Shows progress notification when importing public keys</string>
+    <string name="confirm_exit">Confirm exit</string>
+    <string name="setting_summary_displaySecure">Treat the content of the window as secure, preventing it from appearing in screenshots or from being viewed on non-secure displays</string>
+    <string name="server_config_instruction">Sentinel will set samourai servers as default endpoint ,\n If you want to connect to your own Node. please choose the option</string>
 
 
 </resources>
