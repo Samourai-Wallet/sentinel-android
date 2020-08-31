@@ -31,6 +31,7 @@ import android.os.Build;
 import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.FloatRange;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.annotation.RequiresApi;
@@ -44,7 +45,6 @@ import android.widget.ImageView;
 
 import com.samourai.sentinel.R;
 
-import io.reactivex.annotations.NonNull;
 
 
 /**
