@@ -1,1 +1,1 @@
-include ':app', ':tor'
+include ':app', ':topl-core'

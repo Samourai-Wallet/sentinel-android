@@ -97,12 +97,12 @@ class BackgroundManager internal constructor(
 //         * @return [BackgroundManager.Builder.Policy] To use when initializing
 //         *   [com.samourai.sentinel.tor.TorServiceController.Builder]
 //         * */
-//        fun keepAliveWhileInBackground(secondsFrom20To40: Int? = null): Policy {
-//            chosenPolicy = BackgroundPolicy.KEEP_ALIVE
-//            if (secondsFrom20To40 != null && secondsFrom20To40 in 20..40)
-//                executionDelay = (secondsFrom20To40 * 1000).toLong()
-//            return Policy(this)
-//        }
+        fun keepAliveWhileInBackground(secondsFrom20To40: Int? = null): Policy {
+            chosenPolicy = BackgroundPolicy.KEEP_ALIVE
+            if (secondsFrom20To40 != null && secondsFrom20To40 in 20..40)
+                executionDelay = (secondsFrom20To40 * 1000).toLong()
+            return Policy(this)
+        }
 
         /**
          * Stops [TorService] after being in the background for the declared [secondsFrom5To45].
