@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.samourai.sentinel.util.LogUtil.debug;
+import timber.log.Timber;
+
 
 
 public class BlockedUTXO {
@@ -30,7 +31,7 @@ public class BlockedUTXO {
 
         if(instance == null) {
 
-            debug("BlockedUTXO", "create instance");
+            Timber.d(  "create instance");
 
             instance = new BlockedUTXO();
             blockedUTXO = new ConcurrentHashMap<>();
@@ -49,31 +50,27 @@ public class BlockedUTXO {
 
     public void add(String hash, int idx, long value)    {
         blockedUTXO.put(hash + "-" + Integer.toString(idx), value);
-        debug("BlockedUTXO", "add:" + hash + "-" + Integer.toString(idx));
+        Timber.d(  "add:" + hash + "-" + Integer.toString(idx));
     }
 
     public void remove(String hash, int idx)   {
         if(blockedUTXO != null && blockedUTXO.containsKey(hash + "-" + Integer.toString(idx)))  {
             blockedUTXO.remove(hash + "-" + Integer.toString(idx));
-            debug("BlockedUTXO", "remove:" + hash + "-" + Integer.toString(idx));
         }
     }
 
     public void remove(String id)   {
         if(blockedUTXO != null && blockedUTXO.containsKey(id))  {
             blockedUTXO.remove(id);
-            debug("BlockedUTXO", "remove:" + id);
         }
     }
 
     public boolean contains(String hash, int idx)   {
-        Log.i("BlockedUTXO",hash.concat("-").concat(String.valueOf(idx)));
         return blockedUTXO.containsKey(hash + "-" + Integer.toString(idx));
     }
 
     public void clear()    {
         blockedUTXO.clear();
-        debug("BlockedUTXO", "clear");
     }
 
     public long getTotalValueBlocked0()  {
@@ -126,20 +123,20 @@ public class BlockedUTXO {
 
     public void addBadBank(String hash, int idx, long value)    {
         blockedUTXOBadBank.put(hash + "-" + Integer.toString(idx), value);
-        debug("BlockedUTXO", "add:" + hash + "-" + Integer.toString(idx));
+   Timber.d( "add:" + hash + "-" + Integer.toString(idx));
     }
 
     public void removeBadBank(String hash, int idx)   {
         if(blockedUTXOBadBank != null && blockedUTXOBadBank.containsKey(hash + "-" + Integer.toString(idx)))  {
             blockedUTXOBadBank.remove(hash + "-" + Integer.toString(idx));
-            debug("BlockedUTXO", "remove:" + hash + "-" + Integer.toString(idx));
+            Timber.d("hash"+ "-" + Integer.toString(idx));
         }
     }
 
     public void removeBadBank(String id)   {
         if(blockedUTXOBadBank != null && blockedUTXOBadBank.containsKey(id))  {
             blockedUTXOBadBank.remove(id);
-            debug("BlockedUTXO", "remove:" + id);
+            Timber.d( "remove:" + id);
         }
     }
 
@@ -149,16 +146,16 @@ public class BlockedUTXO {
 
     public void clearBadBank()    {
         blockedUTXOBadBank.clear();
-        debug("BlockedUTXO", "clear");
+        Timber.d( "clear");
     }
 
     public long getTotalValueBlockedBadBank()  {
         long ret = 0L;
         for(String id : blockedUTXOBadBank.keySet())   {
-            debug("BlockedUTXO", "bad bank blocked:" + id);
+            Timber.d("bad bank blocked:" + id);
             ret += blockedUTXOBadBank.get(id);
         }
-        debug("BlockedUTXO", "bad bank blocked:" + ret);
+        Timber.d("bad bank blocked:" + ret);
         return ret;
     }
 
@@ -176,16 +173,16 @@ public class BlockedUTXO {
 
     public void clearPostMix()    {
         blockedUTXOPostMix.clear();
-        debug("BlockedUTXO", "clear");
+        Timber.d( "clear");
     }
 
     public long getTotalValueBlockedPostMix()  {
         long ret = 0L;
         for(String id : blockedUTXOPostMix.keySet())   {
-            debug("BlockedUTXO", "post-mix blocked:" + id);
+            Timber.d("post-mix blocked:" + id);
             ret += blockedUTXOPostMix.get(id);
         }
-        debug("BlockedUTXO", "post-mix blocked:" + ret);
+        Timber.d( "post-mix blocked:" + ret);
         return ret;
     }
 

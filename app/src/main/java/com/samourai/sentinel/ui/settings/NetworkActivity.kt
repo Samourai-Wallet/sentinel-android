@@ -17,13 +17,9 @@ import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.tor.TorServiceController
 import com.samourai.sentinel.ui.dojo.DojoConfigureBottomSheet
 import com.samourai.sentinel.ui.dojo.DojoUtility
-import com.samourai.sentinel.ui.utils.AndroidUtil
 import com.samourai.sentinel.ui.utils.PrefsUtil
 import com.samourai.sentinel.ui.utils.showFloatingSnackBar
 import com.samourai.sentinel.ui.views.confirm
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.grid.*
-import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.inject
 
 class NetworkActivity : AppCompatActivity() {

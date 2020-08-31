@@ -1,5 +1,6 @@
 package com.samourai.sentinel.util;
 
+import android.util.Log;
 import android.util.Patterns;
 
 import com.samourai.sentinel.core.SentinelState;
