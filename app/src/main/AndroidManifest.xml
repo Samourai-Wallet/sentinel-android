@@ -1,165 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.samourai.sentinel"
-    >
+    package="com.samourai.sentinel">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" tools:node="replace"/>
-    <uses-feature android:name="android.hardware.faketouch" android:required="false" tools:node="replace"/>
-    <uses-feature android:name="android.hardware.screen.landscape" android:required="false" tools:node="replace"/>
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false"
+        tools:node="replace" />
+    <uses-feature
+        android:name="android.hardware.faketouch"
+        android:required="false"
+        tools:node="replace" />
+    <uses-feature
+        android:name="android.hardware.screen.landscape"
+        android:required="false"
+        tools:node="replace" />
 
-    <!--usesCleartextTraffic for tor routing-->
     <application
+        android:name=".ui.SentinelApplication"
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:allowBackup="false"
         android:usesCleartextTraffic="true"
-        android:name=".SentinelApplication"
-        tools:ignore="GoogleAppIndexingWarning">
-        <service
-            android:name=".tor.TorService"
-            android:enabled="true"
-            android:stopWithTask="true" />
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:allowBackup">
         <activity
-            android:name="com.samourai.sentinel.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.Launcher"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
+            android:name=".ui.MigrationActivity"
+            android:theme="@style/AppThemeV3" />
+
+        <service
+            android:name=".service.WebSocketService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+        <service
+            android:name=".service.ImportSegWitService"
+            android:exported="false"
+            android:stopWithTask="true" />
+
+        <receiver android:name=".service.ActionReceiverImportSegWitService" />
+
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:label="@string/action_settings"
+            android:theme="@style/AppThemeV3" />
+        <activity
+            android:name=".ui.collectionDetails.CollectionDetailsActivity"
+            android:label="@string/title_activity_collection_details"
+            android:theme="@style/AppThemeV3" />
+        <activity
+            android:name=".ui.collectionEdit.CollectionEditActivity"
+            android:label=""
+            android:theme="@style/AppThemeV3" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".network.dojo.Network" android:theme="@style/AppThemeV2" android:label="Network" />
-
-        <receiver android:name=".tor.TorBroadCastReceiver" />
-
-        <activity android:name="com.samourai.sentinel.MainActivity2"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="adjustPan"
-            >
-        </activity>
-
-        <activity android:name="com.samourai.sentinel.InitActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-        </activity>
-
-        <activity android:name="com.samourai.sentinel.SettingsActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-        </activity>
-
-        <activity android:name="com.samourai.sentinel.OneTimePopup"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-        </activity>
-
-        <activity android:name="com.samourai.sentinel.PinEntryActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-        </activity>
-
-        <activity android:name="com.samourai.sentinel.balance.BalanceActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppThemeV2"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-        </activity>
-
-        <activity android:name="com.samourai.sentinel.ReceiveActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-        </activity>
-
-        <activity android:name="com.samourai.sentinel.XPUBListActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppThemeV2"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-        </activity>
-
         <activity
-            android:name=".utxos.UTXOSActivity"
-            android:label=""
-            android:parentActivityName=".balance.BalanceActivity"
-            android:theme="@style/SamouraiAppTheme" />
+            android:name=".ui.home.HomeActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppThemeV3" /> <!-- <activity -->
+        <!-- android:name=".ui.home.HomeActivity" -->
+        <!-- android:configChanges="keyboardHidden|orientation|screenSize" -->
+        <!-- android:label="@string/app_name" -->
+        <!-- android:theme="@style/AppTheme.Launcher"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
         <activity
-            android:name=".send.SendActivity"
-            android:label=""
-            android:parentActivityName=".balance.BalanceActivity"
-            android:theme="@style/SamouraiAppTheme" />
-
-        <activity
-            android:name=".utxos.UTXODetailsActivity"
-            android:label=""
-            android:parentActivityName=".balance.BalanceActivity"
-            android:theme="@style/SamouraiAppTheme" />
-
-        <activity android:name="com.samourai.sentinel.ExodusActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-        </activity>
-
-        <activity android:name="com.samourai.sentinel.ShowQRActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-        </activity>
-
-        <activity android:name="com.samourai.sentinel.InsertActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppThemeV2Alert"
-            >
-        </activity>
-
-        <activity android:name="com.samourai.sentinel.InsertSegwitActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-        </activity>
-
-        <activity
-            android:name="com.dm.zbar.android.scanner.ZBarScannerActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="landscape"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-        />
-
-        <service android:enabled="true" android:name="com.samourai.sentinel.service.WebSocketService" />
+            android:name=".ui.settings.NetworkActivity"
+            android:label="Network"
+            android:theme="@style/AppThemeV3" />
 
         <service
-            android:name=".service.JobRefreshService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
+            android:name=".tor.service.TorService"
+            android:enabled="true"
+            android:stopWithTask="true" />
 
         <provider
-            android:name="com.samourai.sentinel.util.GenericFileProvider"
+            android:name=".util.GenericFileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
-
     </application>
 
 </manifest>
