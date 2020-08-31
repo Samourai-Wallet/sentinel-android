@@ -4,21 +4,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="520dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="520dp"
-        android:layout_gravity="bottom"
-        android:background="@color/v3_window">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
 
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/scanInstructions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Scan the QR code of any public key such as a bitcoin or an extended public key"
+            tools:text="Scan the QR/Paste code of any public key such as a bitcoin or an extended public key"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="@+id/frameLayout"
             app:layout_constraintStart_toStartOf="@+id/frameLayout"
@@ -28,14 +27,14 @@
             android:id="@+id/frameLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView">
+            app:layout_constraintTop_toBottomOf="@+id/scanInstructions">
 
-            <com.samourai.sentinel.codescanner.CodeScannerView
+            <com.samourai.sentinel.ui.views.codeScanner.CodeScannerView
                 android:id="@+id/scannerViewXpub"
                 android:layout_width="320dp"
                 android:layout_height="320dp"
@@ -59,6 +58,20 @@
                 android:background="@drawable/camera_round_border" />
         </FrameLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/pastePubKey"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Paste"
+            app:strokeColor="@color/white"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/frameLayout"
+            app:layout_constraintStart_toStartOf="@+id/frameLayout"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
 

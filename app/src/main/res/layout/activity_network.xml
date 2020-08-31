@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.dojo.NetworkActivity">
+    tools:context=".ui.settings.NetworkActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/ToolbarV3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -137,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1.2"
                     android:src="@drawable/circle_shape"
-                    android:tint="@color/disabledRed" />
+                    app:tint="@color/disabledRed" />
 
                 <LinearLayout
                     android:layout_width="84dp"
@@ -182,7 +183,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:src="@drawable/circle_shape"
-                    android:tint="@color/disabledRed" />
+                    app:tint="@color/disabledRed" />
 
                 <LinearLayout
                     android:layout_width="84dp"
@@ -251,7 +252,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/circle_shape"
-                    android:tint="@color/disabledRed" />
+                    app:tint="@color/disabledRed" />
 
                 <LinearLayout
                     android:layout_width="84dp"
@@ -279,7 +280,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".4"
                     android:text="Disable"
                     android:textColor="#6eb8c5" />
             </LinearLayout>

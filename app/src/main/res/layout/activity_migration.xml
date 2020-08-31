@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.samourai.sentinel.ui.MigrationActivity">
+
+    <ImageView
+        android:id="@+id/restoreImg"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.24000001"
+        app:srcCompat="@drawable/ic_baseline_restore_24" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Migration Sentinel V3"
+        app:layout_constraintEnd_toEndOf="@+id/restoreImg"
+        app:layout_constraintStart_toStartOf="@+id/restoreImg"
+        app:layout_constraintTop_toBottomOf="@+id/restoreImg" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/importBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Import existing public keys"
+        android:textAllCaps="false"
+        android:textColor="@color/md_grey_200"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView13"
+        app:layout_constraintStart_toStartOf="@+id/textView13"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar"
+        app:layout_constraintVertical_bias="0.0"
+        app:strokeColor="@color/md_grey_200" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/startAsFresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start as fresh"
+        android:textAllCaps="false"
+        android:textColor="@color/md_grey_400"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:layout_constraintEnd_toEndOf="@+id/importBtn"
+        app:layout_constraintStart_toStartOf="@+id/importBtn"
+        app:layout_constraintTop_toBottomOf="@+id/importBtn" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="@+id/importBtn"
+        app:layout_constraintStart_toStartOf="@+id/importBtn"
+        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

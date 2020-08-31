@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
+        style="@style/ToolbarV3"
         android:layout_height="200dp">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarCollectionDetails"
+            android:id="@+id/toolbarHome"
+            app:elevation="0dp"
+            android:elevation="0dp"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll">
 
 
         </androidx.appcompat.widget.Toolbar>
@@ -26,39 +30,42 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/homeBalanceBtc"
                 style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center|center_horizontal"
-                android:text="30.0332 BTC"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:text="30.0332 BTC" />
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center|center_horizontal"
                 android:layout_marginTop="4dp"
+                android:gravity="center|center_horizontal"
                 android:textSize="14sp"
-                android:text="1234 USD" />
+                tools:text="1234 USD" />
 
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/collectionRecyclerView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshCollection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </androidx.recyclerview.widget.RecyclerView>
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/collectionRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab"
@@ -71,12 +78,12 @@
         android:layout_margin="@dimen/fab_margin"
         android:paddingHorizontal="54dp"
         android:text="New"
+        android:elevation="0dp"
         android:textColor="@color/white"
         app:backgroundTint="@color/v3_accent"
         app:elevation="12dp"
         app:icon="@drawable/ic_baseline_wallet_24"
         app:iconTint="@color/white"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.MediumComponent" />
 
 

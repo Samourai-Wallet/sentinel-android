@@ -8,11 +8,13 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="160dp">
+        style="@style/ToolbarV3"
+        android:layout_height="200dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbarCollectionDetails"
             android:layout_width="match_parent"
+            android:elevation="0dp"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll">
 
@@ -53,16 +55,16 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:text="Public Keys"
-                android:padding="12dp"
+                android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:textColor="@color/v3_textColorSecondary"
-                android:layout_height="match_parent" />
+                android:padding="12dp"
+                android:text="Public Keys"
+                android:textColor="@color/v3_textColorSecondary" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/pubKeyRecyclerView"
@@ -74,16 +76,16 @@
 
             <Button
                 android:id="@+id/addNewPublicKey"
-                android:layout_width="wrap_content"
-                android:text="Add another public key"
-                android:padding="12dp"
-                android:layout_marginTop="16dp"
-                android:layout_gravity="end"
-                android:textStyle="normal"
                 style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:padding="12dp"
+                android:text="Add another public key"
                 android:textColor="@color/v3_textColorSecondary"
-                android:layout_height="match_parent" />
+                android:textStyle="normal" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
