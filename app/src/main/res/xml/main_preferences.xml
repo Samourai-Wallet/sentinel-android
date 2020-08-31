@@ -1,0 +1,81 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        app:title="Wallet">
+
+        <Preference
+            app:icon="@drawable/ic_reset"
+            app:key="clear"
+            app:summary="Clear all collections and resets the settings"
+            app:title="Clear wallet" />
+
+        <CheckBoxPreference
+            app:icon="@drawable/ic_baseline_lock_24"
+            app:key="pinEnabled"
+            app:summaryOff="User PIN code disabled"
+            app:summaryOn="User PIN code enabled"
+            app:title="User PIN code" />
+
+        <CheckBoxPreference
+            android:summary="@string/options_scramble_pin2"
+            app:dependency="pinEnabled"
+            app:key="scramblePin"
+            app:title="@string/options_scramble_pin" />
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        app:title="Export/import">
+        <Preference
+            app:icon="@drawable/ic_file_export"
+            app:key="export"
+            app:summary="Export current wallet"
+            app:title="Export" />
+
+        <Preference
+            app:icon="@drawable/ic_file_import"
+            app:key="import"
+            app:summary="import existing backup files"
+            app:title="Import" />
+
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        app:title="App Behavior">
+
+        <CheckBoxPreference
+            android:summary="@string/options_haptic_2"
+            app:icon="@drawable/ic_baseline_touch_app_24"
+            app:key="haptics"
+            app:title="@string/options_haptic" />
+
+        <CheckBoxPreference
+            android:summary="@string/setting_summary_displaySecure"
+            app:icon="@drawable/ic_baseline_screen_lock_portrait_24"
+            app:key="displaySecure"
+            app:title="Disable Screenshots" />
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        app:title="TroubleShoot">
+
+        <Preference
+            app:key="shareErrorLog"
+            app:summary="Error file containing previously caught exceptions"
+            app:title="Share error log" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
