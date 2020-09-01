@@ -100,6 +100,9 @@ class MigrationActivity : AppCompatActivity() {
                         balance = 0,
                 )
                 collectionRepo.addNew(pubKeyCollection)
+                val dir: File = applicationContext.getDir("wallet", Context.MODE_PRIVATE)
+                val file = File(dir, "sentinel.dat")
+                file.delete()
             }
             progressBar.isIndeterminate = false
             showFloatingSnackBar(importBtn, text = "Migrated ${publicKeys.size} public keys", actionText = "Ok", actionClick = {
