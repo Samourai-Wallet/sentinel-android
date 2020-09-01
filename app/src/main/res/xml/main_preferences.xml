@@ -69,7 +69,17 @@
     <PreferenceCategory
         app:allowDividerAbove="true"
         app:allowDividerBelow="true"
-        app:title="TroubleShoot">
+        app:title="About">
+
+        <Preference
+            app:summary="@string/version_name"
+            app:title="Version" />
+  
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
+        app:title="TroubleShoot &amp; Debug">
 
         <Preference
             app:key="shareErrorLog"

@@ -1,22 +1,18 @@
 package com.samourai.sentinel.ui.settings
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.core.view.marginTop
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Fade
 import androidx.transition.Slide
 import androidx.transition.TransitionSet
@@ -24,7 +20,6 @@ import com.samourai.sentinel.R
 import com.samourai.sentinel.core.access.AccessFactory
 import com.samourai.sentinel.data.db.DbHandler
 import com.samourai.sentinel.data.repository.CollectionRepository
-import com.samourai.sentinel.data.repository.TransactionsRepository
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.dojo.DojoUtility
 import com.samourai.sentinel.ui.home.HomeActivity
