@@ -137,6 +137,13 @@ open class ApiService {
     }
 
 
+    suspend fun request(request: Request): Response {
+        buildClient()
+        return client.newCall(request).await()
+    }
+
+
+
     public fun getAPIUrl(): String? {
         return if (SentinelState.isTorRequired()) {
             if (prefsUtil.apiEndPointTor == null) {
