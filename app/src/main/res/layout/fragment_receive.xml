@@ -34,6 +34,16 @@
                 tools:text="30.0332 BTC"
                 android:textSize="24sp" />
 
+            <TextView
+                android:id="@+id/collectionBalanceFiat"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="center|center_horizontal"
+                tools:text="1234 USD"
+                android:textSize="14sp" />
 
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>

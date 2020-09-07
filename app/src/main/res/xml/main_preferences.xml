@@ -31,6 +31,23 @@
     <PreferenceCategory
         app:allowDividerAbove="true"
         app:allowDividerBelow="true"
+        app:title="Exchange Settings">
+        <ListPreference
+            app:key="exchangeSelection"
+            app:title="Exchange"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="selectedCurrency"
+            app:title="Currency"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true"
         app:title="Export/import">
         <Preference
             app:icon="@drawable/ic_file_export"
@@ -74,7 +91,7 @@
         <Preference
             app:summary="@string/version_name"
             app:title="Version" />
-  
+
     </PreferenceCategory>
     <PreferenceCategory
         app:allowDividerAbove="true"
