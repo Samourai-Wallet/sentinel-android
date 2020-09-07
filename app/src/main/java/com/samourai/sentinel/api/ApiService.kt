@@ -14,6 +14,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
 import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
@@ -41,12 +42,14 @@ open class ApiService {
         try {
             buildClient()
         } catch (e: Exception) {
+        } catch (e: ApiNotConfigured) {
+            Timber.e(e)
         }
     }
 
 
     private fun buildClient(excludeApiKey: Boolean = false, excludeAuthenticator: Boolean = false) {
-            client = buildClient(excludeApiKey, getAPIUrl(), this, prefsUtil.authorization, excludeAuthenticator)
+        client = buildClient(excludeApiKey, getAPIUrl(), this, prefsUtil.authorization, excludeAuthenticator)
     }
 
 
@@ -141,7 +144,6 @@ open class ApiService {
         buildClient()
         return client.newCall(request).await()
     }
-
 
 
     public fun getAPIUrl(): String? {
