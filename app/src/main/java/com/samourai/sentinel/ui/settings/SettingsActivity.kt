@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.CheckBoxPreference
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.transition.Fade
@@ -20,6 +21,7 @@ import com.samourai.sentinel.R
 import com.samourai.sentinel.core.access.AccessFactory
 import com.samourai.sentinel.data.db.DbHandler
 import com.samourai.sentinel.data.repository.CollectionRepository
+import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.dojo.DojoUtility
 import com.samourai.sentinel.ui.home.HomeActivity
@@ -109,6 +111,7 @@ class SettingsActivity : SentinelActivity(),
         private val dbHandler: DbHandler by inject(DbHandler::class.java);
         private val accessFactory: AccessFactory by inject(AccessFactory::class.java);
         private val collectionRepository: CollectionRepository by inject(CollectionRepository::class.java);
+        private val exchangeRateRepository: ExchangeRateRepository by inject(ExchangeRateRepository::class.java);
         private val dojoUtility: DojoUtility by inject(DojoUtility::class.java);
         private val settingsScope = CoroutineScope(context = Dispatchers.Main)
 
@@ -118,6 +121,8 @@ class SettingsActivity : SentinelActivity(),
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
+
+            setExchangeSettings()
 
             val pineEntryCheckBox = findPreference<CheckBoxPreference>("pinEnabled")
             pineEntryCheckBox?.let {
@@ -169,6 +174,44 @@ class SettingsActivity : SentinelActivity(),
                 clearWallet()
                 true
             }
+        }
+
+        private fun setExchangeSettings() {
+
+            fun setCurrencies() {
+                prefsUtil.exchangeRate = -1L
+                val entries: Array<CharSequence> = exchangeRateRepository.getCurrencies().toArray(arrayOfNulls<CharSequence>(exchangeRateRepository.getCurrencies().size))
+                findPreference<ListPreference>("selectedCurrency")
+                        ?.apply {
+                            setEntries(entries)
+                            entryValues = entries
+                            value = prefsUtil.selectedCurrency
+                            setOnPreferenceChangeListener { _, newValue ->
+                                prefsUtil.selectedCurrency = newValue as String
+                                exchangeRateRepository.fetch()
+                                true
+                            }
+                        }
+
+            }
+
+            val entries: Array<CharSequence> = exchangeRateRepository.getExchanges().toArray(arrayOfNulls<CharSequence>(exchangeRateRepository.getExchanges().size))
+
+            findPreference<ListPreference>("exchangeSelection")
+                    ?.apply {
+                        setEntries(entries)
+                        entryValues = entries
+                        value = prefsUtil.exchangeSelection
+                        setOnPreferenceChangeListener { preference, newValue ->
+                            exchangeRateRepository.fetch()
+                            prefsUtil.exchangeSelection = newValue as String
+                            exchangeRateRepository.reloadChanges()
+                            setCurrencies()
+                            true
+                        }
+                    }
+            setCurrencies()
+
         }
 
         private fun clearWallet() {
