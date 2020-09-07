@@ -3,9 +3,13 @@ package com.samourai.sentinel.ui.collectionDetails
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.samourai.sentinel.R
@@ -13,21 +17,23 @@ import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.collectionDetails.receive.ReceiveFragment
+import com.samourai.sentinel.ui.collectionDetails.receive.ReceiveViewModel
 import com.samourai.sentinel.ui.collectionDetails.sent.SendFragment
 import com.samourai.sentinel.ui.collectionDetails.transactions.TransactionsFragment
 import kotlinx.android.synthetic.main.activity_collection_details.*
 import org.koin.java.KoinJavaComponent
+import org.koin.java.KoinJavaComponent.inject
 
 
 class CollectionDetailsActivity : SentinelActivity() {
 
-    private val repository: CollectionRepository by KoinJavaComponent.inject(CollectionRepository::class.java)
 
     private lateinit var pagerAdapter: PagerAdapter;
     private val receiveFragment: ReceiveFragment = ReceiveFragment()
     private val sendFragment: SendFragment = SendFragment()
     private val transactionsFragment: TransactionsFragment = TransactionsFragment()
     private var collection: PubKeyCollection? = null
+    private val repository: CollectionRepository by inject(CollectionRepository::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +41,13 @@ class CollectionDetailsActivity : SentinelActivity() {
         pagerAdapter = PagerAdapter(this)
         fragmentHostContainerPager.adapter = pagerAdapter
 
-
         checkIntent()
 
-        repository.collectionsLiveData.observe(this, Observer {
+        val receiveViewModel: CollectionDetailsViewModel by viewModels(factoryProducer = { CollectionDetailsViewModel.getFactory(collection!!) })
+
+        receiveViewModel.getCollections().observe(this, Observer {
             intent.extras?.getString("collection")?.let { it1 ->
-                repository.findById(it1)?.let {
+                receiveViewModel.getRepository().findById(it1)?.let {
                     collection = it
                 }
             }
@@ -48,7 +55,19 @@ class CollectionDetailsActivity : SentinelActivity() {
                 receiveFragment.setCollection(collection!!)
                 sendFragment.setCollection(collection!!)
                 transactionsFragment.initViewModel(collection!!)
+            } else {
+                finish()
             }
+        })
+
+        receiveFragment.setBalance(receiveViewModel.getBalance())
+//            sendFragment.setBalance(it)
+        transactionsFragment.setBalance(receiveViewModel.getBalance())
+
+        receiveViewModel.getFiatBalance().observe(this, Observer {
+            receiveFragment.setBalanceFiat(receiveViewModel.getFiatBalance())
+//            sendFragment.setBalance(it)
+            transactionsFragment.setBalanceFiat(receiveViewModel.getFiatBalance())
         })
 
         bottomNav.setOnNavigationItemSelectedListener { item ->
