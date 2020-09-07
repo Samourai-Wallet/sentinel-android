@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,15 +24,20 @@ import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.repository.TransactionsRepository
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.collectionEdit.CollectionEditActivity
+import com.samourai.sentinel.ui.dojo.DojoConfigureBottomSheet
+import com.samourai.sentinel.ui.fragments.TransactionsDetailsBottomSheet
 import com.samourai.sentinel.ui.utils.RecyclerViewItemDividerDecorator
 import com.samourai.sentinel.ui.utils.SlideInItemAnimator
 import com.samourai.sentinel.ui.utils.showFloatingSnackBar
 import com.samourai.sentinel.util.MonetaryUtil
+import org.bitcoinj.core.Coin
 import org.koin.java.KoinJavaComponent
 
 
 class TransactionsFragment : Fragment() {
 
+    private lateinit var fiatBalanceLiveData: LiveData<String>
+    private lateinit var balanceLiveData: LiveData<Long>
     private val transactionsViewModel: TransactionsViewModel by viewModels()
     private lateinit var toolbar: Toolbar;
     private lateinit var collection: PubKeyCollection;
@@ -87,11 +93,19 @@ class TransactionsFragment : Fragment() {
             }
         })
 
-        transactionsViewModel.getBalance().observe(this.viewLifecycleOwner, Observer {
-            if (it != null) {
-                collectionBalanceBtc.text = it
+
+        balanceLiveData.observe(viewLifecycleOwner,{
+            collectionBalanceBtc.text = "${getBTCDisplayAmount(it)} BTC"
+        })
+
+
+        fiatBalanceLiveData.observe(viewLifecycleOwner, {
+            if (isAdded) {
+                collectionBalanceFiat.text = it
             }
         })
+
+
 
         transactionsViewModel.getLoadingState().observe(this.viewLifecycleOwner, {
             swipeRefreshLayout.isRefreshing = it
@@ -183,6 +197,19 @@ class TransactionsFragment : Fragment() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun getBTCDisplayAmount(value: Long): String? {
+        return Coin.valueOf(value).toPlainString()
+    }
+
+    fun setBalance(balance: LiveData<Long>) {
+        this.balanceLiveData = balance
+    }
+
+    fun setBalanceFiat(fiatBalance: LiveData<String>) {
+        this.fiatBalanceLiveData = fiatBalance
+
     }
 
     companion object {

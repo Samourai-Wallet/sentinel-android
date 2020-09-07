@@ -1,18 +1,18 @@
 package com.samourai.sentinel.ui.collectionDetails.transactions
 
 import android.app.Application
-import android.util.Log
-import androidx.arch.core.util.Function
 import androidx.lifecycle.*
 import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.Tx
+import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.data.repository.TransactionsRepository
+import com.samourai.sentinel.ui.utils.PrefsUtil
+import com.samourai.sentinel.util.MonetaryUtil
 import com.samourai.sentinel.util.apiScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.bitcoinj.core.Coin
-import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.inject
 import java.util.concurrent.CancellationException
 
@@ -21,9 +21,11 @@ class TransactionsViewModel(application: Application) : AndroidViewModel(applica
 
 
     private val transactionsRepository: TransactionsRepository by inject(TransactionsRepository::class.java)
+    private val exchangeRateRepository: ExchangeRateRepository by inject(ExchangeRateRepository::class.java)
+    private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java)
 
     private val message = MutableLiveData<String>()
-    private val balance = MutableLiveData<String>("")
+    private val balance = MutableLiveData<Long>(0L)
     private lateinit var collection: PubKeyCollection
     private val loading: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -63,16 +65,28 @@ class TransactionsViewModel(application: Application) : AndroidViewModel(applica
     }
 
     private fun updateBalance() {
-        balance.postValue("${getBTCDisplayAmount(collection.balance)} BTC")
+        balance.postValue(collection.balance)
     }
 
     /**
      * Get balance live data for fragments
      * balance will be updated when transactions updated @see #getTransactions()
      */
-    fun getBalance(): LiveData<String> {
+    fun getBalance(): LiveData<Long> {
         return balance
     }
+
+    fun getFiatBalance(): LiveData<String> {
+        val mediatorLiveData = MediatorLiveData<String>();
+        mediatorLiveData.addSource(exchangeRateRepository.getRate()) {
+            mediatorLiveData.value = getFiatBalance(balance.value, it)
+        }
+        mediatorLiveData.addSource(balance) {
+            mediatorLiveData.value = getFiatBalance(it, exchangeRateRepository.getRate().value)
+        }
+        return mediatorLiveData
+    }
+
 
     fun getLoadingState(): LiveData<Boolean> {
         return transactionsRepository.loadingState()
@@ -85,8 +99,25 @@ class TransactionsViewModel(application: Application) : AndroidViewModel(applica
                 }
     }
 
+    private fun getFiatBalance(balance: Long?, rate: ExchangeRateRepository.Rate?): String {
+        if (rate != null) {
+            balance?.let {
+                return try {
+                    val fiatRate = MonetaryUtil.getInstance().getFiatFormat(prefsUtil.selectedCurrency)
+                            .format((balance/1e8) * rate.rate)
+                    "$fiatRate ${rate.currency}"
+                } catch (e: Exception) {
+                    "00.00 ${rate.currency}"
+                }
+            }
+            return "00.00"
+        } else {
+            return "00.00"
+        }
+    }
 
-    private fun getBTCDisplayAmount(value: Long): String? {
+
+    fun getBTCDisplayAmount(value: Long): String? {
         return Coin.valueOf(value).toPlainString()
     }
 
