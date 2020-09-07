@@ -2,7 +2,6 @@ package com.samourai.sentinel.ui.collectionDetails.transactions
 
 import android.content.Context
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,7 @@ import com.samourai.sentinel.data.Tx
 import com.samourai.sentinel.data.TxRvModel
 import kotlinx.coroutines.*
 import org.bitcoinj.core.Coin
-import org.koin.java.KoinJavaComponent
+import org.koin.java.KoinJavaComponent.inject
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -35,7 +34,8 @@ class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filt
     private val VIEW_ITEM = 1
     private val VIEW_SECTION = 0
     private var txList: ArrayList<Tx> = arrayListOf()
-    private val appContext: Context by KoinJavaComponent.inject(Context::class.java)
+    private val appContext: Context by inject(Context::class.java)
+    private var onClickListener: (Tx) -> Unit = {};
     private lateinit var collection: PubKeyCollection;
     private val diffCallBack = object : DiffUtil.ItemCallback<TxRvModel>() {
 
@@ -78,6 +78,7 @@ class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filt
         } else {
             val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_tx, parent, false);
+
             ViewHolder(view)
         }
     }
@@ -85,26 +86,33 @@ class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filt
     override fun getItemCount(): Int = mDiffer.currentList.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val tx = mDiffer.currentList[position]
+        val txRvModel = mDiffer.currentList[position]
         if (holder is ViewHolderSection) {
-            holder.section.text = tx.section
-            if(tx.section == "pending"){
-                holder.section.setTextColor(ContextCompat.getColor(appContext,R.color.md_amber_400))
+            holder.section.text = txRvModel.section
+            if (txRvModel.section == "pending") {
+                holder.section.setTextColor(ContextCompat.getColor(appContext, R.color.md_amber_400))
             }
         }
         if (holder is ViewHolder) {
-            holder.txAmount.text = tx.tx.result?.let { getBTCDisplayAmount(it) }
-            val associatedKey = this.collection.getPubKey(tx.tx.associatedPubKey)
+            holder.itemView.setOnClickListener {
+                onClickListener.invoke(txRvModel.tx)
+            }
+            holder.txAmount.text = txRvModel.tx.result?.let { getBTCDisplayAmount(it) }
+            val associatedKey = this.collection.getPubKey(txRvModel.tx.associatedPubKey)
             if (associatedKey != null) {
                 holder.associatedKey.text = associatedKey.label
             }
-            if (tx.tx.result != null)
-                if (tx.tx.result > 0) {
+            if (txRvModel.tx.result != null)
+                if (txRvModel.tx.result > 0) {
                     holder.directionImageView.setImageDrawable(appContext.getDrawable(R.drawable.ic_baseline_incoming_arrow));
                 } else {
                     holder.directionImageView.setImageDrawable(appContext.getDrawable(R.drawable.ic_baseline_outgoing_arrow));
                 }
         }
+    }
+
+    fun setOnclickListener(callback: (Tx) -> Unit = {}) {
+        onClickListener = callback
     }
 
     override fun getItemViewType(position: Int): Int {
