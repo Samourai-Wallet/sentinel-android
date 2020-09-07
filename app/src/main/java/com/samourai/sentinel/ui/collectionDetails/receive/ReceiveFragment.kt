@@ -19,6 +19,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
@@ -34,6 +36,7 @@ import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.views.confirm
 import com.samourai.sentinel.util.MonetaryUtil
 import com.samourai.wallet.segwit.SegwitAddress
+import org.bitcoinj.core.Coin
 import org.koin.java.KoinJavaComponent
 import java.io.File
 import java.io.FileNotFoundException
@@ -43,10 +46,13 @@ import java.text.ParseException
 
 class ReceiveFragment : Fragment() {
 
+    private lateinit var fiatBalanceLiveData: LiveData<String>
+    private lateinit var balanceLiveData: LiveData<Long>
     private lateinit var collection: PubKeyCollection;
     private lateinit var toolbar: Toolbar
     private lateinit var receiveQR: ImageView
     private lateinit var receiveAddressText: TextView
+    private lateinit var collectionBalanceFiat: TextView
     private lateinit var collectionBalanceBtc: TextView
     private var pubKeyIndex = 0
     private lateinit var pubKeyDropDown: AutoCompleteTextView
@@ -67,6 +73,7 @@ class ReceiveFragment : Fragment() {
         receiveAddressText = root.findViewById(R.id.receiveAddressText)
         pubKeyDropDown = root.findViewById(R.id.pubKeySelector)
         collectionBalanceBtc = root.findViewById(R.id.collectionBalanceBtc)
+        collectionBalanceFiat = root.findViewById(R.id.collectionBalanceFiat)
 
         qrFile = "${requireContext().cacheDir.path}${File.separator}qr.png";
 
@@ -76,6 +83,17 @@ class ReceiveFragment : Fragment() {
         generateQR()
 
         setUpToolBar()
+
+        balanceLiveData.observe(viewLifecycleOwner,{
+            collectionBalanceBtc.text = "${getBTCDisplayAmount(it)} BTC"
+        })
+
+
+        fiatBalanceLiveData.observe(viewLifecycleOwner, {
+            if (isAdded) {
+                collectionBalanceFiat.text = it
+            }
+        })
 
         receiveAddressText.setOnClickListener {
 
@@ -100,14 +118,14 @@ class ReceiveFragment : Fragment() {
 
     private fun share() {
 
-        ( this.activity as (AppCompatActivity) ).confirm(
+        (this.activity as (AppCompatActivity)).confirm(
                 positiveText = "Share as QR code",
                 negativeText = "Copy Address to clipboard",
                 label = "Share options",
                 onConfirm = {
-                    if(it){
+                    if (it) {
                         shareQR()
-                    }else{
+                    } else {
                         val cm = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
                         val clipData = ClipData
                                 .newPlainText("Address", receiveAddressText.text)
@@ -182,7 +200,6 @@ class ReceiveFragment : Fragment() {
         }
     }
 
-
     private fun generateQRCode(uri: String, imgWidth: Int): Bitmap? {
         var bitmap: Bitmap? = null
         val qrCodeEncoder = QRCodeEncoder(uri, null, Contents.Type.TEXT, BarcodeFormat.QR_CODE.toString(), imgWidth)
@@ -251,6 +268,7 @@ class ReceiveFragment : Fragment() {
     fun setCollection(collection: PubKeyCollection) {
         this.collection = collection
         if (isAdded) {
+            receiveViewModel.setCollection(collection)
             setUpSpinner()
             setUpToolBar()
         }
@@ -281,12 +299,22 @@ class ReceiveFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         if (item.itemId == R.id.collection_details_share_qr) {
             share()
         }
-
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun getBTCDisplayAmount(value: Long): String? {
+        return Coin.valueOf(value).toPlainString()
+    }
+
+    fun setBalance(balance: LiveData<Long>) {
+        this.balanceLiveData = balance
+    }
+
+    fun setBalanceFiat(balance: LiveData<String>) {
+        this.fiatBalanceLiveData = balance
     }
 
 

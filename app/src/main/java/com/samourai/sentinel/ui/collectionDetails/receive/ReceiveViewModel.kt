@@ -1,33 +1,23 @@
 package com.samourai.sentinel.ui.collectionDetails.receive
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
+import androidx.lifecycle.*
 import com.samourai.sentinel.data.PubKeyCollection
+import com.samourai.sentinel.data.repository.CollectionRepository
+import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.data.repository.TransactionsRepository
+import com.samourai.sentinel.ui.utils.PrefsUtil
+import com.samourai.sentinel.util.MonetaryUtil
+import org.bitcoinj.core.Coin
 import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.inject
 
 class ReceiveViewModel : ViewModel() {
 
-
-    private val transactionsRepository: TransactionsRepository by  inject(TransactionsRepository::class.java)
-
-
-    private val _balance = MutableLiveData("")
-
-
-    init {
-
-    }
-
-
+    var pubKeyCollection: PubKeyCollection? = null;
 
     fun setCollection(collection: PubKeyCollection) {
-//        transactionsRepository.
+        this.pubKeyCollection = collection
     }
-    val balance: LiveData<String> = _balance
 
 
 }
