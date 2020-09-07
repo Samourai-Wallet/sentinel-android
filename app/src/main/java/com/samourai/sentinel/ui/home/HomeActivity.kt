@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -29,10 +28,10 @@ import com.samourai.sentinel.ui.fragments.AddNewPubKeyBottomSheet
 import com.samourai.sentinel.ui.settings.SettingsActivity
 import com.samourai.sentinel.ui.utils.*
 import com.samourai.sentinel.ui.views.confirm
+import com.samourai.sentinel.util.MonetaryUtil
 import io.matthewnelson.topl_service.prefs.TorServicePrefs
 import kotlinx.android.synthetic.main.activity_home.*
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
 import java.lang.Exception
 
 
@@ -41,9 +40,11 @@ class HomeActivity : SentinelActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private val collectionsAdapter = CollectionsAdapter();
     private val webSocketHandler: WebSocketHandler by inject(WebSocketHandler::class.java);
+    private val monetaryUtil: MonetaryUtil by inject(MonetaryUtil::class.java);
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java);
     private var connectingDojo = false
     private lateinit var torServicePrefs: TorServicePrefs
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -59,7 +60,13 @@ class HomeActivity : SentinelActivity() {
         model.getCollections().observe(this, {
             collectionsAdapter.update(it)
         })
-        model.getBalance().observe(this, { updateBalance(it) })
+
+        model.getBalance().observe(this, {
+            updateBalance(it)
+         })
+
+        model.getFiatBalance().observe(this, { updateFiat(it) })
+
         fab.setOnClickListener {
             if (prefsUtil.haptics!!) {
                 fab.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
@@ -85,7 +92,7 @@ class HomeActivity : SentinelActivity() {
             swipeRefreshCollection.isRefreshing = false
             if (SentinelState.isTorRequired()) {
                 if (SentinelState.torState == SentinelState.TorState.WAITING) {
-                    this.showFloatingSnackBar(fab,
+                    this.showFloatingSnackBar(fab, anchorView = fab.id,
                             text = "Tor is bootstrapping! please wait and try again")
                 }
                 if (SentinelState.torState == SentinelState.TorState.OFF) {
@@ -104,8 +111,7 @@ class HomeActivity : SentinelActivity() {
             }
         }
 
-//        fetch(model)
-
+        fetch(model)
 
         if (SentinelState.isTorRequired()) {
             SentinelState.torStateLiveData().observe(this, {
@@ -120,9 +126,7 @@ class HomeActivity : SentinelActivity() {
 
 
     private fun fetch(model: HomeViewModel) {
-        val lastSync = prefsUtil.lastSynced!!
-        val currentTime = System.currentTimeMillis()
-        if (currentTime.minus(lastSync) >= 200000) {
+        if (!SentinelState.isRecentlySynced()) {
             if (SentinelState.isTorRequired() && SentinelState.isTorStarted()) {
                 model.fetchBalance()
             } else {
@@ -204,8 +208,12 @@ class HomeActivity : SentinelActivity() {
         })
     }
 
-    private fun updateBalance(it: String?) {
-        homeBalanceBtc.text = it
+    private fun updateBalance(it: Long) {
+        homeBalanceBtc.text = "${MonetaryUtil.getInstance().formatToBtc(it)} BTC"
+    }
+
+    private fun updateFiat(it: String) {
+        exchangeRateTxt.text = it
     }
 
     private fun showPubKeyBottomSheet() {
@@ -318,5 +326,4 @@ class HomeActivity : SentinelActivity() {
         } catch (ex: Exception) {
         }
     }
-
 }
