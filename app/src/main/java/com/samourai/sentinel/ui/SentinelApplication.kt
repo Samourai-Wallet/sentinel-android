@@ -12,6 +12,7 @@ import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.core.access.AccessFactory
 import com.samourai.sentinel.data.db.DbHandler
 import com.samourai.sentinel.data.repository.CollectionRepository
+import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.data.repository.TransactionsRepository
 import com.samourai.sentinel.service.WebSocketHandler
 import com.samourai.sentinel.tor.TorEventsReceiver
@@ -73,6 +74,7 @@ class SentinelApplication : Application() {
             single { MonetaryUtil.getInstance() }
             single { CollectionRepository() }
             single { ApiService() }
+            single { ExchangeRateRepository() }
             single { TransactionsRepository() }
             single { WebSocketHandler() }
         }
