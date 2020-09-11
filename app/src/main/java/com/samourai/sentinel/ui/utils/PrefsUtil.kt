@@ -41,11 +41,13 @@ class PrefsUtil(context: Context) : Preferences(context, "${context.packageName}
     var selectedCurrency by stringPref(defaultValue = "USD")
     var refreshToken by stringPref(defaultValue = "")
     var apiEndPoint by stringPref(defaultValue = null)
+    var selectedExplorer by stringPref(defaultValue = "oxt.me")
     var apiEndPointTor by stringPref(defaultValue = null)
     var testnet by booleanPref(defaultValue = false)
     var ricochetStaggeredDelivery by booleanPref(defaultValue = false)
     var useRicochet by booleanPref(defaultValue = false)
     var offlineMode by booleanPref(defaultValue = false)
+    var blockHeight by longPref(defaultValue = 0L)
     var firstRun by booleanPref(defaultValue = true)
 
     fun isAPIEndpointEnabled(): Boolean {
