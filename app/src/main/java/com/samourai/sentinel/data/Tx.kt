@@ -23,7 +23,7 @@ data class Tx(
             if (it.prev_out?.addr == pubKey) {
                 belongsTo = true
             } else if (it.prev_out?.xpub != null) {
-                if (it.prev_out.xpub.m?.toLowerCase() == pubKey) {
+                if (it.prev_out.xpub.m == pubKey) {
                     belongsTo = true
                 }
             }
@@ -32,7 +32,7 @@ data class Tx(
             if (it.addr == pubKey) {
                 belongsTo = true
             } else if (it.xpub != null) {
-                if (it.xpub.m?.toLowerCase() == pubKey) {
+                if (it.xpub.m == pubKey) {
                     belongsTo = true
                 }
             }
@@ -41,8 +41,8 @@ data class Tx(
 
         return belongsTo
     }
-}
 
+}
 
 data class Out(
         val n: Int,

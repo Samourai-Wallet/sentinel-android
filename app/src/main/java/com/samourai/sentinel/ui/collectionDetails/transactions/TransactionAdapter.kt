@@ -20,6 +20,7 @@ import com.samourai.sentinel.data.TxRvModel
 import kotlinx.coroutines.*
 import org.bitcoinj.core.Coin
 import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -103,7 +104,7 @@ class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filt
                 holder.associatedKey.text = associatedKey.label
             }
             if (txRvModel.tx.result != null)
-                if (txRvModel.tx.result > 0) {
+                if (txRvModel.tx.result!! > 0) {
                     holder.directionImageView.setImageDrawable(appContext.getDrawable(R.drawable.ic_baseline_incoming_arrow));
                 } else {
                     holder.directionImageView.setImageDrawable(appContext.getDrawable(R.drawable.ic_baseline_outgoing_arrow));

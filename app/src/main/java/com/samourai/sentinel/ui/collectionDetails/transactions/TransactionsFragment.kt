@@ -70,6 +70,10 @@ class TransactionsFragment : Fragment() {
 
         setUpToolBar()
 
+        transactionAdapter.setOnclickListener {
+            val dojoConfigureBottomSheet = TransactionsDetailsBottomSheet(it)
+            dojoConfigureBottomSheet.show(childFragmentManager, dojoConfigureBottomSheet.tag)
+        }
 
         transactionRecyclerView.layoutManager = LinearLayoutManager(context)
         transactionRecyclerView.adapter = transactionAdapter
@@ -94,7 +98,7 @@ class TransactionsFragment : Fragment() {
         })
 
 
-        balanceLiveData.observe(viewLifecycleOwner,{
+        balanceLiveData.observe(viewLifecycleOwner, {
             collectionBalanceBtc.text = "${getBTCDisplayAmount(it)} BTC"
         })
 
