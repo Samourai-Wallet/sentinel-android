@@ -122,10 +122,10 @@ open class ApiService {
     }
 
 
-    suspend fun getTx(pubKey: String): Response {
+    suspend fun getTx(txId: String): Response {
         buildClient()
         val request = Request.Builder()
-                .url("${getAPIUrl()}/multiaddr?active=${pubKey}")
+                .url("${getAPIUrl()}/tx/${txId}?fees=1")
                 .build()
         return client.newCall(request).await()
     }
