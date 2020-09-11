@@ -104,8 +104,9 @@ class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filt
                 holder.associatedKey.text = associatedKey.label
             }
             if (txRvModel.tx.result != null)
-                if (txRvModel.tx.result!! > 0) {
+                if (txRvModel.tx.result > 0) {
                     holder.directionImageView.setImageDrawable(appContext.getDrawable(R.drawable.ic_baseline_incoming_arrow));
+                    holder.txAmount.setTextColor(ContextCompat.getColor(appContext, R.color.md_green_A400))
                 } else {
                     holder.directionImageView.setImageDrawable(appContext.getDrawable(R.drawable.ic_baseline_outgoing_arrow));
                 }
