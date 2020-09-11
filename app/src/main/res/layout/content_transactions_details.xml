@@ -65,6 +65,7 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 tools:text="1234"
+                android:background="?attr/selectableItemBackground"
                 android:textColor="@color/text_secondary" />
 
 
@@ -93,6 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="6dp"
+                android:background="?attr/selectableItemBackground"
                 tools:text="5c15acf562667768704f8cbfd56b217c9feafd8608230e556cde6b621645b40b"
                 android:textColor="@color/text_secondary" />
 
@@ -127,6 +129,7 @@
                 android:layout_gravity="end"
                 android:layout_weight="1"
                 android:gravity="end"
+                android:background="?attr/selectableItemBackground"
                 tools:text="1234"
                 android:textColor="@color/text_secondary" />
 
@@ -161,6 +164,7 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 android:paddingTop="6dp"
+                android:background="?attr/selectableItemBackground"
                 tools:text="1234"
                 android:textColor="@color/text_secondary" />
 
@@ -196,6 +200,7 @@
                 android:gravity="end"
                 android:paddingTop="6dp"
                 tools:text="1234"
+                android:background="?attr/selectableItemBackground"
                 android:textColor="@color/text_secondary" />
 
 
@@ -234,6 +239,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:gravity="end"
+                    android:background="?attr/selectableItemBackground"
                     tools:text="1234"
                     android:textColor="@color/text_secondary" />
                 <ProgressBar
@@ -284,6 +290,7 @@
                     android:layout_gravity="end"
                     android:gravity="end"
                     tools:text="1234"
+                    android:background="?attr/selectableItemBackground"
                     android:textColor="@color/text_secondary" />
                 <ProgressBar
                     android:id="@+id/txDetailsFeesRateProgress"
@@ -326,39 +333,7 @@
                 android:gravity="end"
                 android:paddingTop="6dp"
                 tools:text="1234"
-                android:textColor="@color/text_secondary" />
-
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="@dimen/spacing_middle"
-            android:layout_marginTop="1dp"
-            android:background="@color/md_grey_800" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/spacing_middle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:text="Inputs/Outputs (count)" />
-
-            <TextView
-                android:id="@+id/txDetailsIOsize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_weight="1"
-                android:gravity="end"
-                tools:text="1234"
+                android:background="?attr/selectableItemBackground"
                 android:textColor="@color/text_secondary" />
 
 
@@ -377,6 +352,7 @@
             android:layout_height="@dimen/spacing_xxxlarge"
             android:layout_margin="@dimen/spacing_middle"
             android:layout_marginTop="@dimen/spacing_middle"
+            android:id="@+id/txDetailsOpenInExplorerBtn2"
             android:layout_marginBottom="@dimen/spacing_large"
             android:text="Open in explorer"
             android:textColor="@color/md_grey_600"
