@@ -85,6 +85,7 @@
         <item name="android:spinnerItemStyle">@style/spinnerItemStyle</item>
         <!-- Dialog theme overlay attribute -->
         <item name="materialAlertDialogTheme">@style/AppThemeOverlay.Dialog</item>
+        <item name="android:navigationBarColor">@color/v3_background</item>
     </style>
 
     <style name="AppThemeV3.NoStatusBar" parent="AppThemeV3">
