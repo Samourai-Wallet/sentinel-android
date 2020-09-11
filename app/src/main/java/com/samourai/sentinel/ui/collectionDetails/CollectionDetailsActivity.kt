@@ -1,15 +1,15 @@
 package com.samourai.sentinel.ui.collectionDetails
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.samourai.sentinel.R
@@ -17,11 +17,9 @@ import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.collectionDetails.receive.ReceiveFragment
-import com.samourai.sentinel.ui.collectionDetails.receive.ReceiveViewModel
 import com.samourai.sentinel.ui.collectionDetails.sent.SendFragment
 import com.samourai.sentinel.ui.collectionDetails.transactions.TransactionsFragment
 import kotlinx.android.synthetic.main.activity_collection_details.*
-import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.inject
 
 
@@ -42,7 +40,8 @@ class CollectionDetailsActivity : SentinelActivity() {
         fragmentHostContainerPager.adapter = pagerAdapter
 
         checkIntent()
-
+        val w: Window = window
+        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         val receiveViewModel: CollectionDetailsViewModel by viewModels(factoryProducer = { CollectionDetailsViewModel.getFactory(collection!!) })
 
         receiveViewModel.getCollections().observe(this, Observer {

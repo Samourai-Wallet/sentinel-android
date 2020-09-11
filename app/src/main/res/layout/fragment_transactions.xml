@@ -4,19 +4,20 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
         style="@style/ToolbarV3"
-        app:layout_scrollFlags="scroll">
+        >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbarCollectionDetails"
             android:layout_width="match_parent"
             android:elevation="0dp"
+            android:layout_marginTop="28dp"
+            android:fitsSystemWindows="true"
             android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
+            app:layout_scrollFlags="scroll">
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -26,7 +27,7 @@
             android:layout_gravity="center|center_vertical"
             android:gravity="center"
             android:orientation="vertical"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll">
 
             <TextView
                 android:id="@+id/collectionBalanceBtc"
@@ -62,7 +63,6 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
