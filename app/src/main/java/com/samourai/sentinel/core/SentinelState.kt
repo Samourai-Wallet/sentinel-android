@@ -4,6 +4,7 @@ import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.samourai.sentinel.data.LatestBlock
+import com.samourai.sentinel.data.Tx
 import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.data.repository.TransactionsRepository
@@ -51,6 +52,9 @@ class SentinelState {
 
         private var countDownTimer: CountDownTimer? = null
         var torProxy: Proxy? = null
+
+        //Shared field for passing tx object between activities and fragments
+        var selectedTx: Tx? = null
 
         val bDust: BigInteger = BigInteger.valueOf(Coin.parseCoin("0.00000546").longValue())
 
