@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.text.InputFilter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -93,16 +94,19 @@ fun AppCompatActivity.alertWithInput(label: String,
                                      value: String = "",
                                      labelEditText: String = "",
                                      isCancelable: Boolean = true,
-                                     onConfirm: (String)-> Unit): GenericBottomSheet {
+                                     maxLen: Int = 34,
+                                     onConfirm: (String) -> Unit): GenericBottomSheet {
     val bottomSheet = InputBottomSheet(label, onViewReady = {
         val view = it.view
         view?.findViewById<MaterialButton>(R.id.bottomSheetConfirmPositiveBtn)?.text = buttonLabel
         view?.findViewById<TextInputLayout>(R.id.bottomSheetInputFieldLayout)?.hint = labelEditText
-        view?.findViewById<TextInputEditText>(R.id.bottomSheetInputField)?.setText(value)
+        val textInput = view?.findViewById<TextInputEditText>(R.id.bottomSheetInputField);
+        textInput?.setText(value)
+        textInput?.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLen))
         view?.findViewById<MaterialButton>(R.id.bottomSheetConfirmPositiveBtn)?.setOnClickListener { _ ->
-                val text = view.findViewById<TextInputEditText>(R.id.bottomSheetInputField).text.toString()
-                onConfirm.invoke(text)
-                it.dismiss()
+            val text = textInput?.text.toString()
+            onConfirm.invoke(text)
+            it.dismiss()
         }
     })
     bottomSheet.isCancelable = isCancelable
