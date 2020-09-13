@@ -16,27 +16,22 @@ import com.samourai.sentinel.BuildConfig
 import com.samourai.sentinel.R
 import com.samourai.sentinel.api.APIConfig
 import com.samourai.sentinel.core.SentinelState
-import com.samourai.sentinel.helpers.fromJSON
-import com.samourai.sentinel.helpers.toJSON
-import com.samourai.sentinel.tor.TorServiceController
 import com.samourai.sentinel.service.WebSocketHandler
 import com.samourai.sentinel.service.WebSocketService
+import com.samourai.sentinel.tor.TorServiceController
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.adapters.CollectionsAdapter
 import com.samourai.sentinel.ui.collectionDetails.CollectionDetailsActivity
 import com.samourai.sentinel.ui.dojo.DojoConfigureBottomSheet
-import com.samourai.sentinel.ui.settings.NetworkActivity
 import com.samourai.sentinel.ui.fragments.AddNewPubKeyBottomSheet
+import com.samourai.sentinel.ui.settings.NetworkActivity
 import com.samourai.sentinel.ui.settings.SettingsActivity
 import com.samourai.sentinel.ui.utils.*
 import com.samourai.sentinel.ui.views.confirm
 import com.samourai.sentinel.util.MonetaryUtil
 import io.matthewnelson.topl_service.prefs.TorServicePrefs
 import kotlinx.android.synthetic.main.activity_home.*
-import org.json.JSONObject
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
-import java.lang.Exception
 
 
 class HomeActivity : SentinelActivity() {
@@ -44,7 +39,6 @@ class HomeActivity : SentinelActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private val collectionsAdapter = CollectionsAdapter();
     private val webSocketHandler: WebSocketHandler by inject(WebSocketHandler::class.java);
-    private val monetaryUtil: MonetaryUtil by inject(MonetaryUtil::class.java);
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java);
     private var connectingDojo = false
     private lateinit var torServicePrefs: TorServicePrefs
@@ -124,11 +118,6 @@ class HomeActivity : SentinelActivity() {
             })
         } else {
             WebSocketService.start(applicationContext)
-        }
-
-        val item =  JSONObject().apply {
-            put("CM",122)
-            put("CCCM",122)
         }
     }
 
