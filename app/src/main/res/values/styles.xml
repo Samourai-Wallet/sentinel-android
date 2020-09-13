@@ -86,6 +86,8 @@
         <!-- Dialog theme overlay attribute -->
         <item name="materialAlertDialogTheme">@style/AppThemeOverlay.Dialog</item>
         <item name="android:navigationBarColor">@color/v3_background</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/v3_primary</item>
     </style>
 
     <style name="AppThemeV3.NoStatusBar" parent="AppThemeV3">
