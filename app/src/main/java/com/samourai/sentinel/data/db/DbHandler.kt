@@ -28,4 +28,9 @@ class DbHandler {
     fun getDojoStore(): PayloadRecord {
         return PayloadRecord(storeLocation, "dojo.payload")
     }
+
+    fun getUtxoMetaData(): PayloadRecord {
+        return PayloadRecord(storeLocation, "utxo.meta.payload")
+    }
+
 }

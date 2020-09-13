@@ -33,14 +33,24 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".ui.utxos.UtxosActivity"
+            android:label=""
+            android:theme="@style/AppThemeV3" />
+
+        <activity
             android:name=".ui.MigrationActivity"
+            android:theme="@style/AppThemeV3" />
+
+
+        <activity
+            android:name=".ui.webview.ExplorerWebViewActivity"
             android:theme="@style/AppThemeV3" />
 
         <service
             android:name=".service.WebSocketService"
             android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false" />
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".service.ImportSegWitService"
             android:exported="false"
@@ -55,7 +65,7 @@
         <activity
             android:name=".ui.collectionDetails.CollectionDetailsActivity"
             android:label="@string/title_activity_collection_details"
-            android:theme="@style/AppThemeV3" />
+            android:theme="@style/AppThemeV3.NoStatusBar" />
         <activity
             android:name=".ui.collectionEdit.CollectionEditActivity"
             android:label=""
