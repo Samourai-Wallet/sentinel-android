@@ -28,10 +28,12 @@ import com.samourai.sentinel.ui.settings.NetworkActivity
 import com.samourai.sentinel.ui.settings.SettingsActivity
 import com.samourai.sentinel.ui.utils.*
 import com.samourai.sentinel.ui.views.confirm
+import com.samourai.sentinel.util.FormatsUtil
 import com.samourai.sentinel.util.MonetaryUtil
 import io.matthewnelson.topl_service.prefs.TorServicePrefs
 import kotlinx.android.synthetic.main.activity_home.*
 import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 
 
 class HomeActivity : SentinelActivity() {
@@ -61,7 +63,7 @@ class HomeActivity : SentinelActivity() {
 
         model.getBalance().observe(this, {
             updateBalance(it)
-         })
+        })
 
         model.getFiatBalance().observe(this, { updateFiat(it) })
 
@@ -119,6 +121,8 @@ class HomeActivity : SentinelActivity() {
         } else {
             WebSocketService.start(applicationContext)
         }
+
+        checkClipBoard()
     }
 
 
@@ -193,6 +197,21 @@ class HomeActivity : SentinelActivity() {
         }
     }
 
+    private fun checkClipBoard() {
+        val clipData = AndroidUtil.getClipBoardString(applicationContext)
+
+        if (clipData != null) {
+            val formatted = FormatsUtil.extractPublicKey(clipData)
+            if (FormatsUtil.isValidBitcoinAddress(formatted) || FormatsUtil.isValidXpub(formatted)) {
+                showFloatingSnackBar(fab, text = "Public Key detected in clipboard", actionText = "Add", actionClick = {
+                    val bottomSheetFragment = AddNewPubKeyBottomSheet(formatted)
+                    bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+                })
+            }
+
+        }
+    }
+
     private fun showDojoSetUpBottomSheet() {
         val dojoConfigureBottomSheet = DojoConfigureBottomSheet()
         dojoConfigureBottomSheet.show(supportFragmentManager, dojoConfigureBottomSheet.tag)
@@ -236,6 +255,14 @@ class HomeActivity : SentinelActivity() {
             itemAnimator = SlideInItemAnimator(slideFromEdge = Gravity.TOP)
             setHasFixedSize(true)
             addItemDecoration(decorator)
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if(!SentinelState.checkedClipBoard ){
+            checkClipBoard()
+            SentinelState.checkedClipBoard = true
         }
     }
 

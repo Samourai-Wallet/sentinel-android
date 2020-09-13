@@ -1,6 +1,7 @@
 package com.samourai.sentinel.ui.utils
 
 import android.app.Activity
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
@@ -37,6 +38,16 @@ class AndroidUtil {
 
         fun askCameraPermission(appContext: Context) {
 
+        }
+
+        fun getClipBoardString(context: Context): String? {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            return if(clipboard.hasPrimaryClip()){
+                val item = clipboard.primaryClip?.getItemAt(0)
+                item?.text.toString()
+            }else{
+                null
+            }
         }
 
     }
