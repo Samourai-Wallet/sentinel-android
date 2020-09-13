@@ -149,7 +149,7 @@ public class SendFactory	{
             }
 
             TransactionOutput output = null;
-            if(FormatsUtil.getInstance().isValidBech32(toAddress))   {
+            if(FormatsUtil.Companion.isValidBech32(toAddress))   {
                 output = Bech32Util.getInstance().getTransactionOutput(toAddress, value.longValue());
             }
             else    {
@@ -222,7 +222,7 @@ public class SendFactory	{
                 address = new Script(connectedPubKeyScript).getToAddress(SentinelState.Companion.getNetworkParam()).toString();
             }
 
-            if(FormatsUtil.getInstance().isValidBech32(address) || Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())    {
+            if(FormatsUtil.Companion.isValidBech32(address) || Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())    {
 
                 final P2SH_P2WPKH p2shp2wpkh = new P2SH_P2WPKH(key.getPubKey(), SentinelState.Companion.getNetworkParam());
                 System.out.println("pubKey:" + Hex.toHexString(key.getPubKey()));
@@ -240,7 +240,7 @@ public class SendFactory	{
                 witness.setPush(1, key.getPubKey());
                 transaction.setWitness(i, witness);
 
-                if(!FormatsUtil.getInstance().isValidBech32(address) && Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())    {
+                if(!FormatsUtil.Companion.isValidBech32(address) && Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())    {
                     final ScriptBuilder sigScript = new ScriptBuilder();
                     sigScript.data(redeemScript.getProgram());
                     transaction.getInput(i).setScriptSig(sigScript.build());

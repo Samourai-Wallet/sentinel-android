@@ -181,7 +181,7 @@ public class FeeUtil  {
         int p2pkh = 0;
 
         for(MyTransactionOutPoint out : outpoints)   {
-            if(FormatsUtil.getInstance().isValidBech32(out.getAddress()))    {
+            if(FormatsUtil.Companion.isValidBech32(out.getAddress()))    {
                 p2wpkh++;
             }
             else if(Address.fromBase58(SentinelState.Companion.getNetworkParam(), out.getAddress()).isP2SHAddress())    {

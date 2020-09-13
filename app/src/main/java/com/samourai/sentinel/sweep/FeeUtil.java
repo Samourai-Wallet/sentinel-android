@@ -192,7 +192,7 @@ public class FeeUtil  {
             if(Address.fromBase58(SentinelState.Companion.getNetworkParam(), out.getAddress()).isP2SHAddress())    {
                 p2sh_p2wpkh++;
             }
-            else if(FormatsUtil.getInstance().isValidBech32(out.getAddress()))    {
+            else if(FormatsUtil.Companion.isValidBech32(out.getAddress()))    {
                 p2wpkh++;
             }
             else   {

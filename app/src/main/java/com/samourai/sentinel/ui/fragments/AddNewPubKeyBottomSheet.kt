@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 
 
-class AddNewPubKeyBottomSheet : GenericBottomSheet() {
+class AddNewPubKeyBottomSheet(private val pubKey:String= "") : GenericBottomSheet() {
 
     private val scanPubKeyFragment = ScanPubKeyFragment()
     private var newPubKeyListener: ((pubKey: PubKeyModel?) -> Unit)? = null
@@ -88,6 +88,10 @@ class AddNewPubKeyBottomSheet : GenericBottomSheet() {
             this.dismiss()
         }
 
+        if(pubKey.isNotEmpty()){
+            validate(pubKey)
+            pubKeyString = pubKey
+        }
     }
 
     private fun validateXPUB(addressTypes: AddressTypes) {
@@ -120,39 +124,10 @@ class AddNewPubKeyBottomSheet : GenericBottomSheet() {
     }
 
     private fun validate(code: String) {
-
-        var payload = code
-
-        if (code.startsWith("BITCOIN:")) {
-            payload = code.substring(8)
-
-        }
-        if (code.startsWith("bitcoin:")) {
-            payload = code.substring(8)
-        }
-        if (code.startsWith("bitcointestnet:")) {
-            payload = code.substring(15)
-        }
-        if (code.contains("?")) {
-            payload = code.substring(0, code.indexOf("?"))
-        }
-        if (code.contains("?")) {
-            payload = code.substring(0, code.indexOf("?"))
-        }
-
-        var type = AddressTypes.ADDRESS
-
-        if (code.startsWith("xpub") || code.startsWith("tpub")) {
-             type = AddressTypes.BIP44
-        } else if (code.startsWith("ypub") || code.startsWith("upub")) {
-            type = AddressTypes.BIP49
-        } else if (code.startsWith("zpub") || code.startsWith("vpub")) {
-            type = AddressTypes.BIP84
-        }
-
-
+        val payload = FormatsUtil.extractPublicKey(code)
+        val type = FormatsUtil.getPubKeyType(payload)
         when {
-            FormatsUtil.getInstance().isValidBitcoinAddress(payload.trim()) -> {
+            FormatsUtil.isValidBitcoinAddress(payload.trim()) -> {
                 if (newPubKeyListener != null) {
                     val pubKey = PubKeyModel(pubKey = payload, type = AddressTypes.ADDRESS, label = "Untitled")
                     newPubKeyListener?.let { it(pubKey) }
@@ -164,7 +139,7 @@ class AddNewPubKeyBottomSheet : GenericBottomSheet() {
                     pager.setCurrentItem(2, true)
                 }
             }
-            FormatsUtil.getInstance().isValidXpub(code) -> {
+            FormatsUtil.isValidXpub(code) -> {
                 //show option to choose xpub type
                 pager.setCurrentItem(1, true)
                 pager.post {

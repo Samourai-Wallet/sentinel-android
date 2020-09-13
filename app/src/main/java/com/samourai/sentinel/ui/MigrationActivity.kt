@@ -238,10 +238,10 @@ class MigrationActivity : AppCompatActivity() {
         }
 
         return if (type == AddressTypes.ADDRESS) {
-            FormatsUtil.getInstance().isValidBitcoinAddress(code)
+            FormatsUtil.isValidBitcoinAddress(code)
             null
         } else {
-            if (FormatsUtil.getInstance().isValidXpub(code)) {
+            if (FormatsUtil.isValidXpub(code)) {
                 type
             } else {
                 null

@@ -229,11 +229,11 @@ public class SendFactory	{
 
             TransactionOutput output = null;
             Script toOutputScript = null;
-            if(!FormatsUtil.getInstance().isValidBitcoinAddress(toAddress) && FormatsUtilGeneric.getInstance().isValidBIP47OpReturn(toAddress))    {
+            if(!FormatsUtil.Companion.isValidBitcoinAddress(toAddress) && FormatsUtilGeneric.getInstance().isValidBIP47OpReturn(toAddress))    {
                 toOutputScript = new ScriptBuilder().op(ScriptOpCodes.OP_RETURN).data(Hex.decode(toAddress)).build();
                 output = new TransactionOutput(SentinelState.Companion.getNetworkParam(), null, Coin.valueOf(0L), toOutputScript.getProgram());
             }
-            else if(FormatsUtil.getInstance().isValidBech32(toAddress))   {
+            else if(FormatsUtil.Companion.isValidBech32(toAddress))   {
                 output = Bech32Util.getInstance().getTransactionOutput(toAddress, value.longValue());
             }
             else    {
@@ -309,7 +309,7 @@ public class SendFactory	{
                 address = new Script(connectedPubKeyScript).getToAddress(SentinelState.Companion.getNetworkParam()).toString();
             }
 
-            if(FormatsUtil.getInstance().isValidBech32(address) || Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())    {
+            if(FormatsUtil.Companion.isValidBech32(address) || Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())    {
 
                 final SegwitAddress segwitAddress = new SegwitAddress(key.getPubKey(), SentinelState.Companion.getNetworkParam());
 //                System.out.println("pubKey:" + Hex.toHexString(key.getPubKey()));
@@ -327,7 +327,7 @@ public class SendFactory	{
                 witness.setPush(1, key.getPubKey());
                 transaction.setWitness(i, witness);
 
-                if(!FormatsUtil.getInstance().isValidBech32(address) && Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())    {
+                if(!FormatsUtil.Companion.isValidBech32(address) && Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())    {
                     final ScriptBuilder sigScript = new ScriptBuilder();
                     sigScript.data(redeemScript.getProgram());
                     transaction.getInput(i).setScriptSig(sigScript.build());
@@ -433,7 +433,7 @@ public class SendFactory	{
             // type of address for change must match type of address for inputs
             //
             String utxoAddress = utxos.get(0).getOutpoints().get(0).getAddress();
-            if(FormatsUtil.getInstance().isValidBech32(utxoAddress))    {
+            if(FormatsUtil.Companion.isValidBech32(utxoAddress))    {
                 changeType = 84;
             }
             else if(Address.fromBase58(SentinelState.Companion.getNetworkParam(), utxoAddress).isP2SHAddress())   {
@@ -446,7 +446,7 @@ public class SendFactory	{
             //
             // type of address for 'mixed' amount must match type of address for destination
             //
-            if(FormatsUtil.getInstance().isValidBech32(address))    {
+            if(FormatsUtil.Companion.isValidBech32(address))    {
                 mixedType = 84;
             }
             else if(Address.fromBase58(SentinelState.Companion.getNetworkParam(), address).isP2SHAddress())   {
@@ -622,7 +622,7 @@ public class SendFactory	{
             else    {
                 _address = getChangeAddress(mixedType, account);
             }
-            if(FormatsUtil.getInstance().isValidBech32(_address))   {
+            if(FormatsUtil.Companion.isValidBech32(_address))   {
                 txSpendOutput = Bech32Util.getInstance().getTransactionOutput(_address, spendAmount.longValue());
             }
             else    {
@@ -632,7 +632,7 @@ public class SendFactory	{
             txOutputs.add(txSpendOutput);
 
             changeAddress = getChangeAddress(changeType, account);
-            if(FormatsUtil.getInstance().isValidBech32(changeAddress))    {
+            if(FormatsUtil.Companion.isValidBech32(changeAddress))    {
                 txChangeOutput = Bech32Util.getInstance().getTransactionOutput(changeAddress, changeDue.longValue());
             }
             else    {
