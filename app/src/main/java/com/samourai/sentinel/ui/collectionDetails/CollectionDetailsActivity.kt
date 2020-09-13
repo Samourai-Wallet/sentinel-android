@@ -62,12 +62,10 @@ class CollectionDetailsActivity : SentinelActivity() {
         })
 
         receiveFragment.setBalance(receiveViewModel.getBalance())
-//            sendFragment.setBalance(it)
         transactionsFragment.setBalance(receiveViewModel.getBalance())
 
         receiveViewModel.getFiatBalance().observe(this, Observer {
             receiveFragment.setBalanceFiat(receiveViewModel.getFiatBalance())
-//            sendFragment.setBalance(it)
             transactionsFragment.setBalanceFiat(receiveViewModel.getFiatBalance())
         })
 

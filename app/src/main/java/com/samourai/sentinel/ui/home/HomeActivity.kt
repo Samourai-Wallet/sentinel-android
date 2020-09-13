@@ -16,6 +16,8 @@ import com.samourai.sentinel.BuildConfig
 import com.samourai.sentinel.R
 import com.samourai.sentinel.api.APIConfig
 import com.samourai.sentinel.core.SentinelState
+import com.samourai.sentinel.helpers.fromJSON
+import com.samourai.sentinel.helpers.toJSON
 import com.samourai.sentinel.tor.TorServiceController
 import com.samourai.sentinel.service.WebSocketHandler
 import com.samourai.sentinel.service.WebSocketService
@@ -31,7 +33,9 @@ import com.samourai.sentinel.ui.views.confirm
 import com.samourai.sentinel.util.MonetaryUtil
 import io.matthewnelson.topl_service.prefs.TorServicePrefs
 import kotlinx.android.synthetic.main.activity_home.*
+import org.json.JSONObject
 import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 import java.lang.Exception
 
 
@@ -122,6 +126,10 @@ class HomeActivity : SentinelActivity() {
             WebSocketService.start(applicationContext)
         }
 
+        val item =  JSONObject().apply {
+            put("CM",122)
+            put("CCCM",122)
+        }
     }
 
 

@@ -197,7 +197,7 @@ class CollectionEditActivity : SentinelActivity() {
                     pubKeyModel.label = it
                     viewModel.updateKey(i, pubKeyModel)
                     pubKeyAdapter.notifyItemChanged(i)
-                }, labelEditText = "Label", value = pubKeyModel.label, buttonLabel = "Save")
+                },maxLen = 30, labelEditText = "Label", value = pubKeyModel.label, buttonLabel = "Save")
             }
         }
     }

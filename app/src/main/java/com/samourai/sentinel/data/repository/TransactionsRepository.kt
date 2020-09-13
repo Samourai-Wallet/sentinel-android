@@ -8,12 +8,15 @@ import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.data.*
 import com.samourai.sentinel.data.db.DbHandler
 import com.samourai.sentinel.helpers.fromJSON
+import com.samourai.sentinel.helpers.toJSON
 import com.samourai.sentinel.ui.utils.logThreadInfo
 import com.samourai.sentinel.util.apiScope
 import kotlinx.coroutines.*
 import okhttp3.Response
 import org.json.JSONObject
 import org.koin.java.KoinJavaComponent
+import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 
 /**
  * sentinel-android
@@ -31,9 +34,9 @@ class TransactionsRepository {
 
     private val transactions: ArrayList<Tx> = arrayListOf()
     private var transactionsLiveData: MutableLiveData<ArrayList<Tx>> = MutableLiveData(arrayListOf())
-    private val dbHandler: DbHandler by KoinJavaComponent.inject(DbHandler::class.java)
-    private val apiService: ApiService by KoinJavaComponent.inject(ApiService::class.java)
-    private val collectionRepository: CollectionRepository by KoinJavaComponent.inject(CollectionRepository::class.java)
+    private val dbHandler: DbHandler by inject(DbHandler::class.java)
+    private val apiService: ApiService by inject(ApiService::class.java)
+    private val collectionRepository: CollectionRepository by inject(CollectionRepository::class.java)
     private val loading: MutableLiveData<Boolean> = MutableLiveData(false)
     private val txStore = dbHandler.getTxStore()
 
