@@ -8,4 +8,8 @@
         android:id="@+id/collection_details_transaction_edit_option"
         app:showAsAction="always"
         android:visible="true" />
+    <item
+        android:title="View Unspend outputs"
+        android:id="@+id/collection_details_transaction_utxos"
+        android:visible="true" />
 </menu>
