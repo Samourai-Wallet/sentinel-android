@@ -3,7 +3,11 @@ package com.samourai.sentinel.ui.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import org.json.JSONObject
+import timber.log.Timber
+import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.declaredMemberProperties
 
 
 const val CURRENT_FIAT = "currentFiat"
@@ -27,7 +31,7 @@ const val USE_LIKE_TYPED_CHANGE = "useLikeTypedChange"
 class PrefsUtil(context: Context) : Preferences(context, "${context.packageName}_preferences") {
     var currentFiat by stringPref(defaultValue = "")
     var currentExchange by stringPref(defaultValue = "")
-    var lastSynced by  longPref(defaultValue = 0)
+    var lastSynced by longPref(defaultValue = 0)
     var enableTor by booleanPref(defaultValue = false)
     var currentFeeType by intPref(defaultValue = 0)
     var haptics by booleanPref(defaultValue = true)
@@ -53,6 +57,37 @@ class PrefsUtil(context: Context) : Preferences(context, "${context.packageName}
     fun isAPIEndpointEnabled(): Boolean {
         return !this.apiEndPointTor.isNullOrEmpty() && !this.apiEndPoint.isNullOrEmpty()
     }
+
+
+    /**
+     * Creates json object using reflection
+     */
+    fun export(): JSONObject {
+        val clazz = this.javaClass.kotlin
+        val payload = JSONObject()
+        clazz.declaredMemberProperties.forEach {
+            payload.put(it.name, it.get(this@PrefsUtil))
+        }
+        return payload
+    }
+
+    /**
+     * Imports JSON payload and writes to the fields using reflection
+     */
+    fun import(payload: JSONObject): JSONObject {
+        val clazz = this.javaClass.kotlin
+        payload.keys().forEach { key ->
+            clazz.declaredMemberProperties.forEach {
+                if(it.name == key){
+                    if (it is KMutableProperty<*>) {
+                        it.setter.call(this@PrefsUtil,payload[key])
+                    }
+                }
+            }
+        }
+        return payload
+    }
+
 }
 
 
@@ -157,7 +192,7 @@ abstract class Preferences(private var context: Context, private val name: Strin
             GenericPrefDelegate(prefKey, defaultValue, StorableType.StringSet)
 
 
-    fun clearAll(){
+    fun clearAll() {
         prefs.edit().clear().apply()
     }
 }
