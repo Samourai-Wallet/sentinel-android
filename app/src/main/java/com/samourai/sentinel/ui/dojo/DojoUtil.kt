@@ -130,4 +130,11 @@ class DojoUtility {
         }
     }
 
+    fun exportDojoPayload(): String? {
+        return dojoPayload?.toJSON()
+    }
+
+    fun import(dojoPairing: JSONObject) {
+        dojoPayload = fromJSON(dojoPairing.toString())
+    }
 }
