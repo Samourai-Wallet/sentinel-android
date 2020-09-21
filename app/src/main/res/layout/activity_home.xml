@@ -7,16 +7,16 @@
 
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
         style="@style/ToolbarV3"
+        android:layout_width="match_parent"
         android:layout_height="200dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbarHome"
-            app:elevation="0dp"
-            android:elevation="0dp"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:elevation="0dp"
+            app:elevation="0dp"
             app:layout_scrollFlags="scroll">
 
 
@@ -39,11 +39,11 @@
                 tools:text="30.0332 BTC" />
 
             <TextView
+                android:id="@+id/exchangeRateTxt"
                 style="@style/TextAppearance.AppCompat.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:id="@+id/exchangeRateTxt"
                 android:gravity="center|center_horizontal"
                 android:textSize="14sp"
                 tools:text="1234 USD" />
@@ -68,6 +68,27 @@
             android:layout_marginTop="8dp" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/welcomeMessage"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/spacing_xlarge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#9A9A9A"
+            android:text="Sentinel can organize and track many different \npublic keys such as bitcoin addresses or extended \npublic keys
+\n\nYour watch list is empty. Add your first public key to begin tracking with sentinel
+" />
+    </androidx.core.widget.NestedScrollView>
+
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab"
         style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
@@ -77,9 +98,9 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|center"
         android:layout_margin="@dimen/fab_margin"
+        android:elevation="0dp"
         android:paddingHorizontal="54dp"
         android:text="New"
-        android:elevation="0dp"
         android:textColor="@color/white"
         app:backgroundTint="@color/v3_accent"
         app:elevation="12dp"

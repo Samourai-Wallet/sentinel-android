@@ -58,6 +58,11 @@ class HomeActivity : SentinelActivity() {
         setUpCollectionList()
 
         model.getCollections().observe(this, {
+            if (it.isNotEmpty())
+                welcomeMessage.visibility = View.GONE
+            else
+                welcomeMessage.visibility = View.VISIBLE
+
             collectionsAdapter.update(it)
         })
 
@@ -260,7 +265,7 @@ class HomeActivity : SentinelActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if(!SentinelState.checkedClipBoard ){
+        if (!SentinelState.checkedClipBoard) {
             checkClipBoard()
             SentinelState.checkedClipBoard = true
         }
