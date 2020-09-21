@@ -68,11 +68,12 @@
 
 
     <!-- v3 Theme -->
-    <style name="AppThemeV3" parent="Theme.MaterialComponents.DayNight.Bridge">
+    <style name="AppThemeV3" parent="Theme.MaterialComponents.Bridge">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/v3_primary</item>
         <item name="android:textColor">@color/v3_textColor</item>
+        <item name="colorOnPrimarySurface">@color/v3_textColor</item>
         <item name="statusBarBackground">@color/v3_primary</item>
         <item name="android:statusBarColor">@color/v3_primary</item>
         <item name="colorSecondary">@color/v3_secondary</item>
@@ -201,4 +202,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppThemeV3.ChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_background_color_state_list</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
 </resources>

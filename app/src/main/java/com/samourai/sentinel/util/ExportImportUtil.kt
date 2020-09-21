@@ -24,7 +24,6 @@ import timber.log.Timber
 /**
  * sentinel-android
  *
- * @author Sarath
  */
 
 class ExportImportUtil {

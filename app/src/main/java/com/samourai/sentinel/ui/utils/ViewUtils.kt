@@ -115,7 +115,7 @@ fun Activity.showFloatingSnackBar(parent_view: View, text: String = "", actionCl
     snackBar.view.setBackgroundColor(Color.TRANSPARENT)
     val snackBarView = snackBar.view as SnackbarLayout
     snackBarView.setPadding(0, 0, 0, 0)
-    snackBarView.alpha = 0.92f
+    snackBarView.alpha = 0.96f
     val mainTextTv = view.findViewById<TextView>(R.id.mainText)
     val separator = view.findViewById<View>(R.id.separator)
     val undoTv = view.findViewById<TextView>(R.id.actionButton)

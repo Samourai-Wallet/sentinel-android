@@ -53,6 +53,7 @@ class PrefsUtil(context: Context) : Preferences(context, "${context.packageName}
     var offlineMode by booleanPref(defaultValue = false)
     var blockHeight by longPref(defaultValue = 0L)
     var firstRun by booleanPref(defaultValue = true)
+    var detailsFilterType by stringPref(defaultValue = "DropDown")
 
     fun isAPIEndpointEnabled(): Boolean {
         return !this.apiEndPointTor.isNullOrEmpty() && !this.apiEndPoint.isNullOrEmpty()
@@ -80,7 +81,10 @@ class PrefsUtil(context: Context) : Preferences(context, "${context.packageName}
             clazz.declaredMemberProperties.forEach {
                 if(it.name == key){
                     if (it is KMutableProperty<*>) {
-                        it.setter.call(this@PrefsUtil,payload[key])
+                        try {
+                            it.setter.call(this@PrefsUtil,payload[key])
+                        } catch (e: Exception) {
+                        }
                     }
                 }
             }

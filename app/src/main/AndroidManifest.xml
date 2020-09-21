@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.samourai.sentinel">
+    package="com.samourai.sentinel" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -31,17 +31,20 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="android:allowBackup">
+        tools:replace="android:allowBackup" >
+        <activity
+            android:theme="@style/AppThemeV3"
+            android:label="Import"
+            android:windowSoftInputMode="adjustPan"
+            android:name=".ui.settings.ImportBackUpActivity" >
+        </activity>
         <activity
             android:name=".ui.utxos.UtxosActivity"
             android:label=""
             android:theme="@style/AppThemeV3" />
-
         <activity
             android:name=".ui.MigrationActivity"
             android:theme="@style/AppThemeV3" />
-
-
         <activity
             android:name=".ui.webview.ExplorerWebViewActivity"
             android:theme="@style/AppThemeV3" />
@@ -72,7 +75,7 @@
             android:theme="@style/AppThemeV3" />
         <activity
             android:name=".ui.MainActivity"
-            android:theme="@style/AppTheme.Splash">
+            android:theme="@style/AppTheme.Splash" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -106,7 +109,7 @@
             android:name=".util.GenericFileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />

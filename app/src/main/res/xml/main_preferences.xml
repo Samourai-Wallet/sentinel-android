@@ -48,7 +48,7 @@
     <PreferenceCategory
         app:allowDividerAbove="true"
         app:allowDividerBelow="true"
-        app:title="Export/import">
+        app:title="Backup options">
         <Preference
             app:icon="@drawable/ic_file_export"
             app:key="export"
@@ -80,7 +80,15 @@
             android:summary="@string/setting_summary_displaySecure"
             app:icon="@drawable/ic_baseline_screen_lock_portrait_24"
             app:key="displaySecure"
+
             app:title="Disable Screenshots" />
+
+        <ListPreference
+            android:entries="@array/detailsFilterTypeLabel"
+            android:entryValues="@array/detailsFilterTypeLabel"
+            android:summary="Transactions navigation in detail screen"
+            app:key="detailsFilterType"
+            app:title="Transactions navigation" />
 
     </PreferenceCategory>
     <PreferenceCategory
