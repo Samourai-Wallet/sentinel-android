@@ -4,21 +4,26 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.*
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginStart
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.chip.Chip
+import com.google.android.material.tabs.TabLayout
 import com.samourai.sentinel.R
 import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.repository.TransactionsRepository
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.collectionEdit.CollectionEditActivity
 import com.samourai.sentinel.ui.fragments.TransactionsDetailsBottomSheet
+import com.samourai.sentinel.ui.utils.PrefsUtil
 import com.samourai.sentinel.ui.utils.RecyclerViewItemDividerDecorator
 import com.samourai.sentinel.ui.utils.SlideInItemAnimator
 import com.samourai.sentinel.ui.utils.showFloatingSnackBar
@@ -37,10 +42,11 @@ class TransactionsFragment : Fragment() {
     private lateinit var balanceLiveData: LiveData<Long>
     private val transactionsViewModel: TransactionsViewModel by viewModels()
     private lateinit var collection: PubKeyCollection;
-    private val transactionsRepository: TransactionsRepository by KoinJavaComponent.inject(TransactionsRepository::class.java)
+    private val transactionsRepository: TransactionsRepository by inject(TransactionsRepository::class.java)
+    private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java)
     private val transactionAdapter: TransactionAdapter = TransactionAdapter()
     private val monetaryUtil: MonetaryUtil by inject(MonetaryUtil::class.java)
-
+    private var selectedIndex = 0
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -71,7 +77,7 @@ class TransactionsFragment : Fragment() {
             transactionsNestedScrollView.post {
                 transactionsNestedScrollView.fling(0)
                 transactionsNestedScrollView.smoothScrollTo(0, 0)
-             }
+            }
 
         }
         transactionsNestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
@@ -81,18 +87,38 @@ class TransactionsFragment : Fragment() {
                 fabGoUp.hide()
             }
         })
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab?.tag == "All") {
+                    selectedIndex = 0
+                    setAdapterFilter()
+                } else {
+                    val selected = collection.pubs.find { it.label == tab?.tag }
+                    selectedIndex = collection.pubs.indexOf(selected) + 1
+                    setAdapterFilter()
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+        })
     }
 
     private fun initViewModel() {
         transactionsViewModel.setCollection(collection)
         transactionAdapter.setCollection(collection)
 
-        transactionsViewModel.getTransactions().observe(this.viewLifecycleOwner, Observer {
+        transactionsViewModel.getTransactions().observe(this.viewLifecycleOwner, {
             transactionAdapter.updateTx(it)
             if (pubKeySelector.listSelection > 0) {
-                setAdapterFilter(pubKeySelector.listSelection)
+                setAdapterFilter()
             } else {
-                setAdapterFilter(0)
+                setAdapterFilter()
             }
         })
 
@@ -106,6 +132,7 @@ class TransactionsFragment : Fragment() {
         })
         transactionsViewModel.getLoadingState().observe(this.viewLifecycleOwner, {
             transactionsSwipeContainer.isRefreshing = it
+            setUpSpinner()
         })
         transactionsViewModel.getMessage().observe(
                 this.viewLifecycleOwner,
@@ -127,14 +154,62 @@ class TransactionsFragment : Fragment() {
     private fun setUpSpinner() {
         val items = collection.pubs.map { it.label }.toMutableList()
         items.add(0, "All")
-        val adapter: ArrayAdapter<String> = ArrayAdapter(requireContext(),
-                R.layout.dropdown_menu_popup_item, items)
-        pubKeySelector.inputType = InputType.TYPE_NULL
-        pubKeySelector.setAdapter(adapter)
-        pubKeySelector.setText("All", false)
-        pubKeySelector.onItemClickListener = AdapterView.OnItemClickListener { _, _, index, _ ->
-            setAdapterFilter(index)
+
+        if (prefsUtil.detailsFilterType == "DropDown") {
+            pubKeySelectorLayout.visibility = View.VISIBLE
+            tabLayout.visibility = View.GONE
+            val adapter: ArrayAdapter<String> = ArrayAdapter(requireContext(),
+                    R.layout.dropdown_menu_popup_item, items)
+            pubKeySelector.inputType = InputType.TYPE_NULL
+            pubKeySelector.setAdapter(adapter)
+            pubKeySelector.setText("All", false)
+            pubKeySelector.onItemClickListener = AdapterView.OnItemClickListener { _, _, index, _ ->
+                selectedIndex = index
+                setAdapterFilter()
+            }
+
         }
+//        chipGroup.removeAllViews()
+//        items.forEachIndexed { index, it ->
+//            val chip = Chip(requireContext())
+//            chip.id = items.indexOf(it)
+//            chip.tag = it
+//            chip.text = it
+//            chip.isCheckable = true
+//            if (selectedIndex == index) {
+//                chip.isChecked = true
+//            }
+//            chipGroup.addView(chip)
+//            chip.setOnCheckedChangeListener { _, b ->
+//                if (b) {
+//                    selectedIndex = index
+//                     Timber.i("setUpSpinner: ${selectedIndex} ${index}")
+//                    setAdapterFilter()
+//                }
+//            }
+//        }
+//        chipGroup.invalidate();
+//        chipGroup.post {
+//            chipGroup.isSelectionRequired = true
+//            chipGroup.isSingleSelection = true
+//        }
+//        chipGroup.setOnCheckedChangeListener { group, checkedId ->
+//
+//        }
+        if (prefsUtil.detailsFilterType == "Tab") {
+            pubKeySelectorLayout.visibility = View.GONE
+            tabLayout.visibility = View.VISIBLE
+            tabLayout.removeAllTabs()
+            items.forEachIndexed { _, it ->
+                tabLayout.addTab(tabLayout.newTab().apply {
+                    contentDescription = it
+                    tag = it
+                    text = it
+                })
+            }
+
+        }
+
     }
 
 
@@ -143,11 +218,11 @@ class TransactionsFragment : Fragment() {
      * when the user sets a new filter adapter will filter out the dataset
      * and shows in the list
      */
-    private fun setAdapterFilter(index: Int) {
-        if (index == 0) {
+    private fun setAdapterFilter() {
+        if (selectedIndex == 0) {
             transactionAdapter.filter.filter("")
         } else {
-            transactionAdapter.filter.filter(collection.pubs[index - 1].pubKey)
+            transactionAdapter.filter.filter(collection.pubs[selectedIndex - 1].pubKey)
         }
     }
 

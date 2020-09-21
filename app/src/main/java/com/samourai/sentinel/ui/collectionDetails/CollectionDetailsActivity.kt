@@ -40,12 +40,13 @@ class CollectionDetailsActivity : SentinelActivity() {
         setContentView(R.layout.activity_collection_details)
         pagerAdapter = PagerAdapter(this)
         fragmentHostContainerPager.adapter = pagerAdapter
+//        fragmentHostContainerPager.isUserInputEnabled = false
 
         checkIntent()
         val w: Window = window
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         val receiveViewModel: CollectionDetailsViewModel by viewModels(factoryProducer = { CollectionDetailsViewModel.getFactory(collection!!) })
-        linearLayout.setPadding(0,0,0,getNavHeight().toInt())
+        linearLayout.setPadding(0, 0, 0, getNavHeight().toInt())
         receiveViewModel.getCollections().observe(this, Observer {
             intent.extras?.getString("collection")?.let { it1 ->
                 receiveViewModel.getRepository().findById(it1)?.let {

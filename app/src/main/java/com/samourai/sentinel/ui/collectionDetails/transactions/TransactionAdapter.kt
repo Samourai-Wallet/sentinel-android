@@ -17,6 +17,7 @@ import com.samourai.sentinel.R
 import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.Tx
 import com.samourai.sentinel.data.TxRvModel
+import com.samourai.sentinel.ui.utils.logThreadInfo
 import kotlinx.coroutines.*
 import org.bitcoinj.core.Coin
 import org.koin.java.KoinJavaComponent.inject
@@ -135,11 +136,10 @@ class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filt
 
                 val filtered: ArrayList<Tx>
                 val filterString = filterItem.toString()
-
                 filtered = if (filterString.isEmpty()) {
                     txList
                 } else {
-                    ArrayList(txList.filter { it.isBelongsToPubKey(filterString.toLowerCase()) })
+                    ArrayList(txList.filter { it.isBelongsToPubKey(filterString) })
                 }
                 val filterResults = FilterResults()
                 filterResults.values = filtered
@@ -147,6 +147,7 @@ class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filt
             }
 
             override fun publishResults(filterItem: CharSequence?, results: FilterResults?) {
+                logThreadInfo("MXMXM")
                 CoroutineScope(Dispatchers.Default).launch {
                     try {
                         val items = makeSections(results?.values as List<Tx>)
