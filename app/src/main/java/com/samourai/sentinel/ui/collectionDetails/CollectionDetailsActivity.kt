@@ -1,13 +1,11 @@
 package com.samourai.sentinel.ui.collectionDetails
 
-import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.activity.viewModels
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
@@ -18,11 +16,10 @@ import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.collectionDetails.receive.ReceiveFragment
-import com.samourai.sentinel.ui.collectionDetails.sent.SendFragment
+import com.samourai.sentinel.ui.collectionDetails.send.SendFragment
 import com.samourai.sentinel.ui.collectionDetails.transactions.TransactionsFragment
 import kotlinx.android.synthetic.main.activity_collection_details.*
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
 
 
 class CollectionDetailsActivity : SentinelActivity() {

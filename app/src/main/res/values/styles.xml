@@ -1,46 +1,5 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-    </style>
-
-    <style name="menu_labels_style">
-        <item name="android:background">@drawable/fab_label_background</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-
-    <style name="AppThemeV2" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@color/window</item>
-        <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/primary_dark</item>
-        <item name="android:colorAccent">@color/accent</item>
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="android:textColor">@color/text_secondary</item>
-        <item name="android:navigationBarColor">@color/primary_dark</item>
-    </style>
-
-    <style name="AppThemeV2Alert" parent="Theme.AppCompat.Dialog.Alert">
-        <item name="android:windowBackground">@color/window</item>
-        <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/primary_dark</item>
-        <item name="android:colorAccent">@color/accent</item>
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="android:textColor">@color/text_secondary</item>
-        <item name="android:navigationBarColor">@color/primary_dark</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_close_black_24dp</item>
-
-    </style>
-
-
-    <style name="bottom_sheet_note" parent="Theme.Design.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
-    </style>
 
 
     <!-- v3 Theme -->

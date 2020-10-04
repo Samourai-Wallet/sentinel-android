@@ -1,4 +1,4 @@
-package com.samourai.sentinel.ui.collectionDetails.sent
+package com.samourai.sentinel.ui.collectionDetails.send
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
