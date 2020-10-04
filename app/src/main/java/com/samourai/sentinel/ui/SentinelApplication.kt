@@ -5,10 +5,12 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import com.samourai.sentinel.BuildConfig
 import com.samourai.sentinel.R
 import com.samourai.sentinel.api.ApiService
 import com.samourai.sentinel.core.SentinelState
+import com.samourai.sentinel.core.SentinelState.Companion.torState
 import com.samourai.sentinel.core.access.AccessFactory
 import com.samourai.sentinel.data.db.DbHandler
 import com.samourai.sentinel.data.repository.CollectionRepository
@@ -16,9 +18,6 @@ import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.data.repository.TransactionsRepository
 import com.samourai.sentinel.service.WebSocketHandler
 import com.samourai.sentinel.tor.TorEventsReceiver
-import com.samourai.sentinel.tor.TorServiceController
-import com.samourai.sentinel.tor.lifecycle.BackgroundManager
-import com.samourai.sentinel.tor.notification.ServiceNotification
 import com.samourai.sentinel.tor.prefs.SentinelTorSettings
 import com.samourai.sentinel.ui.dojo.DojoUtility
 import com.samourai.sentinel.ui.home.HomeActivity
@@ -26,6 +25,9 @@ import com.samourai.sentinel.ui.utils.PrefsUtil
 import com.samourai.sentinel.util.MonetaryUtil
 import com.samourai.sentinel.util.apiScope
 import com.samourai.sentinel.util.dataBaseScope
+import io.matthewnelson.topl_service.TorServiceController
+import io.matthewnelson.topl_service.lifecycle.BackgroundManager
+import io.matthewnelson.topl_service.notification.ServiceNotification
 import io.paperdb.Paper
 import kotlinx.coroutines.*
 import org.koin.android.ext.koin.androidContext
@@ -121,16 +123,27 @@ class SentinelApplication : Application() {
             it.torLogs.observeForever { log ->
                 if (log.contains("Bootstrapped 100%")) {
                     SentinelState.torState = SentinelState.TorState.ON
-                    it.socksPortAddress?.let { socksPortAddress -> createProxy(socksPortAddress) }
                 }
             }
-
+            it.torPortInfo.observeForever { torInfo ->
+                torInfo.socksPort?.let { port ->
+                    createProxy(port)
+                }
+            }
         }
         if (SentinelState.isTorRequired()) {
             TorServiceController.startTor()
         }
     }
 
+
+    private fun createProxy(proxyUrl: String) {
+        val host = proxyUrl.split(":")[0].trim()
+        val port = proxyUrl.split(":")[1]
+        val proxy = Proxy(Proxy.Type.SOCKS, InetSocketAddress(
+                host, port.trim().toInt()))
+        SentinelState.torProxy = proxy;
+    }
 
     private fun setUpChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -151,19 +164,9 @@ class SentinelApplication : Application() {
     }
 
 
-    /**
-     * create Tor proxy
-     */
-    private fun createProxy(proxyUrl: String) {
-        val host = proxyUrl.split(":")[0].trim()
-        val port = proxyUrl.split(":")[1]
-        SentinelState.torProxy = Proxy(Proxy.Type.SOCKS, InetSocketAddress(
-                host, port.trim().toInt()))
-    }
-
     private fun gePolicyManager(): BackgroundManager.Builder.Policy {
         return BackgroundManager.Builder()
-                .keepAliveWhileInBackground()
+                .runServiceInForeground(true)
     }
 
     private fun getTorNotificationBuilder(): ServiceNotification.Builder {

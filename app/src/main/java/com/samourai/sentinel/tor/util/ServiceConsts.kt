@@ -2,7 +2,7 @@ package com.samourai.sentinel.tor.util
 
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
-import io.matthewnelson.topl_core.base.BaseConsts
+import io.matthewnelson.topl_core_base.BaseConsts
 
 abstract class ServiceConsts: BaseConsts() {
 

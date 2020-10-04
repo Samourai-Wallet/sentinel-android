@@ -20,9 +20,9 @@ import com.samourai.sentinel.R
 import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.core.SentinelState.TorState.*
 import com.samourai.sentinel.data.Tx
-import com.samourai.sentinel.tor.TorServiceController
 import com.samourai.sentinel.ui.utils.showFloatingSnackBar
 import com.samourai.sentinel.ui.views.confirm
+import io.matthewnelson.topl_service.TorServiceController
 import kotlinx.android.synthetic.main.activity_explorer_web_view.*
 import timber.log.Timber
 

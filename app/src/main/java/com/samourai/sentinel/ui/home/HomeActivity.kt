@@ -18,7 +18,6 @@ import com.samourai.sentinel.api.APIConfig
 import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.service.WebSocketHandler
 import com.samourai.sentinel.service.WebSocketService
-import com.samourai.sentinel.tor.TorServiceController
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.adapters.CollectionsAdapter
 import com.samourai.sentinel.ui.collectionDetails.CollectionDetailsActivity
@@ -30,6 +29,7 @@ import com.samourai.sentinel.ui.utils.*
 import com.samourai.sentinel.ui.views.confirm
 import com.samourai.sentinel.util.FormatsUtil
 import com.samourai.sentinel.util.MonetaryUtil
+import io.matthewnelson.topl_service.TorServiceController
 import io.matthewnelson.topl_service.prefs.TorServicePrefs
 import kotlinx.android.synthetic.main.activity_home.*
 import org.koin.java.KoinJavaComponent.inject

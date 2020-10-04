@@ -18,7 +18,6 @@ import com.google.android.material.button.MaterialButton
 import com.samourai.sentinel.R
 import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.tor.TorEventsReceiver
-import com.samourai.sentinel.tor.TorServiceController
 import com.samourai.sentinel.ui.views.codeScanner.CameraFragmentBottomSheet
 import com.samourai.sentinel.ui.views.codeScanner.CodeScanner
 import com.samourai.sentinel.ui.views.codeScanner.CodeScannerView
@@ -26,6 +25,7 @@ import com.samourai.sentinel.ui.views.codeScanner.DecodeCallback
 import com.samourai.sentinel.ui.utils.AndroidUtil
 import com.samourai.sentinel.ui.views.GenericBottomSheet
 import com.samourai.sentinel.util.apiScope
+import io.matthewnelson.topl_service.TorServiceController
 import kotlinx.android.synthetic.main.fragment_bottomsheet_view_pager.*
 import kotlinx.coroutines.*
 import org.koin.java.KoinJavaComponent
