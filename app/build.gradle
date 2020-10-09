@@ -103,7 +103,6 @@ dependencies {
         transitive = true
     }
 
-    implementation 'io.paperdb:paperdb:2.7.1'
     implementation 'info.guardianproject:jtorctl:0.4'
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
