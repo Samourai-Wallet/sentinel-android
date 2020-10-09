@@ -32,6 +32,7 @@ import com.samourai.sentinel.util.MonetaryUtil
 import io.matthewnelson.topl_service.TorServiceController
 import io.matthewnelson.topl_service.prefs.TorServicePrefs
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.coroutines.*
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
@@ -136,9 +137,14 @@ class HomeActivity : SentinelActivity() {
             if (SentinelState.isTorRequired() && SentinelState.isTorStarted()) {
                 model.fetchBalance()
             } else {
-                SentinelState.torStateLiveData().observe(this, Observer {
+                SentinelState.torStateLiveData().observe(this, {
                     if (it == SentinelState.TorState.ON) {
-                        model.fetchBalance()
+                        GlobalScope.launch {
+                            delay(250L)
+                            withContext(Dispatchers.Main){
+                                model.fetchBalance()
+                            }
+                        }
                     }
                 })
             }

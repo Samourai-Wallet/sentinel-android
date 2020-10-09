@@ -179,7 +179,6 @@ class UTXOFragment : Fragment(), ActionMode.Callback {
                 utxo.value?.let {
                     holder.amount.text = "${MonetaryUtil.getInstance().formatToBtc(it)} BTC"
                 }
-                Timber.i("onBindViewHolder: pos:${position} ${utxo.selected}")
                 holder.address.text = utxo.addr.toString()
                 holder.checkBox.visibility = View.GONE
                 holder.itemView.setOnLongClickListener {

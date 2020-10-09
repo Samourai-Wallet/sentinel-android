@@ -1,18 +1,16 @@
-package com.samourai.sentinel.ui
+package com.samourai.sentinel
 
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
-import com.samourai.sentinel.BuildConfig
-import com.samourai.sentinel.R
 import com.samourai.sentinel.api.ApiService
 import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.core.SentinelState.Companion.torState
 import com.samourai.sentinel.core.access.AccessFactory
-import com.samourai.sentinel.data.db.DbHandler
+import com.samourai.sentinel.data.db.SentinelCollectionStore
+import com.samourai.sentinel.data.db.SentinelRoomDb
 import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.data.repository.TransactionsRepository
@@ -28,7 +26,6 @@ import com.samourai.sentinel.util.dataBaseScope
 import io.matthewnelson.topl_service.TorServiceController
 import io.matthewnelson.topl_service.lifecycle.BackgroundManager
 import io.matthewnelson.topl_service.notification.ServiceNotification
-import io.paperdb.Paper
 import kotlinx.coroutines.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -45,7 +42,6 @@ class SentinelApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Paper.init(applicationContext)
 
         setUpChannels()
         initializeDI()
@@ -72,13 +68,15 @@ class SentinelApplication : Application() {
             single { PrefsUtil(applicationContext) }
             single { DojoUtility() }
             single { AccessFactory.getInstance(null) }
-            single { DbHandler() }
+            single { SentinelCollectionStore() }
             single { MonetaryUtil.getInstance() }
             single { CollectionRepository() }
             single { ApiService() }
             single { ExchangeRateRepository() }
             single { TransactionsRepository() }
             single { WebSocketHandler() }
+            factory { SentinelRoomDb.getDatabase(applicationContext).txDao() }
+            factory { SentinelRoomDb.getDatabase(applicationContext).utxoDao() }
         }
 
         startKoin {
@@ -122,7 +120,8 @@ class SentinelApplication : Application() {
             }
             it.torLogs.observeForever { log ->
                 if (log.contains("Bootstrapped 100%")) {
-                    SentinelState.torState = SentinelState.TorState.ON
+                    it.torPortInfo.value?.socksPort?.let { it1 -> createProxy(it1) }
+                    torState = SentinelState.TorState.ON
                 }
             }
             it.torPortInfo.observeForever { torInfo ->

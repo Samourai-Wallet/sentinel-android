@@ -1,8 +1,7 @@
 package com.samourai.sentinel.ui.dojo
 
-import android.content.Context
 import com.samourai.sentinel.api.ApiService
-import com.samourai.sentinel.data.db.DbHandler
+import com.samourai.sentinel.data.db.SentinelCollectionStore
 import com.samourai.sentinel.data.db.PayloadRecord
 import com.samourai.sentinel.helpers.fromJSON
 import com.samourai.sentinel.helpers.toJSON
@@ -12,7 +11,6 @@ import okhttp3.Response
 import org.json.JSONObject
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
-import java.io.File
 
 /**
  * sentinel-android
@@ -25,7 +23,7 @@ class DojoUtility {
     private var apiKey: String? = null
     private var isAuthenticated = false;
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java)
-    private val dbHandler: DbHandler by inject(DbHandler::class.java)
+    private val dbHandler: SentinelCollectionStore by inject(SentinelCollectionStore::class.java)
     private val apiService: ApiService by inject(ApiService::class.java)
 
     private var dojoStore: PayloadRecord

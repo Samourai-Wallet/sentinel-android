@@ -49,7 +49,6 @@ class TransactionsViewModel(application: Application) : AndroidViewModel(applica
 
     fun setCollection(collection: PubKeyCollection) {
         this.collection = collection
-        transactionsRepository.fetchFromLocal(collection.id)
     }
 
     fun getMessage(): LiveData<String> {
@@ -57,10 +56,10 @@ class TransactionsViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun getTransactions(): LiveData<ArrayList<Tx>> {
-        return transactionsRepository.getTransactionsLiveData()
+        return transactionsRepository.getTransactionsLiveData(collection.id)
                 .map {
                     updateBalance()
-                    it
+                    ArrayList(it)
                 }
     }
 

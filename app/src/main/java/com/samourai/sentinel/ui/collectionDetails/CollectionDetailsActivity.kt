@@ -17,6 +17,7 @@ import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.collectionDetails.receive.ReceiveFragment
 import com.samourai.sentinel.ui.collectionDetails.send.SendFragment
+import com.samourai.sentinel.ui.collectionDetails.send.SpendFragmentContainer
 import com.samourai.sentinel.ui.collectionDetails.transactions.TransactionsFragment
 import kotlinx.android.synthetic.main.activity_collection_details.*
 import org.koin.java.KoinJavaComponent.inject
@@ -27,7 +28,7 @@ class CollectionDetailsActivity : SentinelActivity() {
 
     private lateinit var pagerAdapter: PagerAdapter;
     private val receiveFragment: ReceiveFragment = ReceiveFragment()
-    private val sendFragment: SendFragment = SendFragment()
+    private val sendFragment: SpendFragmentContainer = SpendFragmentContainer()
     private val transactionsFragment: TransactionsFragment = TransactionsFragment()
     private var collection: PubKeyCollection? = null
     private val repository: CollectionRepository by inject(CollectionRepository::class.java)
@@ -37,7 +38,7 @@ class CollectionDetailsActivity : SentinelActivity() {
         setContentView(R.layout.activity_collection_details)
         pagerAdapter = PagerAdapter(this)
         fragmentHostContainerPager.adapter = pagerAdapter
-//        fragmentHostContainerPager.isUserInputEnabled = false
+        fragmentHostContainerPager.isUserInputEnabled = false
 
         checkIntent()
         val w: Window = window

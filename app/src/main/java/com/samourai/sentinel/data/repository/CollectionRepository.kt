@@ -1,12 +1,8 @@
 package com.samourai.sentinel.data.repository
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.samourai.sentinel.core.access.AccessFactory
 import com.samourai.sentinel.data.PubKeyCollection
-import com.samourai.sentinel.data.db.DbHandler
-import com.samourai.sentinel.service.WebSocketHandler
-import com.samourai.sentinel.util.apiScope
+import com.samourai.sentinel.data.db.SentinelCollectionStore
 import com.samourai.sentinel.util.dataBaseScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,7 +16,7 @@ class CollectionRepository {
     val pubKeyCollections: ArrayList<PubKeyCollection> = arrayListOf()
     val collectionsLiveData: MutableLiveData<ArrayList<PubKeyCollection>> = MutableLiveData();
 
-    private val dbHandler: DbHandler by inject(DbHandler::class.java)
+    private val dbHandler: SentinelCollectionStore by inject(SentinelCollectionStore::class.java)
 
     fun addNew(pubKeyCollection: PubKeyCollection) {
         pubKeyCollection.id = UUID.randomUUID().toString()

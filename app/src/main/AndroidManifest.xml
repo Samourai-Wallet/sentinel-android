@@ -24,7 +24,7 @@
         tools:node="replace" />
 
     <application
-        android:name=".ui.SentinelApplication"
+        android:name=".SentinelApplication"
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"

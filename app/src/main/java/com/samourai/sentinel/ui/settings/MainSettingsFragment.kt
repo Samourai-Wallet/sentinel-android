@@ -20,7 +20,8 @@ import androidx.preference.PreferenceFragmentCompat
 import com.samourai.sentinel.R
 import com.samourai.sentinel.core.access.AccessFactory
 import com.samourai.sentinel.core.crypto.AESUtil
-import com.samourai.sentinel.data.db.DbHandler
+import com.samourai.sentinel.data.db.dao.TxDao
+import com.samourai.sentinel.data.db.dao.UtxoDao
 import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.ui.SentinelActivity
@@ -35,7 +36,6 @@ import com.samourai.sentinel.ui.views.confirm
 import com.samourai.sentinel.util.*
 import kotlinx.coroutines.*
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
 import java.io.*
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
@@ -44,7 +44,8 @@ import java.util.*
 class MainSettingsFragment : PreferenceFragmentCompat() {
 
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java);
-    private val dbHandler: DbHandler by inject(DbHandler::class.java);
+    private val txDao: TxDao by inject(TxDao::class.java);
+    private val utxoDao: UtxoDao by inject(UtxoDao::class.java);
     private val accessFactory: AccessFactory by inject(AccessFactory::class.java);
     private val collectionRepository: CollectionRepository by inject(CollectionRepository::class.java);
     private val exchangeRateRepository: ExchangeRateRepository by inject(ExchangeRateRepository::class.java);
@@ -162,7 +163,7 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
 
     private fun clearWallet() {
         (activity as AppCompatActivity).confirm(label = "Confirm",
-                message = "Are you sure want to remove this public key ?",
+                message = "Are you sure want to clear all the collections ?",
                 positiveText = "Yes",
                 negativeText = "No",
                 onConfirm = { confirmed ->
@@ -170,8 +171,8 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
                         settingsScope.launch {
                             try {
                                 withContext(Dispatchers.IO) {
-                                    dbHandler.getUTXOsStore().destroy()
-                                    dbHandler.getTxStore().destroy()
+                                    utxoDao.delete()
+                                    txDao.delete()
                                     collectionRepository.reset()
                                     dojoUtility.clearDojo()
                                     prefsUtil.clearAll()
@@ -191,8 +192,6 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
                                             },
                                             actionText = "Restart"
                                     )
-                                    apiScope.cancel("UserCancel")
-                                    dataBaseScope.cancel("UserCancel")
                                 }
                             } catch (ex: Exception) {
                                 withContext(Dispatchers.Main) {

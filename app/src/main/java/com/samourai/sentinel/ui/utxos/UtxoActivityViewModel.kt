@@ -3,18 +3,10 @@ package com.samourai.sentinel.ui.utxos
 import androidx.lifecycle.*
 import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.PubKeyModel
-import com.samourai.sentinel.data.Tx
 import com.samourai.sentinel.data.Utxo
-import com.samourai.sentinel.data.db.DbHandler
+import com.samourai.sentinel.data.db.dao.UtxoDao
 import com.samourai.sentinel.data.repository.CollectionRepository
-import com.samourai.sentinel.ui.utils.PrefsUtil
-import com.samourai.sentinel.ui.utils.logThreadInfo
-import com.samourai.sentinel.util.apiScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
 
 /**
  * sentinel-android
@@ -25,21 +17,7 @@ internal class UtxoActivityViewModel(private val pubKeyCollection: PubKeyCollect
 
 
     private val collectionRepository: CollectionRepository by inject(CollectionRepository::class.java)
-    private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java)
-    private val dbHandler: DbHandler by inject(DbHandler::class.java)
-
-    private val utxosLiveData: MutableLiveData<ArrayList<Utxo>> = MutableLiveData()
-
-    init {
-        val job = viewModelScope.launch {
-            fetchFromLocal()
-        }
-        job.invokeOnCompletion {
-            if(it != null){
-                 Timber.e(it)
-            }
-        }
-    }
+    private val utxoDao: UtxoDao by inject(UtxoDao::class.java)
 
     fun getPubKeys(): LiveData<ArrayList<PubKeyModel>> {
         val mediator = MediatorLiveData<ArrayList<PubKeyModel>>();
@@ -55,27 +33,9 @@ internal class UtxoActivityViewModel(private val pubKeyCollection: PubKeyCollect
         return mediator
     }
 
-    private suspend fun fetchFromLocal() {
-        try {
 
-            val readValue: ArrayList<Utxo> = dbHandler.getUTXOsStore().read(pubKeyCollection.id)
-                    ?: arrayListOf()
-            if (readValue.size != 0) {
-                withContext(Dispatchers.Main) {
-                    utxosLiveData.postValue(readValue)
-                }
-            }
-        } catch (e: Exception) {
-            throw  e
-        }
-    }
-
-    public fun getUtxo(pubKey: String): LiveData<ArrayList<Utxo>> {
-        val mediator = MediatorLiveData<ArrayList<Utxo>>()
-        mediator.addSource(utxosLiveData) { utxos ->
-            mediator.postValue(utxos.filter { it.isBelongsToPubKey(pubKey) }.toCollection(ArrayList()))
-        }
-        return mediator
+    fun getUtxo(pubKey: String): LiveData<List<Utxo>> {
+        return utxoDao.getUTXObyCollectionAndPubKey(pubKeyCollection.id, pubKey)
     }
 
     class UtxoViewModelViewModelFactory(private val pubKeyCollection: PubKeyCollection) : ViewModelProvider.Factory {

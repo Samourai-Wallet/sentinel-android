@@ -7,7 +7,8 @@ import com.samourai.sentinel.core.crypto.AESUtil
 import com.samourai.sentinel.data.AddressTypes
 import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.PubKeyModel
-import com.samourai.sentinel.data.db.DbHandler
+import com.samourai.sentinel.data.db.dao.TxDao
+import com.samourai.sentinel.data.db.dao.UtxoDao
 import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.helpers.fromJSON
 import com.samourai.sentinel.helpers.toJSON
@@ -19,7 +20,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
 
 /**
  * sentinel-android
@@ -29,7 +29,8 @@ import timber.log.Timber
 class ExportImportUtil {
 
     private val accessFactory: AccessFactory by inject(AccessFactory::class.java);
-    private val dbHandler: DbHandler by inject(DbHandler::class.java);
+    private val txDao: TxDao by inject(TxDao::class.java);
+    private val utxoDao: UtxoDao by inject(UtxoDao::class.java);
     private val dojoUtility: DojoUtility by inject(DojoUtility::class.java);
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java);
     private val collectionRepository: CollectionRepository by inject(CollectionRepository::class.java);
@@ -177,8 +178,8 @@ class ExportImportUtil {
     suspend fun startImportCollections(pubKeyCollection: ArrayList<PubKeyCollection>, replace: Boolean) = withContext(Dispatchers.IO) {
         try {
             if (replace) {
-                dbHandler.getUTXOsStore().destroy()
-                dbHandler.getTxStore().destroy()
+                utxoDao.delete()
+                txDao.delete()
                 collectionRepository.reset()
             }
             pubKeyCollection.forEach { collectionRepository.addNew(it) }

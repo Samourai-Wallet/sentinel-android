@@ -1,22 +1,19 @@
 package com.samourai.sentinel.data.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.samourai.sentinel.api.ApiService
 import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.data.*
-import com.samourai.sentinel.data.db.DbHandler
+import com.samourai.sentinel.data.db.dao.TxDao
+import com.samourai.sentinel.data.db.dao.UtxoDao
 import com.samourai.sentinel.helpers.fromJSON
-import com.samourai.sentinel.helpers.toJSON
 import com.samourai.sentinel.ui.utils.logThreadInfo
 import com.samourai.sentinel.util.apiScope
 import kotlinx.coroutines.*
 import okhttp3.Response
 import org.json.JSONObject
-import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
 
 /**
  * sentinel-android
@@ -32,35 +29,17 @@ import timber.log.Timber
  */
 class TransactionsRepository {
 
-    private val transactions: ArrayList<Tx> = arrayListOf()
-    private var transactionsLiveData: MutableLiveData<ArrayList<Tx>> = MutableLiveData(arrayListOf())
-    private val dbHandler: DbHandler by inject(DbHandler::class.java)
+    private val txDao: TxDao by inject(TxDao::class.java)
+    private val utxoDao: UtxoDao by inject(UtxoDao::class.java)
     private val apiService: ApiService by inject(ApiService::class.java)
     private val collectionRepository: CollectionRepository by inject(CollectionRepository::class.java)
     private val loading: MutableLiveData<Boolean> = MutableLiveData(false)
-    private val txStore = dbHandler.getTxStore()
 
     //track currently loading collection
     var loadingCollectionId = ""
 
-    fun getTransactionsLiveData(): LiveData<ArrayList<Tx>> {
-        return transactionsLiveData
-    }
-
-    fun fetchFromLocal(collectionId: String) = apiScope.launch {
-        try {
-            logThreadInfo("fetchFromLocal")
-            val collection = collectionRepository.findById(collectionId) ?: return@launch
-            val readValue: ArrayList<Tx> = txStore.read(collection.id)
-                    ?: arrayListOf()
-            if (readValue.size != 0) {
-                withContext(Dispatchers.Main) {
-                    setTransactions(readValue)
-                }
-            }
-        } catch (e: Exception) {
-            throw  e
-        }
+    fun getTransactionsLiveData(collectionId: String): LiveData<List<Tx>> {
+        return txDao.getAllTx(collectionId)
     }
 
     /**
@@ -74,7 +53,6 @@ class TransactionsRepository {
             val newTransactions: ArrayList<Tx> = arrayListOf();
             val utxos: ArrayList<Utxo> = arrayListOf();
             val jobs: ArrayList<Deferred<Response>> = arrayListOf()
-            transactions.clear()
             collection.pubs.forEach {
                 val item = apiScope.async {
                     apiService.getWallet(it.pubKey)
@@ -107,11 +85,18 @@ class TransactionsRepository {
                         val items = response.txs.map { tx ->
                             tx.associatedPubKey = pubKeyAssociated.pubKey
                             val txBlockHeight = tx.block_height ?: 0
-                            tx.confirmations = if (latestBlockHeight > 0L && txBlockHeight  > 0L) (latestBlockHeight.minus(txBlockHeight)) + 1 else 0
+                            tx.collectionId = collectionId
+                            tx.confirmations = if (latestBlockHeight > 0L && txBlockHeight > 0L) (latestBlockHeight.minus(txBlockHeight)) + 1 else 0
                             tx
                         }
                         response.unspent_outputs?.let {
-                            utxos.addAll(response.unspent_outputs)
+                            val list = response.unspent_outputs.toMutableList().map {
+                                it.pubKey = pubKeyAssociated.pubKey
+                                it.idx = "${it.txHash}:${it.txOutputN}:${collectionId}"
+                                it.collectionId = collectionId
+                                it
+                            }.toList()
+                            utxos.addAll(list)
                         }
                         collection.pubs[index].balance = response.wallet.final_balance
                         if (collection.pubs[index].type != AddressTypes.ADDRESS) {
@@ -137,7 +122,7 @@ class TransactionsRepository {
                 }
             }
             apiScope.launch(Dispatchers.Main) {
-                setTransactions(newTransactions)
+                loading.postValue(false)
             }
             saveTx(newTransactions, collectionId)
             saveUtxos(utxos, collectionId)
@@ -149,44 +134,32 @@ class TransactionsRepository {
         }
     }
 
-    private fun setTransactions(newTransactions: ArrayList<Tx>) {
-        transactions.clear()
-        transactions.addAll(newTransactions)
-        transactionsLiveData.postValue(transactions)
-        loading.postValue(false)
-    }
-
     fun loadingState(): LiveData<Boolean> {
         return loading
     }
 
     private fun saveTx(transactions: ArrayList<Tx>, collectionId: String) = apiScope.launch {
         withContext(Dispatchers.IO) {
-            txStore.write(collectionId, transactions)
+            transactions.forEach {
+                txDao.insert(it)
+            }
         }
     }
 
 
     private fun saveUtxos(utxos: ArrayList<Utxo>, collectionId: String) = apiScope.launch {
         withContext(Dispatchers.IO) {
-            dbHandler.getUTXOsStore().write(collectionId, utxos);
+            utxos.forEach {
+                utxoDao.insert(it)
+            }
         }
     }
 
     fun removeTxsRelatedToPubKey(pubKeyModel: PubKeyModel, collectionId: String) {
-        transactions.clear()
-        transactions.addAll(transactions.filter { it.associatedPubKey.toLowerCase() != pubKeyModel.pubKey.toLowerCase() })
-        transactionsLiveData.postValue(transactions)
         val collection = collectionRepository.findById(collectionId)
         if (collection != null) {
-            collectionRepository.update(collection)
+            txDao.deleteRelatedCollection(collection.id, pubKeyModel.pubKey)
         }
-        saveTx(transactions, collectionId)
-    }
-
-    fun clear() {
-        transactions.clear()
-        transactionsLiveData = MutableLiveData()
     }
 
     suspend fun fetchFromServer(collection: PubKeyCollection) {

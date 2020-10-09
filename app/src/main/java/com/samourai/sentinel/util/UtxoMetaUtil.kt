@@ -1,7 +1,7 @@
 package com.samourai.sentinel.util
 
 import com.samourai.sentinel.data.Utxo
-import com.samourai.sentinel.data.db.DbHandler
+import com.samourai.sentinel.data.db.SentinelCollectionStore
 import kotlinx.coroutines.*
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
@@ -21,7 +21,7 @@ object UtxoMetaUtil {
     data class BlockPayload(val utxoBlockState: MutableMap<String, UtxoState>)
 
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    private val dbHandler: DbHandler by inject(DbHandler::class.java)
+    private val dbHandler: SentinelCollectionStore by inject(SentinelCollectionStore::class.java)
 
     private var utxoBlockState: MutableMap<String, UtxoState> = mutableMapOf()
 
@@ -34,7 +34,7 @@ object UtxoMetaUtil {
         utxoBlockState[key] = UtxoState(
                 utxo.txHash!!,
                 utxo.txOutputN!!,
-                utxo.getAssociatedPubKey(),
+                utxo.pubKey,
                 if (utxo.value != null) utxo.value!! else 0
         )
         write()

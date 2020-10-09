@@ -23,10 +23,7 @@ import com.samourai.sentinel.data.repository.TransactionsRepository
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.collectionEdit.CollectionEditActivity
 import com.samourai.sentinel.ui.fragments.TransactionsDetailsBottomSheet
-import com.samourai.sentinel.ui.utils.PrefsUtil
-import com.samourai.sentinel.ui.utils.RecyclerViewItemDividerDecorator
-import com.samourai.sentinel.ui.utils.SlideInItemAnimator
-import com.samourai.sentinel.ui.utils.showFloatingSnackBar
+import com.samourai.sentinel.ui.utils.*
 import com.samourai.sentinel.ui.utxos.UtxosActivity
 import com.samourai.sentinel.util.MonetaryUtil
 import kotlinx.android.synthetic.main.fragment_transactions.*
@@ -42,7 +39,6 @@ class TransactionsFragment : Fragment() {
     private lateinit var balanceLiveData: LiveData<Long>
     private val transactionsViewModel: TransactionsViewModel by viewModels()
     private lateinit var collection: PubKeyCollection;
-    private val transactionsRepository: TransactionsRepository by inject(TransactionsRepository::class.java)
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java)
     private val transactionAdapter: TransactionAdapter = TransactionAdapter()
     private val monetaryUtil: MonetaryUtil by inject(MonetaryUtil::class.java)
@@ -251,7 +247,6 @@ class TransactionsFragment : Fragment() {
     }
 
     override fun onDetach() {
-        transactionsRepository.clear()
         super.onDetach()
     }
 

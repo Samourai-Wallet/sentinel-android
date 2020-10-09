@@ -43,7 +43,7 @@ class UtxosActivity : SentinelActivity() {
     private fun listenChanges(utxoViewModel: UtxoActivityViewModel) {
         pubKeys.forEach { pubKeyModel ->
             utxoViewModel.getUtxo(pubKeyModel.pubKey).observe(this@UtxosActivity, {
-                utxoFragments[pubKeyModel.pubKey]?.setUtxos(it)
+                utxoFragments[pubKeyModel.pubKey]?.setUtxos(ArrayList(it))
             })
         }
 
@@ -95,7 +95,7 @@ class UtxosActivity : SentinelActivity() {
 
             override fun onPageSelected(position: Int) {
                 utxoViewModel.getUtxo(pubKeys[position].pubKey).observe(this@UtxosActivity, {
-                    utxoFragments[pubKeys[position].pubKey]?.setUtxos(it)
+                    utxoFragments[pubKeys[position].pubKey]?.setUtxos(ArrayList(it))
                 })
             }
 

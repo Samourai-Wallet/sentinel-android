@@ -31,7 +31,7 @@ import kotlin.collections.ArrayList
  *
  * @author Sarath
  */
-class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
+class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),Filterable{
     private val MAX_CONFIRM_COUNT = 3
     private val VIEW_ITEM = 1
     private val VIEW_SECTION = 0
@@ -39,26 +39,30 @@ class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filt
     private val appContext: Context by inject(Context::class.java)
     private var onClickListener: (Tx) -> Unit = {};
     private lateinit var collection: PubKeyCollection;
-    private val diffCallBack = object : DiffUtil.ItemCallback<TxRvModel>() {
 
-        override fun areItemsTheSame(oldItem: TxRvModel, newItem: TxRvModel): Boolean {
-            if (oldItem.section != null) {
-                return oldItem.section == newItem.section
-            }
-            return oldItem.tx.hash == newItem.tx.hash
-        }
-
-        override fun areContentsTheSame(oldItem: TxRvModel, newItem: TxRvModel): Boolean {
-            return oldItem == newItem
-        }
-
-    }
-    private val mDiffer: AsyncListDiffer<TxRvModel> = AsyncListDiffer(this, diffCallBack)
+    //    private sta val diffCallBack =
+    private val mDiffer: AsyncListDiffer<TxRvModel> = AsyncListDiffer(this, DIFF)
 
     init {
 //        this.setHasStableIds(true)
     }
 
+    companion object {
+        val DIFF = object : DiffUtil.ItemCallback<TxRvModel>() {
+            override fun areItemsTheSame(oldItem: TxRvModel, newItem: TxRvModel): Boolean {
+                if (oldItem.section != null) {
+                    return oldItem.section == newItem.section
+                }
+                return oldItem.tx.hash == newItem.tx.hash
+            }
+
+            override fun areContentsTheSame(oldItem: TxRvModel, newItem: TxRvModel): Boolean {
+                return oldItem == newItem
+            }
+
+        }
+
+    }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txAmount: TextView = view.findViewById(R.id.tvAmount)
@@ -133,7 +137,7 @@ class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filt
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(filterItem: CharSequence?): FilterResults {
-
+                logThreadInfo("performFiltering FIl")
                 val filtered: ArrayList<Tx>
                 val filterString = filterItem.toString()
                 filtered = if (filterString.isEmpty()) {
@@ -147,9 +151,9 @@ class TransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filt
             }
 
             override fun publishResults(filterItem: CharSequence?, results: FilterResults?) {
-                logThreadInfo("MXMXM")
-                CoroutineScope(Dispatchers.Default).launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     try {
+                        logThreadInfo("performFiltering")
                         val items = makeSections(results?.values as List<Tx>)
                         withContext(Dispatchers.Main) {
                             mDiffer.submitList(items)

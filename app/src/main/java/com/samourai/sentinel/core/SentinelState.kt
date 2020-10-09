@@ -116,7 +116,6 @@ class SentinelState {
 
                 override fun onFinish() {
                     start()
-                    Timber.i("onFinish: ")
                 }
             }.start()
         }

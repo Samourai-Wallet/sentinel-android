@@ -169,7 +169,6 @@ class CollectionEditActivity : SentinelActivity() {
                         if (confirmed) {
                             val collection = viewModel.getCollection().value ?: return@confirm
                             apiScope.launch(context = Dispatchers.IO) {
-                                transactionsRepository.fetchFromLocal(collection.id)
                                 transactionsRepository.removeTxsRelatedToPubKey(collection.pubs[index], collection.id)
                                 needCollectionRefresh = true
                                 withContext(Dispatchers.Main) {
