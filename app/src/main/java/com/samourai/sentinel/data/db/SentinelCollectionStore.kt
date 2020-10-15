@@ -14,7 +14,6 @@ class SentinelCollectionStore {
         return PayloadRecord(storeLocation, "collections.payload")
     }
 
-
     fun getDojoStore(): PayloadRecord {
         return PayloadRecord(storeLocation, "dojo.payload")
     }
