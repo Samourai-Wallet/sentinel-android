@@ -78,7 +78,7 @@ class TransactionsDetailsBottomSheet(private var tx: Tx) : GenericBottomSheet() 
         txDetailsBlockId.text = "${tx.block_height}"
         txDetailsConfirmation.text = tx.confirmations.toString()
         if (tx.result != null)
-            txDetailsTime.text = "${fmt.format(tx.time)} "
+            txDetailsTime.text = "${fmt.format(Date(tx.time* 1000))} "
         txDetailsHash.text = tx.hash
 
     }

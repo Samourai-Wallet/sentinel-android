@@ -19,10 +19,10 @@ interface TxDao {
     fun getAllTx(collectionID: String): LiveData<List<Tx>>
 
 
-    @Query("SELECT * from transactions WHERE collectionId=:collectionID  AND associatedPubKey=:associatedPubKey ORDER BY time ")
-    fun getTxByPubKey(collectionID: String, associatedPubKey: String): DataSource.Factory<Int, Tx>
+    @Query("SELECT * from transactions WHERE collectionId=:collectionID  AND associatedPubKey=:associatedPubKey ORDER BY time DESC ,confirmations ASC ")
+    fun getPaginatedTx(collectionID: String, associatedPubKey: String): DataSource.Factory<Int, Tx>
 
-    @Query("SELECT * from transactions WHERE collectionId=:collectionID AND associatedPubKey=:pubKey  ORDER BY time ASC LIMIT 70")
+    @Query("SELECT * from transactions WHERE collectionId=:collectionID AND associatedPubKey=:pubKey  ORDER BY time DESC LIMIT 70")
     fun getAssociated(collectionID: String, pubKey: String): List<Tx>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

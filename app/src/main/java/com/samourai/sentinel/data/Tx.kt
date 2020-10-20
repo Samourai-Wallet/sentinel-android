@@ -60,6 +60,7 @@ data class Tx(
 
         if (hash != other.hash) return false
         if (time != other.time) return false
+        if (confirmations != other.confirmations) return false
         if (associatedPubKey != other.associatedPubKey) return false
         if (version != other.version) return false
         if (block_height != other.block_height) return false
