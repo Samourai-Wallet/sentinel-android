@@ -79,7 +79,7 @@ dependencies {
     def koin_version = '2.1.6'
     def topl_android_version = "1.0.0-beta02"
     def room_version = "2.2.5"
-//    def paging_version = "2.1.2"
+    def paging_version = "2.1.2"
 
     implementation('com.github.Samourai-Wallet:extlibj:0.0.11') {
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
@@ -133,7 +133,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room_version"
-//    implementation "androidx.paging:paging-runtime-ktx:$paging_version" // For Kotlin use paging-runtime-ktx
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version" // For Kotlin use paging-runtime-ktx
 
     implementation "org.koin:koin-android:$koin_version"
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"

@@ -27,9 +27,9 @@
     </style>
 
     <style name="AppThemeV3.NoStatusBar" parent="AppThemeV3">
-        <item name="windowActionBar">false</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
+<!--        <item name="windowActionBar">false</item>-->
+<!--        <item name="android:windowTranslucentNavigation">true</item>-->
+<!--        <item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="statusBarBackground">@android:color/transparent</item>
     </style>

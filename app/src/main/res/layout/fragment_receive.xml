@@ -15,8 +15,6 @@
             android:layout_width="match_parent"
             app:layout_scrollFlags="snap"
             android:elevation="0dp"
-            android:fitsSystemWindows="true"
-            android:layout_marginTop="28dp"
             android:layout_height="?attr/actionBarSize">
 
         </androidx.appcompat.widget.Toolbar>

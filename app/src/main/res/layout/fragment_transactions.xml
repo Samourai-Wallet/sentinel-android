@@ -7,15 +7,15 @@
     <com.google.android.material.appbar.AppBarLayout
         style="@style/ToolbarV3"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbarCollectionDetails"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_marginTop="28dp"
             android:elevation="0dp"
-            android:fitsSystemWindows="true"
+            android:fitsSystemWindows="false"
             app:layout_scrollFlags="scroll">
 
         </androidx.appcompat.widget.Toolbar>
@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center|center_horizontal"
                 android:textSize="24sp"
+                android:paddingTop="@dimen/spacing_mlarge"
                 tools:text="30.0332 BTC" />
 
             <TextView
@@ -46,15 +47,30 @@
                 android:layout_marginBottom="12dp"
                 android:gravity="center|center_horizontal"
                 android:textSize="14sp"
+                android:paddingBottom="@dimen/spacing_mlarge"
                 tools:text="1234 USD" />
 
         </LinearLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="horizontal"
+            app:tabMode="scrollable"
+            app:layout_scrollFlags="snap"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
+
+        </com.google.android.material.tabs.TabLayout>
+
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/transactionsSwipeContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.core.widget.NestedScrollView
@@ -116,27 +132,11 @@
                     </com.google.android.material.chip.ChipGroup>
                 </HorizontalScrollView>
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:tabMode="scrollable"
-                    app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
-
-
-                </com.google.android.material.tabs.TabLayout>
                 <!--                <View-->
                 <!--                    android:layout_width="match_parent"-->
                 <!--                    android:layout_height="2dp"-->
                 <!--                    android:background="@color/v3_background_light"-->
                 <!--                    android:paddingTop="4dp" />-->
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/transactionsRecycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="8dp" />
 
 
             </LinearLayout>
@@ -145,6 +145,16 @@
         </androidx.core.widget.NestedScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/txViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </androidx.viewpager2.widget.ViewPager2>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabGoUp"

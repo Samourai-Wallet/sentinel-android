@@ -68,7 +68,7 @@
         <activity
             android:name=".ui.collectionDetails.CollectionDetailsActivity"
             android:label="@string/title_activity_collection_details"
-            android:theme="@style/AppThemeV3.NoStatusBar" />
+            android:theme="@style/AppThemeV3" />
         <activity
             android:name=".ui.collectionEdit.CollectionEditActivity"
             android:label=""

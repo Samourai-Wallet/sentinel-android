@@ -2,35 +2,38 @@ package com.samourai.sentinel.ui.collectionDetails.transactions
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginStart
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.chip.Chip
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.samourai.sentinel.R
 import com.samourai.sentinel.data.PubKeyCollection
-import com.samourai.sentinel.data.repository.TransactionsRepository
+import com.samourai.sentinel.data.Tx
+import com.samourai.sentinel.data.db.dao.TxDao
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.collectionEdit.CollectionEditActivity
 import com.samourai.sentinel.ui.fragments.TransactionsDetailsBottomSheet
-import com.samourai.sentinel.ui.utils.*
+import com.samourai.sentinel.ui.utils.PrefsUtil
+import com.samourai.sentinel.ui.utils.RecyclerViewItemDividerDecorator
+import com.samourai.sentinel.ui.utils.showFloatingSnackBar
 import com.samourai.sentinel.ui.utxos.UtxosActivity
 import com.samourai.sentinel.util.MonetaryUtil
 import kotlinx.android.synthetic.main.fragment_transactions.*
 import org.bitcoinj.core.Coin
-import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
 
 
 class TransactionsFragment : Fragment() {
@@ -40,7 +43,7 @@ class TransactionsFragment : Fragment() {
     private val transactionsViewModel: TransactionsViewModel by viewModels()
     private lateinit var collection: PubKeyCollection;
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java)
-    private val transactionAdapter: TransactionAdapter = TransactionAdapter()
+//    private val transactionAdapter: TransactionAdapter = TransactionAdapter()
     private val monetaryUtil: MonetaryUtil by inject(MonetaryUtil::class.java)
     private var selectedIndex = 0
     override fun onCreateView(
@@ -58,16 +61,12 @@ class TransactionsFragment : Fragment() {
 
         setUpToolBar()
 
-        transactionAdapter.setOnclickListener {
-            val dojoConfigureBottomSheet = TransactionsDetailsBottomSheet(it)
-            dojoConfigureBottomSheet.show(childFragmentManager, dojoConfigureBottomSheet.tag)
-        }
 
-        transactionsRecycler.layoutManager = LinearLayoutManager(context)
-        transactionsRecycler.adapter = transactionAdapter
-        val decorator = RecyclerViewItemDividerDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider_tx)!!);
-        transactionsRecycler.addItemDecoration(decorator)
-        transactionsRecycler.itemAnimator = SlideInItemAnimator(slideFromEdge = Gravity.TOP)
+//        transactionsRecycler.layoutManager = LinearLayoutManager(context)
+//        transactionsRecycler.adapter = transactionAdapter
+//        val decorator = RecyclerViewItemDividerDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider_tx)!!);
+//        transactionsRecycler.addItemDecoration(decorator)
+//        transactionsRecycler.itemAnimator = SlideInItemAnimator(slideFromEdge = Gravity.TOP)
         fabGoUp.hide()
         fabGoUp.setOnClickListener {
             transactionsNestedScrollView.post {
@@ -107,16 +106,26 @@ class TransactionsFragment : Fragment() {
 
     private fun initViewModel() {
         transactionsViewModel.setCollection(collection)
-        transactionAdapter.setCollection(collection)
+//        transactionAdapter.setCollection(collection)
+//
+//        transactionsViewModel.getTransactions().observe(this.viewLifecycleOwner, {
+//            transactionAdapter.updateTx(it)
+//            if (pubKeySelector.listSelection > 0) {
+//                setAdapterFilter()
+//            } else {
+//                setAdapterFilter()
+//            }
+//        })
 
-        transactionsViewModel.getTransactions().observe(this.viewLifecycleOwner, {
-            transactionAdapter.updateTx(it)
-            if (pubKeySelector.listSelection > 0) {
-                setAdapterFilter()
-            } else {
-                setAdapterFilter()
-            }
-        })
+//        childFragmentManager.beginTransaction()
+//                .add(R.id.transactionsPager, ListViewFragment("", "",collection,transactionsViewModel))
+//                .commit()
+
+        txViewPager.adapter = CollectionPubKeysViewpager(this.activity, collection)
+
+        TabLayoutMediator(tabLayout, txViewPager) { tab, position ->
+            tab.text = collection.pubs[position].label
+        }.attach()
 
         balanceLiveData.observe(viewLifecycleOwner, {
             collectionBalanceBtc.text = "${getBTCDisplayAmount(it)} BTC"
@@ -138,10 +147,10 @@ class TransactionsFragment : Fragment() {
                                 .showFloatingSnackBar(transactionsSwipeContainer, "Error : $it")
                 }
         )
-
-        transactionsSwipeContainer.setOnRefreshListener {
-            transactionsViewModel.fetch()
-        }
+//
+//        transactionsSwipeContainer.setOnRefreshListener {
+//            transactionsViewModel.fetch()
+//        }
 
 
         setUpSpinner()
@@ -151,20 +160,20 @@ class TransactionsFragment : Fragment() {
         val items = collection.pubs.map { it.label }.toMutableList()
         items.add(0, "All")
 
-        if (prefsUtil.detailsFilterType == "DropDown") {
-            pubKeySelectorLayout.visibility = View.VISIBLE
-            tabLayout.visibility = View.GONE
-            val adapter: ArrayAdapter<String> = ArrayAdapter(requireContext(),
-                    R.layout.dropdown_menu_popup_item, items)
-            pubKeySelector.inputType = InputType.TYPE_NULL
-            pubKeySelector.setAdapter(adapter)
-            pubKeySelector.setText("All", false)
-            pubKeySelector.onItemClickListener = AdapterView.OnItemClickListener { _, _, index, _ ->
-                selectedIndex = index
-                setAdapterFilter()
-            }
-
-        }
+//        if (prefsUtil.detailsFilterType == "DropDown") {
+//            pubKeySelectorLayout.visibility = View.VISIBLE
+//            tabLayout.visibility = View.GONE
+//            val adapter: ArrayAdapter<String> = ArrayAdapter(requireContext(),
+//                    R.layout.dropdown_menu_popup_item, items)
+//            pubKeySelector.inputType = InputType.TYPE_NULL
+//            pubKeySelector.setAdapter(adapter)
+//            pubKeySelector.setText("All", false)
+//            pubKeySelector.onItemClickListener = AdapterView.OnItemClickListener { _, _, index, _ ->
+//                selectedIndex = index
+//                setAdapterFilter()
+//            }
+//
+//        }
 //        chipGroup.removeAllViews()
 //        items.forEachIndexed { index, it ->
 //            val chip = Chip(requireContext())
@@ -192,19 +201,19 @@ class TransactionsFragment : Fragment() {
 //        chipGroup.setOnCheckedChangeListener { group, checkedId ->
 //
 //        }
-        if (prefsUtil.detailsFilterType == "Tab") {
-            pubKeySelectorLayout.visibility = View.GONE
-            tabLayout.visibility = View.VISIBLE
-            tabLayout.removeAllTabs()
-            items.forEachIndexed { _, it ->
-                tabLayout.addTab(tabLayout.newTab().apply {
-                    contentDescription = it
-                    tag = it
-                    text = it
-                })
-            }
-
-        }
+//        if (prefsUtil.detailsFilterType == "Tab") {
+//            pubKeySelectorLayout.visibility = View.GONE
+//            tabLayout.visibility = View.VISIBLE
+//            tabLayout.removeAllTabs()
+//            items.forEachIndexed { _, it ->
+//                tabLayout.addTab(tabLayout.newTab().apply {
+//                    contentDescription = it
+//                    tag = it
+//                    text = it
+//                })
+//            }
+//
+//        }
 
     }
 
@@ -215,11 +224,11 @@ class TransactionsFragment : Fragment() {
      * and shows in the list
      */
     private fun setAdapterFilter() {
-        if (selectedIndex == 0) {
-            transactionAdapter.filter.filter("")
-        } else {
-            transactionAdapter.filter.filter(collection.pubs[selectedIndex - 1].pubKey)
-        }
+//        if (selectedIndex == 0) {
+//            transactionAdapter.filter.filter("")
+//        } else {
+//            transactionAdapter.filter.filter(collection.pubs[selectedIndex - 1].pubKey)
+//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -242,7 +251,7 @@ class TransactionsFragment : Fragment() {
             initViewModel()
             setUpSpinner()
             setUpToolBar()
-            transactionsRecycler.adapter?.notifyDataSetChanged()
+//            transactionsRecycler.adapter?.notifyDataSetChanged()
         }
     }
 
@@ -288,5 +297,74 @@ class TransactionsFragment : Fragment() {
         const val EDIT_REQUEST_ID = 11;
     }
 
+    private class CollectionPubKeysViewpager(fa: FragmentActivity?, private val collection: PubKeyCollection) : FragmentStateAdapter(fa!!) {
+        override fun createFragment(position: Int): Fragment {
+            return ListViewFragment(position, collection)
+        }
+
+        override fun getItemCount(): Int {
+            return collection.pubs.size
+        }
+    }
+
+
+}
+
+class ListViewFragment(private val position: Int,
+                       private val collection: PubKeyCollection) : Fragment() {
+
+    private val transactionAdapter: TransactionAdapter = TransactionAdapter()
+
+    class TransactionsViewModel(val pubKeyCollection: PubKeyCollection, val position: Int) : ViewModel() {
+        private val txDao: TxDao by inject(TxDao::class.java)
+        val txPagedLiveData: LiveData<PagedList<Tx>>
+
+        init {
+            txPagedLiveData = LivePagedListBuilder(
+                    txDao.getTxByPubKey(pubKeyCollection.id, pubKeyCollection.pubs[position].pubKey), 12).build()
+        }
+
+        class TransactionsViewModelFactory(private val pubKeyCollection: PubKeyCollection, private val position: Int) : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(TransactionsViewModel::class.java)) {
+                    return TransactionsViewModel(pubKeyCollection, position) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
+        }
+
+        companion object {
+            fun getFactory(pubKeyCollection: PubKeyCollection, position: Int): TransactionsViewModelFactory {
+                return TransactionsViewModelFactory(pubKeyCollection, position)
+            }
+        }
+    }
+
+
+    private val transactionViewModel: TransactionsViewModel by viewModels(factoryProducer = { TransactionsViewModel.getFactory(collection, position) })
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_transactions_segement, container, false)
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val transactionsRecycler = view.findViewById<RecyclerView>(R.id.transactionsRecycler)
+
+        transactionsRecycler.layoutManager = LinearLayoutManager(context)
+        transactionsRecycler.adapter = transactionAdapter
+        val decorator = RecyclerViewItemDividerDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider_tx)!!)
+        transactionsRecycler.addItemDecoration(decorator)
+        transactionAdapter.setCollection(collection)
+        transactionAdapter.setOnclickListener {
+            val dojoConfigureBottomSheet = TransactionsDetailsBottomSheet(it)
+            dojoConfigureBottomSheet.show(childFragmentManager, dojoConfigureBottomSheet.tag)
+        }
+        transactionViewModel.txPagedLiveData.observe(this.viewLifecycleOwner, {
+            transactionAdapter.submitList(it)
+        })
+    }
 
 }
