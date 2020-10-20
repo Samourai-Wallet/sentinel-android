@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
@@ -32,7 +31,6 @@ import com.samourai.sentinel.util.MonetaryUtil
 import kotlinx.android.synthetic.main.fragment_transactions.*
 import org.bitcoinj.core.Coin
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
 
 
 class TransactionsFragment : Fragment() {
@@ -58,29 +56,12 @@ class TransactionsFragment : Fragment() {
 
         setUpToolBar()
 
-//        fabGoUp.hide()
-
-//        fabGoUp.setOnClickListener {
-////            transactionsNestedScrollView.post {
-////                transactionsNestedScrollView.fling(0)
-////                transactionsNestedScrollView.smoothScrollTo(0, 0)
-////            }
-//
-//        }
-//        transactionsNestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
-//            if (scrollY > (requireActivity() as SentinelActivity).screenRectDp.height()) {
-//                fabGoUp.show()
-//            } else {
-//                fabGoUp.hide()
-//            }
-//        })
-
     }
 
     private fun initViewModel() {
         transactionsViewModel.setCollection(collection)
 
-        txViewPager.adapter = CollectionPubKeysViewpager(this.activity, collection  )
+        txViewPager.adapter = CollectionPubKeysViewpager(this.activity, collection)
         txViewPager.offscreenPageLimit = 5
         TabLayoutMediator(tabLayout, txViewPager) { tab, position ->
             tab.text = collection.pubs[position].label
@@ -94,10 +75,6 @@ class TransactionsFragment : Fragment() {
                 collectionBalanceFiat.text = it
             }
         })
-        transactionsViewModel.getLoadingState().observe(this.viewLifecycleOwner, {
-//            transactionsSwipeContainer.isRefreshing = it
-            setUpSpinner()
-        })
         transactionsViewModel.getMessage().observe(
                 this.viewLifecycleOwner,
                 {
@@ -106,17 +83,7 @@ class TransactionsFragment : Fragment() {
                                 .showFloatingSnackBar(collectionBalanceBtc, "Error : $it")
                 }
         )
-
-
-        setUpSpinner()
     }
-
-    private fun setUpSpinner() {
-        val items = collection.pubs.map { it.label }.toMutableList()
-        items.add(0, "All")
-
-    }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,14 +104,8 @@ class TransactionsFragment : Fragment() {
         this.collection = collection
         if (isAdded) {
             initViewModel()
-            setUpSpinner()
             setUpToolBar()
-//            transactionsRecycler.adapter?.notifyDataSetChanged()
         }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -185,12 +146,13 @@ class TransactionsFragment : Fragment() {
         const val EDIT_REQUEST_ID = 11;
     }
 
-    private class CollectionPubKeysViewpager(fa: FragmentActivity?,
-                                             private val collection: PubKeyCollection,
+    private class CollectionPubKeysViewpager(
+            fa: FragmentActivity?,
+            private val collection: PubKeyCollection,
 
-    ) : FragmentStateAdapter(fa!!) {
+            ) : FragmentStateAdapter(fa!!) {
         override fun createFragment(position: Int): Fragment {
-            return ListViewFragment(position, collection)
+            return TransactionsListFragment(position, collection)
         }
 
         override fun getItemCount(): Int {
@@ -201,63 +163,3 @@ class TransactionsFragment : Fragment() {
 
 }
 
-class ListViewFragment(private val position: Int,
-                       private val collection: PubKeyCollection,
-) : Fragment() {
-
-    private val transactionAdapter: TransactionAdapter = TransactionAdapter()
-
-    class TransactionsViewModel(val pubKeyCollection: PubKeyCollection, val position: Int) : ViewModel() {
-        private val txDao: TxDao by inject(TxDao::class.java)
-        val txLiveData: LiveData<PagedList<Tx>>
-
-        init {
-            txLiveData = LivePagedListBuilder(
-                    txDao.getPaginatedTx(pubKeyCollection.id, pubKeyCollection.pubs[position].pubKey), 12).build()
-        }
-
-        class TransactionsViewModelFactory(private val pubKeyCollection: PubKeyCollection, private val position: Int) : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(TransactionsViewModel::class.java)) {
-                    return TransactionsViewModel(pubKeyCollection, position) as T
-                }
-                throw IllegalArgumentException("Unknown ViewModel class")
-            }
-        }
-
-        companion object {
-            fun getFactory(pubKeyCollection: PubKeyCollection, position: Int): TransactionsViewModelFactory {
-                return TransactionsViewModelFactory(pubKeyCollection, position)
-            }
-        }
-    }
-
-
-    private val transactionViewModel: TransactionsViewModel by viewModels(factoryProducer = { TransactionsViewModel.getFactory(collection, position) })
-
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_transactions_segement, container, false)
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val transactionsRecycler = view.findViewById<RecyclerView>(R.id.transactionsRecycler)
-
-        transactionsRecycler.layoutManager = LinearLayoutManager(context)
-        transactionsRecycler.adapter = transactionAdapter
-
-        val decorator = RecyclerViewItemDividerDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider_tx)!!)
-        transactionsRecycler.addItemDecoration(decorator)
-        transactionAdapter.setOnclickListener {
-            val dojoConfigureBottomSheet = TransactionsDetailsBottomSheet(it)
-            dojoConfigureBottomSheet.show(childFragmentManager, dojoConfigureBottomSheet.tag)
-        }
-
-        transactionViewModel.txLiveData.observe(this.viewLifecycleOwner, {
-            transactionAdapter.submitList(it)
-        })
-    }
-
-}
