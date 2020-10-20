@@ -55,14 +55,6 @@ class TransactionsViewModel(application: Application) : AndroidViewModel(applica
         return message
     }
 
-    fun getTransactions(): LiveData<ArrayList<Tx>> {
-        return transactionsRepository.getTransactionsLiveData(collection.id)
-                .map {
-                    updateBalance()
-                    ArrayList(it)
-                }
-    }
-
     private fun updateBalance() {
         balance.postValue(collection.balance)
     }

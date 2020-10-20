@@ -1,7 +1,6 @@
 <resources>
 
 
-
     <!-- v3 Theme -->
     <style name="AppThemeV3" parent="Theme.MaterialComponents.Bridge">
         <item name="windowNoTitle">true</item>
@@ -27,9 +26,9 @@
     </style>
 
     <style name="AppThemeV3.NoStatusBar" parent="AppThemeV3">
-<!--        <item name="windowActionBar">false</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
-<!--        <item name="android:windowTranslucentStatus">true</item>-->
+        <!--        <item name="windowActionBar">false</item>-->
+        <!--        <item name="android:windowTranslucentNavigation">true</item>-->
+        <!--        <item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="statusBarBackground">@android:color/transparent</item>
     </style>
@@ -140,5 +139,10 @@
     <style name="AppThemeV3.ChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@color/chip_background_color_state_list</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TabTextStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

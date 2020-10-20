@@ -59,7 +59,12 @@
             android:scrollbars="horizontal"
             app:layout_scrollFlags="snap"
             app:tabMode="scrollable"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorHeight="3dp"
+            app:tabTextColor="@color/text_primary"
+            app:tabSelectedTextColor="@color/accent"
+            app:tabIndicator="@drawable/tab_indicator"
+            app:tabTextAppearance="@style/TabTextStyle">
 
         </com.google.android.material.tabs.TabLayout>
 
