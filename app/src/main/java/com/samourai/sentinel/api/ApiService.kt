@@ -131,6 +131,15 @@ open class ApiService {
     }
 
 
+    suspend fun getFees(): Response {
+        buildClient()
+        val request = Request.Builder()
+                .url("${getAPIUrl()}/fees")
+                .build()
+        return client.newCall(request).await()
+    }
+
+
     suspend fun getWallet(pubKey: String): Response {
         buildClient()
         val request = Request.Builder()
