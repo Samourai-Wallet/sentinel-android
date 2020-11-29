@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.samourai.sentinel.api.ApiService
 import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.data.*
+import com.samourai.sentinel.data.db.SentinelCollectionStore
 import com.samourai.sentinel.data.db.dao.TxDao
 import com.samourai.sentinel.data.db.dao.UtxoDao
 import com.samourai.sentinel.helpers.fromJSON
@@ -14,6 +15,7 @@ import kotlinx.coroutines.*
 import okhttp3.Response
 import org.json.JSONObject
 import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 
 /**
  * sentinel-android
@@ -33,6 +35,7 @@ class TransactionsRepository {
     private val utxoDao: UtxoDao by inject(UtxoDao::class.java)
     private val apiService: ApiService by inject(ApiService::class.java)
     private val collectionRepository: CollectionRepository by inject(CollectionRepository::class.java)
+    private val feeRepository: FeeRepository by inject(FeeRepository::class.java)
     private val loading: MutableLiveData<Boolean> = MutableLiveData(false)
 
     //track currently loading collection
@@ -78,6 +81,8 @@ class TransactionsRepository {
                             }
                         }
                         val response: WalletResponse = fromJSON<WalletResponse>(resString)!!
+                         Timber.i("fetchFromServer: ${response.info.fees}")
+                        response.info.fees?.let { it1 -> feeRepository.parse(it1) }
                         SentinelState.blockHeight = response.info.latest_block
                         var latestBlockHeight = 1L
                         if (SentinelState.blockHeight != null)
@@ -92,8 +97,11 @@ class TransactionsRepository {
                         response.unspent_outputs?.let {
                             val list = response.unspent_outputs.toMutableList().map {
                                 it.pubKey = pubKeyAssociated.pubKey
-                                it.idx = "${it.txHash}:${it.txOutputN}:${collectionId}"
+                                it.idx = "${it.txHash}:${it.txOutputN}"
                                 it.collectionId = collectionId
+                                if(it.xpub!=null){
+                                    it.path = it.xpub?.path!!
+                                }
                                 it
                             }.toList()
                             utxos.addAll(list)

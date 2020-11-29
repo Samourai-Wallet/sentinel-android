@@ -22,4 +22,8 @@ class SentinelCollectionStore {
         return PayloadRecord(storeLocation, "utxo.meta.payload")
     }
 
+    fun getFee(): PayloadRecord {
+        return PayloadRecord(storeLocation, "fee.payload")
+    }
+
 }
