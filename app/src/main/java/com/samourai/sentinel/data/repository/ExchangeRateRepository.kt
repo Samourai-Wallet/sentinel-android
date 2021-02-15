@@ -51,7 +51,7 @@ class ExchangeRateRepository {
         }
     }
 
-    fun getRate(): LiveData<Rate> {
+    fun getRateLive(): LiveData<Rate> {
         return rateLiveData
     }
 

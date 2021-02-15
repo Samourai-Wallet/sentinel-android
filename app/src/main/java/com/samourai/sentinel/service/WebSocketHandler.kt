@@ -31,7 +31,6 @@ import timber.log.Timber
 /**
  * sentinel-android
  *
- * @author sarath
  */
 class WebSocketHandler : WebSocketListener() {
 

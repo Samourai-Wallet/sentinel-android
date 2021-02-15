@@ -16,7 +16,7 @@ class CollectionRepository {
     val pubKeyCollections: ArrayList<PubKeyCollection> = arrayListOf()
     val collectionsLiveData: MutableLiveData<ArrayList<PubKeyCollection>> = MutableLiveData();
 
-    private val dbHandler: SentinelCollectionStore by inject(SentinelCollectionStore::class.java)
+    private val sentinelCollectionStore: SentinelCollectionStore by inject(SentinelCollectionStore::class.java)
 
     fun addNew(pubKeyCollection: PubKeyCollection) {
         pubKeyCollection.id = UUID.randomUUID().toString()
@@ -50,7 +50,7 @@ class CollectionRepository {
         pubKeyCollections.clear()
         pubKeyCollections.addAll(dupRemoved)
         dataBaseScope.launch(Dispatchers.IO) {
-            dbHandler.getCollectionStore().write(pubKeyCollections);
+            sentinelCollectionStore.getCollectionStore().write(pubKeyCollections);
         }
         this.emit()
     }
@@ -59,7 +59,7 @@ class CollectionRepository {
     fun read() = dataBaseScope.launch(Dispatchers.IO) {
         pubKeyCollections.clear()
         try {
-            val readValue: ArrayList<PubKeyCollection> = dbHandler.getCollectionStore().read()
+            val readValue: ArrayList<PubKeyCollection> = sentinelCollectionStore.getCollectionStore().read()
                     ?: arrayListOf()
             if (readValue.size != 0) {
                 pubKeyCollections.addAll(readValue.distinctBy { it.id })

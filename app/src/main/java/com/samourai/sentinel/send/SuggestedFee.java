@@ -9,6 +9,7 @@ public class SuggestedFee {
     private BigInteger defaultPerKB = defaultAmount;
     private boolean isStressed = false;
     private boolean isOK = true;
+    private int blockDelay = 1;
 
     public SuggestedFee()   { ; }
 
@@ -36,4 +37,11 @@ public class SuggestedFee {
         isOK = OK;
     }
 
+    public int getBlockDelay() {
+        return blockDelay;
+    }
+
+    public void setBlockDelay(int blockDelay) {
+        this.blockDelay = blockDelay;
+    }
 }

@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import com.samourai.sentinel.api.ApiService
 import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.core.SentinelState.Companion.torState
@@ -13,6 +14,7 @@ import com.samourai.sentinel.data.db.SentinelCollectionStore
 import com.samourai.sentinel.data.db.SentinelRoomDb
 import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.data.repository.ExchangeRateRepository
+import com.samourai.sentinel.data.repository.FeeRepository
 import com.samourai.sentinel.data.repository.TransactionsRepository
 import com.samourai.sentinel.service.WebSocketHandler
 import com.samourai.sentinel.tor.TorEventsReceiver
@@ -46,6 +48,7 @@ class SentinelApplication : Application() {
         setUpChannels()
         initializeDI()
         setUpTor()
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
 
         if (BuildConfig.DEBUG) {
@@ -73,6 +76,7 @@ class SentinelApplication : Application() {
             single { CollectionRepository() }
             single { ApiService() }
             single { ExchangeRateRepository() }
+            single { FeeRepository() }
             single { TransactionsRepository() }
             single { WebSocketHandler() }
             factory { SentinelRoomDb.getDatabase(applicationContext).txDao() }
