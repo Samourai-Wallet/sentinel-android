@@ -1,8 +1,8 @@
 package com.samourai.sentinel.tor.prefs
 
-import io.matthewnelson.topl_core_base.TorSettings
+import io.matthewnelson.topl_service_base.ApplicationDefaultTorSettings
 
-class SentinelTorSettings:  TorSettings() {
+class SentinelTorSettings:  ApplicationDefaultTorSettings() {
 
     override val dormantClientTimeout: Int?
         get() = DEFAULT__DORMANT_CLIENT_TIMEOUT
