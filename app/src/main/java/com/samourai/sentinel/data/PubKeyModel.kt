@@ -10,4 +10,19 @@ data class PubKeyModel(val pubKey: String,
                        var balance: Long = 0L,
                        var change_index: Int = 0,
                        var account_index: Int = 0
-) : Parcelable
+) : Parcelable {
+    fun getPurpose(): Int {
+        return  when(type){
+            AddressTypes.BIP49->{
+                return  49
+            }
+            AddressTypes.BIP84->{
+                return  84
+            }
+            AddressTypes.BIP44->{
+                return  44
+            }
+            else -> 0
+        }
+    }
+}

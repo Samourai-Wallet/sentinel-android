@@ -1,6 +1,7 @@
 package com.samourai.sentinel.sweep;
 
-import com.samourai.sentinel.sweep.MyTransactionOutPoint;
+
+import com.samourai.wallet.send.MyTransactionOutPoint;
 
 import java.util.ArrayList;
 import java.util.Comparator;

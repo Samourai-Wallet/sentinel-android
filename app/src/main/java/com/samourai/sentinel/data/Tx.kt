@@ -113,7 +113,7 @@ data class Wallet(
 
 data class Info(
         val latest_block: LatestBlock,
-        val fees: JSONObject?
+        val fees: Map<String,Long>?
 )
 
 data class LatestBlock(

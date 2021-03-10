@@ -18,6 +18,9 @@ interface UtxoDao {
     @Query("SELECT * from utxos WHERE collectionId=:collectionId")
     fun getUTXObyCollection(collectionId: String): LiveData<List<Utxo>>
 
+    @Query("SELECT * from utxos WHERE collectionId=:collectionId")
+    fun getUTXObyCollectionAsList(collectionId: String):  List<Utxo>
+
     @Query("SELECT * from utxos WHERE collectionId=:collectionId AND pubKey=:pubKey")
     fun getUTXObyCollectionAndPubKey(collectionId: String,pubKey: String): LiveData<List<Utxo>>
 
@@ -29,6 +32,9 @@ interface UtxoDao {
 
     @Query("DELETE FROM utxos")
     suspend fun delete()
+
+    @Query("DELETE FROM utxos WHERE txHash=:txHash AND txOutputN=:outputN")
+    suspend fun delete(txHash: String,outputN:Int)
 
     @Query("DELETE FROM utxos WHERE pubKey=:pubKey")
     suspend fun deleteByPubKey(pubKey: String)
