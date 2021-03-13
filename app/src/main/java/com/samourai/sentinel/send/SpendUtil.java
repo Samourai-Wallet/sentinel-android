@@ -3,7 +3,6 @@ package com.samourai.sentinel.send;
 import android.content.Context;
 
 
-import com.samourai.sentinel.sweep.MyTransactionOutPoint;
 import com.samourai.sentinel.sweep.UTXO;
 import com.samourai.sentinel.util.FormatsUtil;
 

@@ -1,21 +1,19 @@
 package com.samourai.sentinel.send;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.samourai.sentinel.R;
-
 import com.samourai.sentinel.core.SentinelState;
 import com.samourai.sentinel.core.hd.HD_WalletFactory;
 import com.samourai.sentinel.core.segwit.SegwitAddress;
 import com.samourai.sentinel.core.segwit.bech32.Bech32Util;
 import com.samourai.sentinel.sweep.MyTransactionInput;
-import com.samourai.sentinel.sweep.MyTransactionOutPoint;
 import com.samourai.sentinel.sweep.PrivKeyReader;
 import com.samourai.sentinel.sweep.UTXO;
 import com.samourai.sentinel.util.FormatsUtil;
 import com.samourai.sentinel.util.PrefsUtil;
+import com.samourai.wallet.send.MyTransactionOutPoint;
 import com.samourai.wallet.util.FormatsUtilGeneric;
 
 import org.apache.commons.lang3.tuple.Pair;

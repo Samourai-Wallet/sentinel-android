@@ -1,16 +1,17 @@
 package com.samourai.sentinel.sweep;
 
- import com.samourai.sentinel.core.SentinelState;
- import com.samourai.sentinel.util.FormatsUtil;
+import com.samourai.sentinel.core.SentinelState;
+import com.samourai.sentinel.util.FormatsUtil;
+import com.samourai.wallet.send.MyTransactionOutPoint;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+import org.bitcoinj.core.Address;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
-import org.bitcoinj.core.Address;
 
 public class FeeUtil  {
 

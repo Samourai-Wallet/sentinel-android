@@ -154,7 +154,7 @@ class FormatsUtil private constructor() {
             return ret
         }
 
-        fun isValidBech32(address: String): Boolean {
+       public fun isValidBech32(address: String): Boolean {
             var ret = false
             ret = try {
                 val pair0 = Bech32.bech32Decode(address)

@@ -2,10 +2,9 @@ package com.samourai.sentinel.send;
 
 import android.util.Log;
 
-
- import com.samourai.sentinel.core.SentinelState;
-import com.samourai.sentinel.sweep.MyTransactionOutPoint;
+import com.samourai.sentinel.core.SentinelState;
 import com.samourai.sentinel.util.FormatsUtil;
+import com.samourai.wallet.send.MyTransactionOutPoint;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.bitcoinj.core.Address;

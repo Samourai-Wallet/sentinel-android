@@ -3,7 +3,12 @@ package com.samourai.sentinel.sweep;
 import android.content.Context;
 import android.widget.Toast;
 
-
+import com.samourai.sentinel.R;
+import com.samourai.sentinel.core.SentinelState;
+import com.samourai.sentinel.core.segwit.P2SH_P2WPKH;
+import com.samourai.sentinel.core.segwit.bech32.Bech32Util;
+import com.samourai.sentinel.util.FormatsUtil;
+import com.samourai.wallet.send.MyTransactionOutPoint;
 
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
@@ -28,12 +33,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import com.samourai.sentinel.R;
-import com.samourai.sentinel.core.SentinelState;
-import com.samourai.sentinel.core.segwit.P2SH_P2WPKH;
-import com.samourai.sentinel.core.segwit.bech32.Bech32Util;
-import com.samourai.sentinel.util.FormatsUtil;
 
 public class SendFactory	{
 
