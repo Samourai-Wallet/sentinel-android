@@ -1,5 +1,6 @@
 package com.samourai.sentinel.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.samourai.sentinel.api.ApiService
@@ -81,7 +82,7 @@ class TransactionsRepository {
                             }
                         }
                         val response: WalletResponse = fromJSON<WalletResponse>(resString)!!
-                         Timber.i("fetchFromServer: ${response.info.fees}")
+                        Timber.i("fetchFromServer: ${response.info.fees}")
                         response.info.fees?.let { it1 -> feeRepository.parse(it1) }
                         SentinelState.blockHeight = response.info.latest_block
                         var latestBlockHeight = 1L
@@ -91,7 +92,10 @@ class TransactionsRepository {
                             tx.associatedPubKey = pubKeyAssociated.pubKey
                             val txBlockHeight = tx.block_height ?: 0
                             tx.collectionId = collectionId
-                            tx.confirmations = if (latestBlockHeight > 0L && txBlockHeight > 0L) (latestBlockHeight.minus(txBlockHeight)) + 1 else 0
+                            tx.confirmations =
+                                if (latestBlockHeight > 0L && txBlockHeight > 0L) (latestBlockHeight.minus(
+                                    txBlockHeight
+                                )) + 1 else 0
                             tx
                         }
                         response.unspent_outputs?.let {
@@ -99,7 +103,7 @@ class TransactionsRepository {
                                 it.pubKey = pubKeyAssociated.pubKey
                                 it.idx = "${it.txHash}:${it.txOutputN}"
                                 it.collectionId = collectionId
-                                if(it.xpub!=null){
+                                if (it.xpub != null) {
                                     it.path = it.xpub?.path!!
                                 }
                                 it
@@ -108,7 +112,8 @@ class TransactionsRepository {
                         }
                         collection.pubs[index].balance = response.wallet.final_balance
                         if (collection.pubs[index].type != AddressTypes.ADDRESS) {
-                            val address = response.addresses?.find { address -> address.address == collection.pubs[index].pubKey }
+                            val address =
+                                response.addresses?.find { address -> address.address == collection.pubs[index].pubKey }
                             if (address != null) {
                                 address.accountIndex?.let { accIndex ->
                                     collection.pubs[index].account_index = accIndex
@@ -121,9 +126,13 @@ class TransactionsRepository {
                         newTransactions.addAll(items)
                         collection.updateBalance()
                         collection.lastRefreshed = System.currentTimeMillis()
-                        val item = collectionRepository.pubKeyCollections.find { collection -> collection.id == collectionId }
+                        val item =
+                            collectionRepository.pubKeyCollections.find { collection -> collection.id == collectionId }
                                 ?: return
-                        collectionRepository.update(collection, collectionRepository.pubKeyCollections.indexOf(item))
+                        collectionRepository.update(
+                            collection,
+                            collectionRepository.pubKeyCollections.indexOf(item)
+                        )
                     }
                 } catch (e: Exception) {
                     throw  e
@@ -157,6 +166,17 @@ class TransactionsRepository {
 
     private fun saveUtxos(utxos: ArrayList<Utxo>, collectionId: String) = apiScope.launch {
         withContext(Dispatchers.IO) {
+            utxoDao.getUTXObyCollectionAsList(collectionId)
+                .forEach {
+                    val isExist =
+                        utxos.find { utxo -> (utxo.txHash == it.txHash && it.txOutputN == utxo.txOutputN) }
+                   //if utxos is not present in the new list it will be removed from the local db
+                    if(isExist == null){
+                        if (it.txOutputN != null && it.txHash != null) {
+                            utxoDao.delete(it.txHash!!, it.txOutputN!!)
+                        }
+                    }
+                }
             utxos.forEach {
                 utxoDao.insert(it)
             }
