@@ -109,7 +109,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.8.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
