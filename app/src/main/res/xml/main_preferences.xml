@@ -83,13 +83,6 @@
 
             app:title="Disable Screenshots" />
 
-        <ListPreference
-            android:entries="@array/detailsFilterTypeLabel"
-            android:entryValues="@array/detailsFilterTypeLabel"
-            android:summary="Transactions navigation in detail screen"
-            app:key="detailsFilterType"
-            app:title="Transactions navigation" />
-
     </PreferenceCategory>
     <PreferenceCategory
         app:allowDividerAbove="true"
