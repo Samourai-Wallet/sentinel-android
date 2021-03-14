@@ -3,6 +3,7 @@ package com.samourai.sentinel.ui.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import com.samourai.sentinel.data.repository.FeeRepository
 import org.json.JSONObject
 import timber.log.Timber
 import kotlin.reflect.KMutableProperty
@@ -50,10 +51,10 @@ class PrefsUtil(context: Context) : Preferences(context, "${context.packageName}
     var testnet by booleanPref(defaultValue = false)
     var ricochetStaggeredDelivery by booleanPref(defaultValue = false)
     var useRicochet by booleanPref(defaultValue = false)
+    var feeType by intPref(defaultValue = FeeRepository.FEE_NORMAL)
     var offlineMode by booleanPref(defaultValue = false)
     var blockHeight by longPref(defaultValue = 0L)
     var firstRun by booleanPref(defaultValue = true)
-    var detailsFilterType by stringPref(defaultValue = "DropDown")
 
     fun isAPIEndpointEnabled(): Boolean {
         return !this.apiEndPointTor.isNullOrEmpty() && !this.apiEndPoint.isNullOrEmpty()

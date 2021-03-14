@@ -38,6 +38,7 @@ import com.samourai.sentinel.util.MonetaryUtil
 import com.samourai.wallet.segwit.SegwitAddress
 import org.bitcoinj.core.Coin
 import org.koin.java.KoinJavaComponent
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -282,6 +283,7 @@ class ReceiveFragment : Fragment() {
                     R.layout.dropdown_menu_popup_item, items)
             pubKeyDropDown.inputType = InputType.TYPE_NULL
             pubKeyDropDown.setAdapter(adapter)
+            pubKeyDropDown.threshold = 50
             pubKeyDropDown.setText(items.first(), false)
             pubKeyDropDown.onItemClickListener = AdapterView.OnItemClickListener { _, _, index, _ ->
                 pubKeyIndex = index

@@ -73,7 +73,7 @@ class InputBottomSheet(private val label: String, onViewReady: (GenericBottomShe
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.bottom_sheet, container)
+        val view = inflater.inflate(R.layout.layout_bottom_sheet, container)
         view.findViewById<TextView>(R.id.dialogTitle).text = label
         val inputContent = inflater.inflate(R.layout.content_bottom_sheet_input, null)
         val content = view.findViewById<FrameLayout>(R.id.contentContainer)
@@ -104,7 +104,7 @@ class InputBottomSheet(private val label: String, onViewReady: (GenericBottomShe
 class ConfirmBottomSheet(private val label: String, onViewReady: (GenericBottomSheet) -> Unit) : GenericAlertBottomSheet(onViewReady) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.bottom_sheet, container)
+        val view = inflater.inflate(R.layout.layout_bottom_sheet, container)
         view.findViewById<TextView>(R.id.dialogTitle).text = label
         val inputContent = inflater.inflate(R.layout.content_bottom_sheet_confirm, null)
         val content = view.findViewById<FrameLayout>(R.id.contentContainer)
@@ -132,7 +132,7 @@ class OptionsBottomSheet(private val label: String,
     private var radioButtonSelected: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.bottom_sheet, container)
+        val view = inflater.inflate(R.layout.layout_bottom_sheet, container)
         view.findViewById<TextView>(R.id.dialogTitle).text = label
         val optionsLayout = inflater.inflate(R.layout.content_bottom_options, null)
         val content = view.findViewById<FrameLayout>(R.id.contentContainer)
