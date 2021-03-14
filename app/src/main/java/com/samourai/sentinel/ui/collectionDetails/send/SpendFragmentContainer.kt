@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import com.samourai.sentinel.R
 import com.samourai.sentinel.data.PubKeyCollection
 
 /**
@@ -14,18 +15,13 @@ import com.samourai.sentinel.data.PubKeyCollection
 class SpendFragmentContainer : Fragment() {
 
     private lateinit var collection: PubKeyCollection;
-    lateinit var frame: FrameLayout
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        frame = FrameLayout(requireContext())
-        frame.id = View.generateViewId();
-//        frame = FrameLayout(c
-//        ontainer?.context!!)
-        return frame
+        return inflater.inflate(R.layout.fragment_transactions, container, false)
     }
 
 
@@ -33,7 +29,6 @@ class SpendFragmentContainer : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val sendFragment: SendFragment = SendFragment()
         val transactions = childFragmentManager.beginTransaction()
-        transactions.add(frame.id, sendFragment);
         sendFragment.setCollection(collection)
         transactions.commit();
     }

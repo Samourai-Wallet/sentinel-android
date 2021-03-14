@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.LivePagedListBuilder
@@ -70,7 +71,7 @@ class TransactionsFragment : Fragment() {
         balanceLiveData.observe(viewLifecycleOwner, {
             collectionBalanceBtc.text = "${getBTCDisplayAmount(it)} BTC"
         })
-        fiatBalanceLiveData.observe(viewLifecycleOwner, {
+        fiatBalanceLiveData.observe(viewLifecycleOwner, Observer {
             if (isAdded) {
                 collectionBalanceFiat.text = it
             }

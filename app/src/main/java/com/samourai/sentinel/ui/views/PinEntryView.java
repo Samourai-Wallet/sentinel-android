@@ -1,15 +1,12 @@
 package com.samourai.sentinel.ui.views;
 
 import android.content.Context;
-import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 
 import com.samourai.sentinel.R;
@@ -75,7 +72,7 @@ public class PinEntryView extends FrameLayout implements View.OnClickListener {
     }
 
     private void initView() {
-        view = inflate(getContext(), R.layout.keypad_view, null);
+        view = inflate(getContext(), R.layout.fragment_keypad_view, null);
         ta = view.findViewById(R.id.ta);
         tb = view.findViewById(R.id.tb);
         tc = view.findViewById(R.id.tc);

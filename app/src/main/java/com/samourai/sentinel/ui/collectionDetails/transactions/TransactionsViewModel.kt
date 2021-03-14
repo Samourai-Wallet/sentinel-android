@@ -3,7 +3,6 @@ package com.samourai.sentinel.ui.collectionDetails.transactions
 import android.app.Application
 import androidx.lifecycle.*
 import com.samourai.sentinel.data.PubKeyCollection
-import com.samourai.sentinel.data.Tx
 import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.data.repository.TransactionsRepository
 import com.samourai.sentinel.ui.utils.PrefsUtil
@@ -69,11 +68,11 @@ class TransactionsViewModel(application: Application) : AndroidViewModel(applica
 
     fun getFiatBalance(): LiveData<String> {
         val mediatorLiveData = MediatorLiveData<String>();
-        mediatorLiveData.addSource(exchangeRateRepository.getRate()) {
+        mediatorLiveData.addSource(exchangeRateRepository.getRateLive()) {
             mediatorLiveData.value = getFiatBalance(balance.value, it)
         }
         mediatorLiveData.addSource(balance) {
-            mediatorLiveData.value = getFiatBalance(it, exchangeRateRepository.getRate().value)
+            mediatorLiveData.value = getFiatBalance(it, exchangeRateRepository.getRateLive().value)
         }
         return mediatorLiveData
     }

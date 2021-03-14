@@ -97,7 +97,7 @@ class SentinelApplication : Application() {
                 backgroundManagerPolicy = gePolicyManager(),
                 buildConfigVersionCode = BuildConfig.VERSION_CODE,
                 // Can instantiate directly here then access it from
-                torSettings = SentinelTorSettings(),
+                defaultTorSettings = SentinelTorSettings(),
                 geoipAssetPath = "common/geoip",
                 geoip6AssetPath = "common/geoip6"
         )

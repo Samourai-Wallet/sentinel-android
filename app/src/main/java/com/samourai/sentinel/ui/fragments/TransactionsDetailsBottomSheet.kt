@@ -16,7 +16,6 @@ import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.data.Tx
 import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.ui.utils.PrefsUtil
-import com.samourai.sentinel.ui.utils.showFloatingSnackBar
 import com.samourai.sentinel.ui.views.GenericBottomSheet
 import com.samourai.sentinel.ui.webview.ExplorerWebViewActivity
 import com.samourai.sentinel.util.MonetaryUtil
@@ -74,8 +73,8 @@ class TransactionsDetailsBottomSheet(private var tx: Tx) : GenericBottomSheet() 
     private fun setTx(tx: Tx) {
         val fmt = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH)
         fmt.timeZone = TimeZone.getDefault()
-        txDetailsAmount.text = "${MonetaryUtil.getInstance().formatToBtc(tx.result)} BTC | ${getFiatBalance(tx.result, exchangeRateRepository.getRate().value)} "
-        txDetailsBlockId.text = "${tx.block_height}"
+        txDetailsAmount.text = "${MonetaryUtil.getInstance().formatToBtc(tx.result)} BTC | ${getFiatBalance(tx.result, exchangeRateRepository.getRateLive().value)} "
+        txDetailsBlockId.text = "${ tx.block_height ?: "__"}"
         txDetailsConfirmation.text = tx.confirmations.toString()
         if (tx.result != null)
             txDetailsTime.text = "${fmt.format(Date(tx.time* 1000))} "

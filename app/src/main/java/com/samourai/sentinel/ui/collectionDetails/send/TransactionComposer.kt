@@ -147,7 +147,7 @@ class TransactionComposer {
         if (change > 0L && change < bDust.toLong()) {
             throw ComposeException("Change is dust")
         }
-        
+
         val outpoints: MutableList<MyTransactionOutPoint?> = ArrayList()
 
         for (utxo in selectedUtxos) {
@@ -199,7 +199,7 @@ class TransactionComposer {
 
 
         val transaction = try {
-            SendFactory.getInstance(context)
+            SendFactory.getInstance()
                 .makeTransaction(0, outPoints, receivers)
         } catch (e: Exception) {
             throw   ComposeException("Unable to create tx")

@@ -1,10 +1,7 @@
 package com.samourai.sentinel.ui.collectionDetails
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -17,9 +14,12 @@ import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.collectionDetails.receive.ReceiveFragment
 import com.samourai.sentinel.ui.collectionDetails.send.SendFragment
-import com.samourai.sentinel.ui.collectionDetails.send.SpendFragmentContainer
 import com.samourai.sentinel.ui.collectionDetails.transactions.TransactionsFragment
 import kotlinx.android.synthetic.main.activity_collection_details.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 
@@ -28,7 +28,7 @@ class CollectionDetailsActivity : SentinelActivity() {
 
     private lateinit var pagerAdapter: PagerAdapter;
     private val receiveFragment: ReceiveFragment = ReceiveFragment()
-    private val sendFragment: SpendFragmentContainer = SpendFragmentContainer()
+    private val sendFragment: SendFragment = SendFragment()
     private val transactionsFragment: TransactionsFragment = TransactionsFragment()
     private var collection: PubKeyCollection? = null
     private val repository: CollectionRepository by inject(CollectionRepository::class.java)
@@ -41,7 +41,11 @@ class CollectionDetailsActivity : SentinelActivity() {
         fragmentHostContainerPager.isUserInputEnabled = false
 
         checkIntent()
-        val receiveViewModel: CollectionDetailsViewModel by viewModels(factoryProducer = { CollectionDetailsViewModel.getFactory(collection!!) })
+        val receiveViewModel: CollectionDetailsViewModel by viewModels(factoryProducer = {
+            CollectionDetailsViewModel.getFactory(
+                collection!!
+            )
+        })
         linearLayout.setPadding(0, 0, 0, getNavHeight().toInt())
         receiveViewModel.getCollections().observe(this, Observer {
             intent.extras?.getString("collection")?.let { it1 ->
@@ -58,10 +62,11 @@ class CollectionDetailsActivity : SentinelActivity() {
             }
         })
 
+
         receiveFragment.setBalance(receiveViewModel.getBalance())
         transactionsFragment.setBalance(receiveViewModel.getBalance())
 
-        receiveViewModel.getFiatBalance().observe(this, Observer {
+        receiveViewModel.getFiatBalance().observe(this, {
             receiveFragment.setBalanceFiat(receiveViewModel.getFiatBalance())
             transactionsFragment.setBalanceFiat(receiveViewModel.getFiatBalance())
         })
@@ -81,7 +86,8 @@ class CollectionDetailsActivity : SentinelActivity() {
             true
         }
 
-        fragmentHostContainerPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        fragmentHostContainerPager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
 
             override fun onPageSelected(position: Int) {
                 invalidateOptionsMenu()
@@ -101,12 +107,23 @@ class CollectionDetailsActivity : SentinelActivity() {
         })
 
         fragmentHostContainerPager.visibility = View.INVISIBLE
-        Handler().postDelayed({
+        GlobalScope.launch(Dispatchers.Main){
+            delay(1)
             fragmentHostContainerPager.setCurrentItem(1, false)
             fragmentHostContainerPager.visibility = View.VISIBLE
-        }, 1)
+        }
     }
 
+
+    override fun onBackPressed() {
+        if (sendFragment.isVisible) {
+            if(sendFragment.onBackPressed()){
+                super.onBackPressed()
+            }
+        }else{
+            super.onBackPressed()
+        }
+    }
 
     private fun checkIntent() {
         if (intent.extras != null) {
