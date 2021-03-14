@@ -6,7 +6,6 @@ import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.data.repository.ExchangeRateRepository
 import com.samourai.sentinel.ui.utils.PrefsUtil
 import com.samourai.sentinel.util.MonetaryUtil
-import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.inject
 
 /**
@@ -42,9 +41,9 @@ class CollectionDetailsViewModel(private val pubKeyCollection: PubKeyCollection)
         val mediator = MediatorLiveData<String>();
         mediator.addSource(collectionRepository.collectionsLiveData, Observer {
             val balance = it.findLast { collection -> collection.balance == pubKeyCollection.balance }?.balance
-            mediator.value = getFiatBalance(balance, exchangeRateRepository.getRate().value)
+            mediator.value = getFiatBalance(balance, exchangeRateRepository.getRateLive().value)
         })
-        mediator.addSource(exchangeRateRepository.getRate(), Observer {
+        mediator.addSource(exchangeRateRepository.getRateLive(), Observer {
             val balance = collectionRepository.collectionsLiveData.value?.findLast { collection -> collection.balance == pubKeyCollection.balance }?.balance
             mediator.value = getFiatBalance(balance, it)
         })
