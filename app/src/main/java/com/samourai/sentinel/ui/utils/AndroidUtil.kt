@@ -19,7 +19,7 @@ import timber.log.Timber
 class AndroidUtil {
 
     companion object {
-        fun hideKeyboard(activity: AppCompatActivity) {
+        fun hideKeyboard(activity: Activity) {
             val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             //Find the currently focused view, so we can grab the correct window token from it.
             var view: View? = activity.currentFocus
@@ -35,10 +35,6 @@ class AndroidUtil {
                         context,
                         permission
                 ) == PackageManager.PERMISSION_GRANTED
-
-        fun askCameraPermission(appContext: Context) {
-
-        }
 
         fun getClipBoardString(context: Context): String? {
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

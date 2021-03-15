@@ -1,19 +1,165 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.samourai.sentinel.ui.collectionDetails.send.SendFragment">
+    android:id="@+id/sendRootLayout"
+    android:fitsSystemWindows="false"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
-        android:text="Coming soon"
-        android:textColor="@color/md_grey_400"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/sendAppBar"
+                android:elevation="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="Send"
+                app:menu="@menu/send_menu"
+                app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+                app:collapseIcon="@drawable/ic_close_black_24dp"
+                app:layout_scrollFlags="snap"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                />
+            <LinearLayout
+                android:id="@+id/addressAreaContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/v3_primary"
+                android:gravity="center"
+                app:layout_scrollFlags="scroll"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_large">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/toEditText"
+                    android:layout_width="match_parent"
+                    app:endIconDrawable="@drawable/ic_content_paste_24px"
+                    android:layout_height="wrap_content"
+                    app:endIconTint="@color/txt_grey"
+                    app:endIconMode="custom"
+                    android:hint="To">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/btcAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:textSize="14sp"
+                        android:imeOptions="flagNoPersonalizedLearning"
+                        android:inputType="textNoSuggestions|textMultiLine"
+                        android:maxLines="2" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/spacing_medium"
+                    android:paddingBottom="@dimen/spacing_medium"
+                    android:weightSum="2">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/btcEditTextLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:hint="BTC"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline12"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/btcEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="flagNoPersonalizedLearning"
+                            android:inputType="number|textMultiLine"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/fiatEditTextLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/guideline12"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:hint="USD">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/fiatEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="flagNoPersonalizedLearning"
+                            android:inputType="numberDecimal|textMultiLine"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <include
+            layout="@layout/fragment_compose_tx" />
+
+
+        <LinearLayout
+            android:layout_gravity="bottom|center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="@dimen/fab_margin"
+                android:elevation="0dp"
+                android:id="@+id/composeBtn"
+                android:paddingHorizontal="24dp"
+                android:text="Compose unsigned transaction"
+                android:textColor="@color/white"
+                app:elevation="12dp"
+                app:iconTint="@color/white"
+                app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.MediumComponent" />
+
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <include
+        layout="@layout/fragment_broadcast_tx" />
+
+
+
+</FrameLayout>
+

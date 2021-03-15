@@ -1,12 +1,10 @@
 package com.samourai.sentinel.ui.collectionDetails.send
 
-import android.content.Context
 import com.samourai.sentinel.core.SentinelState
 import com.samourai.sentinel.core.SentinelState.Companion.bDust
 import com.samourai.sentinel.core.hd.HD_Account
 import com.samourai.sentinel.core.segwit.P2SH_P2WPKH
 import com.samourai.sentinel.data.AddressTypes
-import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.PubKeyModel
 import com.samourai.sentinel.data.Utxo
 import com.samourai.sentinel.send.FeeUtil
@@ -15,13 +13,11 @@ import com.samourai.sentinel.send.SendFactory
 import com.samourai.wallet.segwit.SegwitAddress
 import com.samourai.wallet.send.MyTransactionOutPoint
 import com.samourai.wallet.send.UTXO
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.channels.Channel
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.tuple.Triple
 import org.bitcoinj.core.ECKey
 import org.bitcoinj.params.MainNetParams
-import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 import java.math.BigInteger
 import java.util.*
@@ -34,7 +30,6 @@ class TransactionComposer {
 
     data class ComposeException(private val displayMessage: String) : Exception(displayMessage)
 
-    private val context: Context by inject(Context::class.java)
     private var changeECKey: ECKey? = null
     private var changeIndex: Int? = null
     private var psbt: PSBT? = null
@@ -45,21 +40,22 @@ class TransactionComposer {
     private var amount: Double = 0.0
     private var selectedFee = 0L;
     private var receivers: HashMap<String, BigInteger> = hashMapOf()
-    private lateinit var collection: PubKeyCollection;
-    private var feeCallBack: ((Long, Long) -> Unit)? = null;
+    private var feeCallBack: ((Long, minerFee: Long) -> Unit)? = null;
+    private val minerFeeChannel = Channel<Long>()
 
     fun setBalance(value: Long) {
         this.balance = value;
     }
 
-    fun setFeeCallBack(callback: ((Long, Long) -> Unit)) {
-        this.feeCallBack = callback
+    fun getMinerFee(): Channel<Long> {
+        return minerFeeChannel
     }
 
     fun setPubKey(selectPubKeyModel: PubKeyModel) {
         this.selectPubKeyModel = selectPubKeyModel
     }
 
+    @Synchronized
     suspend fun compose(
         inputUtxos: ArrayList<Utxo>,
         inputAddress: String,
@@ -123,7 +119,7 @@ class TransactionComposer {
             // get largest UTXOs > than spend + fee + dust
             for (u in utxos) {
                 selectedUtxos.add(u)
-                totalValueSelected += u!!.value
+                totalValueSelected += u.value
                 selected += u.outpoints.size
 
 //                            Log.d("SendActivity", "value selected:" + u.getValue());
@@ -251,11 +247,9 @@ class TransactionComposer {
             }
         }
 
-        if (psbt != null && feeCallBack != null) {
-            val transaction = psbt!!.transaction
-            withContext(Dispatchers.Main) {
-//                if (transaction.fee != null)
-//                    feeCallBack?.invoke(transaction.fee.value, transaction.fee.value);
+        if (psbt != null) {
+            fee?.let {
+                Timber.i("compose: ${fee} ${feeCallBack.hashCode()}")
             }
         }
 

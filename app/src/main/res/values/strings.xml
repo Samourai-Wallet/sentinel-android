@@ -275,6 +275,11 @@
     <string name="confirm_exit">Confirm exit</string>
     <string name="setting_summary_displaySecure">Treat the content of the window as secure, preventing it from appearing in screenshots or from being viewed on non-secure displays</string>
     <string name="server_config_instruction">Sentinel will set samourai servers as default endpoint ,\n If you want to connect to your own Node. please choose the option</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="share_qr">Share QR</string>
+    <string name="view_unspend_outputs">View Unspend outputs</string>
+    <string name="total_miner_fee">Total miner fee</string>
+    <string name="estimated_wait_time">Estimated wait time</string>
 
 
 </resources>

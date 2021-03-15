@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/unsignedTxView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/v3_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone"
+    >
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/unsignedTxToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_close_black_24dp"
+        app:title="Unsigned Transaction" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/psbtShareBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="24dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="Share"
+        android:textColor="@color/text_primary"
+        app:backgroundTint="@color/grey_accent"
+        app:cornerRadius="8dp"
+        app:icon="@drawable/ic_share_24dp"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/psbtCopyBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline15"
+        app:layout_constraintTop_toTopOf="@+id/psbtCopyBtn"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/psbtCopyBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="Copy"
+        android:textColor="@color/text_primary"
+        app:backgroundTint="@color/grey_accent"
+        app:cornerRadius="8dp"
+        app:icon="@drawable/ic_baseline_content_copy_24"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/broadCastTransactionBtn"
+        app:layout_constraintEnd_toStartOf="@+id/guideline15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/psbtQRCodeCard"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/broadCastTransactionBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="Broadcast Transaction"
+        android:textColor="@color/text_primary"
+        app:backgroundTint="@color/grey_accent"
+        app:cornerRadius="8dp"
+        app:icon="@drawable/ic_baseline_cloud_queue_24"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/psbtShareBtn"
+        app:layout_constraintStart_toStartOf="@+id/psbtCopyBtn" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/psbtQRCodeCard"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:elevation="8dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/unsignedTxToolbar">
+
+        <ImageView
+            android:id="@+id/psbtQRCode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/qrError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="Payload is too large to fit in QR code"
+            android:textColor="@color/primary_dark"
+            android:visibility="gone" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/psbtShareGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="psbtQRCodeCard" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        app:cardBackgroundColor="@color/primary_dark"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/psbtCopyBtn"
+        app:layout_constraintEnd_toEndOf="@+id/psbtShareBtn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/psbtCopyBtn"
+        app:layout_constraintTop_toBottomOf="@+id/psbtQRCodeCard"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/psbtText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupXOD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="psbtCopyBtn,psbtShareBtn,cardView2" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

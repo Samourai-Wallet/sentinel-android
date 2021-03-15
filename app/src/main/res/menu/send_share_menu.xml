@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu_share_as_text"
+        android:title="Share as text" />
+
+    <item android:id="@+id/menu_save_as_psbt"
+        android:icon="@drawable/ic_file_export"
+        android:title="Save as psbt file" />
+
+
+    <item android:id="@+id/menu_share_as_qr"
+        android:icon="@drawable/ic_baseline_qr_code_24"
+        android:title="Share as QR" />
+
+</menu>
