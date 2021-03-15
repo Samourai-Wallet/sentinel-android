@@ -3,11 +3,13 @@ package com.samourai.sentinel.ui.utils
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.view.View
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.annotation.DimenRes
 import androidx.annotation.IdRes
 import androidx.annotation.IntDef
 import androidx.annotation.IntRange
@@ -74,6 +76,11 @@ fun listenForAllSpringsEnd(
         vararg springs: SpringAnimation
 ) = MultiSpringEndListener(onEnd, *springs)
 
+fun Context.px(@DimenRes dimen: Int): Int = resources.getDimension(dimen).toInt()
+
+fun Context.dp(@DimenRes dimen: Int): Float = px(dimen) / resources.displayMetrics.density
+
+val Int.px get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
 fun View.hideKeyboard() {
     val imm: InputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
