@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
 
     <!-- v3 Theme -->
@@ -9,7 +9,7 @@
         <item name="android:textColor">@color/v3_textColor</item>
         <item name="colorOnPrimarySurface">@color/v3_textColor</item>
         <item name="statusBarBackground">@color/v3_primary</item>
-        <item name="android:statusBarColor">@color/v3_primary</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="colorSecondary">@color/v3_secondary</item>
         <item name="colorAccent">@color/v3_accent</item>
         <item name="colorSecondaryVariant">#0039CB</item>
@@ -23,6 +23,17 @@
         <item name="android:navigationBarColor">@color/v3_background</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeBackground">@color/v3_primary</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:fitsSystemWindows">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
+    </style>
+
+    <style name="DialogTheme" parent="AppThemeV3">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">false</item>
     </style>
 
     <style name="AppThemeV3.NoStatusBar" parent="AppThemeV3">
@@ -145,4 +156,15 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+
+
+    <style name="SwipeBackLayout">
+        <item name="edge_size">200dp</item>
+        <item name="shadow_left">@drawable/shadow_left</item>
+        <item name="shadow_right">@drawable/shadow_right</item>
+        <item name="shadow_bottom">@drawable/shadow_bottom</item>
+    </style>
+
+
 </resources>
