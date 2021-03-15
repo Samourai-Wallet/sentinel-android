@@ -5,8 +5,8 @@ import android.content.Intent
 import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Build
+import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.Display
 import android.view.MenuItem
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -15,16 +15,38 @@ import com.samourai.sentinel.R
 import com.samourai.sentinel.core.access.AccessFactory
 import com.samourai.sentinel.ui.fragments.AddNewPubKeyBottomSheet
 import com.samourai.sentinel.ui.utils.PrefsUtil
+import com.samourai.sentinel.ui.views.swipeLayout.SwipeBackLayout
+import com.samourai.sentinel.ui.views.swipeLayout.app.SwipeBackActivityBase
+import com.samourai.sentinel.ui.views.swipeLayout.app.SwipeBackActivityHelper
 import org.koin.java.KoinJavaComponent.inject
 import kotlin.math.roundToInt
 
-open class SentinelActivity : AppCompatActivity() {
+open class SentinelActivity : AppCompatActivity(), SwipeBackActivityBase {
 
-    final val CAMERA_PERMISSION = 20
     private val accessFactory: AccessFactory by inject(AccessFactory::class.java);
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java);
     private val displayMetrics: DisplayMetrics by lazy { resources.displayMetrics }
+    private lateinit var mHelper: SwipeBackActivityHelper
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mHelper = SwipeBackActivityHelper(this)
+        mHelper.onActivityCreate();
+        overridePendingTransition(R.anim.slide_in, R.anim.no_anim)
+        mHelper.swipeBackLayout
+            .setScrollThresHold(0.6f)
+    }
+
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+         mHelper.onPostCreate()
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition( R.anim.no_anim, R.anim.slide_out)
+    }
 
     override fun onResume() {
         super.onResume()
@@ -34,7 +56,10 @@ open class SentinelActivity : AppCompatActivity() {
             })
         }
         if (prefsUtil.displaySecure!!) {
-            window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+            )
         }
     }
 
@@ -47,20 +72,21 @@ open class SentinelActivity : AppCompatActivity() {
 
     protected fun askCameraPermission() {
         MaterialAlertDialogBuilder(this)
-                .setTitle(resources.getString(R.string.permission_alert_dialog_title_camera))
-                .setMessage(resources.getString(R.string.permission_dialog_message_camera))
-                .setNegativeButton(resources.getString(R.string.no)) { _, _ ->
-                    val bottomSheetFragment = AddNewPubKeyBottomSheet()
-                    bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+            .setTitle(resources.getString(R.string.permission_alert_dialog_title_camera))
+            .setMessage(resources.getString(R.string.permission_dialog_message_camera))
+            .setNegativeButton(resources.getString(R.string.no)) { _, _ ->
+                val bottomSheetFragment = AddNewPubKeyBottomSheet()
+                bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+            }
+            .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(arrayOf(Manifest.permission.CAMERA),
+                        Companion.CAMERA_PERMISSION
+                    )
                 }
-                .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION)
-                    }
-                }
-                .show()
+            }
+            .show()
     }
-
 
     //Gets NavBar Height
     public fun getNavHeight(): Float {
@@ -92,5 +118,22 @@ open class SentinelActivity : AppCompatActivity() {
 
     val Number.dp2px: Int
         get() = (this.toFloat() * displayMetrics.density).roundToInt()
+
+
+    override fun getSwipeBackLayout(): SwipeBackLayout? {
+        return mHelper.swipeBackLayout
+    }
+
+    override fun setSwipeBackEnable(enable: Boolean) {
+        swipeBackLayout!!.setEnableGesture(enable)
+    }
+
+    override fun scrollToFinishActivity() {
+        swipeBackLayout!!.scrollToFinishActivity()
+    }
+
+    companion object {
+        const val CAMERA_PERMISSION = 20
+    }
 
 }
