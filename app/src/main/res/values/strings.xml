@@ -280,6 +280,11 @@
     <string name="view_unspend_outputs">View Unspend outputs</string>
     <string name="total_miner_fee">Total miner fee</string>
     <string name="estimated_wait_time">Estimated wait time</string>
+    <string name="collection_name">Collection Name</string>
+    <string name="add_another_public_key">Add another public key</string>
+    <string name="public_keys">Public Keys</string>
+    <string name="choose_export_opt">Choose export option</string>
+    <string name="options">Options</string>
 
 
 </resources>

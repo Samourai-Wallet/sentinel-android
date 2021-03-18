@@ -18,8 +18,8 @@
         <item name="colorError">#F44336</item>
         <item name="toolbarStyle">@style/ToolbarV3</item>
         <item name="android:spinnerItemStyle">@style/spinnerItemStyle</item>
-        <!-- Dialog theme overlay attribute -->
         <item name="materialAlertDialogTheme">@style/AppThemeOverlay.Dialog</item>
+        <item name="bottomSheetStyle">@style/AppTheme.BottomSheet.Theme</item>
         <item name="android:navigationBarColor">@color/v3_background</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeBackground">@color/v3_primary</item>
@@ -30,16 +30,7 @@
         <item name="android:windowTranslucentStatus">false</item>
     </style>
 
-    <style name="DialogTheme" parent="AppThemeV3">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowIsFloating">false</item>
-    </style>
-
     <style name="AppThemeV3.NoStatusBar" parent="AppThemeV3">
-        <!--        <item name="windowActionBar">false</item>-->
-        <!--        <item name="android:windowTranslucentNavigation">true</item>-->
-        <!--        <item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="statusBarBackground">@android:color/transparent</item>
     </style>
@@ -59,22 +50,21 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="AppThemeOverlay.Dialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <style name="AppThemeOverlay.Dialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="alertDialogStyle">@style/SentinelThemeDialog</item>
+        <item name="colorSurface">#121417</item>
         <item name="materialAlertDialogTitleTextStyle">@style/TitleTextStyle</item>
-        <item name="materialAlertDialogBodyTextStyle">@style/BodyTextStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
     </style>
 
     <style name="SentinelThemeDialog" parent="MaterialAlertDialog.MaterialComponents">
-        <item name="shapeAppearance">?attr/shapeAppearanceMediumComponent</item>
-        <item name="alpha">1</item>
+        <item name="shapeAppearance">@style/AppTheme.Alert.Shape</item>
     </style>
 
     <style name="TitleTextStyle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:textColor">#fafafa</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="BodyTextStyle" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
@@ -82,42 +72,38 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/v3_positive_green</item>
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/green_ui_2</item>
+        <item name="rippleColor">@color/green_ui_2</item>
     </style>
 
-    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/v3_negative_red</item>
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
+    <style name="AppTheme.BottomSheet.Theme" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="android:windowAnimationStyle">@style/Animation.Design.BottomSheetDialog</item>
-        <item name="bottomSheetStyle">@style/AppModalStyle</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="colorPrimary">@color/v3_primary</item>
-        <item name="android:textColor">@color/v3_textColor</item>
-        <item name="statusBarBackground">@color/v3_primary</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="colorSecondary">@color/v3_secondary</item>
-        <item name="colorAccent">@color/v3_accent</item>
-        <item name="colorSecondaryVariant">#0039CB</item>
+        <item name="bottomSheetStyle">@style/AppTheme.BottomSheet</item>
     </style>
 
+    <style name="AppTheme.BottomSheet" parent="@style/Widget.MaterialComponents.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/AppTheme.BottomSheet.Shape</item>
+    </style>
 
     <style name="Animation.Design.BottomSheetDialog" parent="Animation.AppCompat.Dialog">
         <item name="android:windowEnterAnimation">@anim/bottom_sheet_slide_in</item>
         <item name="android:windowExitAnimation">@anim/bottom_sheet_slide_out</item>
     </style>
 
-    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/bottom_sheet_background</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
+    <style name="AppTheme.BottomSheet.Shape" parent="">
+        <item name="cornerSize">24dp</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+
+
+    <style name="AppTheme.Alert.Shape" parent="">
+        <item name="cornerSize">8dp</item>
+        <item name="cornerFamily">rounded</item>
     </style>
 
 
@@ -158,9 +144,8 @@
     </style>
 
 
-
     <style name="SwipeBackLayout">
-        <item name="edge_size">200dp</item>
+        <item name="edge_size">120dp</item>
         <item name="shadow_left">@drawable/shadow_left</item>
         <item name="shadow_right">@drawable/shadow_right</item>
         <item name="shadow_bottom">@drawable/shadow_bottom</item>
