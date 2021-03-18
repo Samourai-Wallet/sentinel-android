@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.samourai.sentinel.R
 import com.samourai.sentinel.core.access.AccessFactory
-import com.samourai.sentinel.ui.dojo.DojoConfigureBottomSheet
+import com.samourai.sentinel.data.repository.FeeRepository
 import com.samourai.sentinel.ui.dojo.DojoUtility
 import com.samourai.sentinel.ui.home.HomeActivity
 import com.samourai.sentinel.ui.utils.PrefsUtil
@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java);
     private val dojoUtil: DojoUtility by inject(DojoUtility::class.java);
     private val accessFactory: AccessFactory by inject(AccessFactory::class.java);
+    private val feeRepository: FeeRepository by inject(FeeRepository::class.java);
 
     private var dontDeleteFile = false;
 
@@ -36,11 +37,11 @@ class MainActivity : AppCompatActivity() {
         val pinHash = prefsUtil.pinHash
         if (!pinHash.isNullOrEmpty()) {
             val fragmentManager = supportFragmentManager
-            val newFragment = LockScreenDialog(cancelable = false, lockScreenMessage = "Enter pin code")
+            val lockScreenDialog = LockScreenDialog(cancelable = false, lockScreenMessage = "Enter pin code")
             val transaction = fragmentManager.beginTransaction()
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            transaction.add(android.R.id.content, newFragment).commit()
-            newFragment.setOnPinEntered {
+            transaction.add(android.R.id.content, lockScreenDialog).commit()
+            lockScreenDialog.setOnPinEntered {
                 if (AccessFactory.getInstance(this).validateHash(it, pinHash)) {
                     accessFactory.pin = it
                     //this will re-read config files and update instance
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 } else {
-                    newFragment.showError()
+                    lockScreenDialog.showError()
                 }
             }
         } else {
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity() {
     private fun navigate() {
 
         if (!checkMigration()) {
+            feeRepository.init()
             startActivity(Intent(this, HomeActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

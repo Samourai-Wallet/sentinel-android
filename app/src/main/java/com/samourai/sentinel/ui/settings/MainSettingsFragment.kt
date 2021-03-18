@@ -1,10 +1,7 @@
 package com.samourai.sentinel.ui.settings;
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +14,7 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.samourai.sentinel.R
 import com.samourai.sentinel.core.access.AccessFactory
 import com.samourai.sentinel.core.crypto.AESUtil
@@ -30,7 +28,6 @@ import com.samourai.sentinel.ui.home.HomeActivity
 import com.samourai.sentinel.ui.utils.PrefsUtil
 import com.samourai.sentinel.ui.utils.showFloatingSnackBar
 import com.samourai.sentinel.ui.views.LockScreenDialog
-import com.samourai.sentinel.ui.views.OptionsBottomSheet
 import com.samourai.sentinel.ui.views.alertWithInput
 import com.samourai.sentinel.ui.views.confirm
 import com.samourai.sentinel.util.*
@@ -290,20 +287,13 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        val options = OptionsBottomSheet(
-                label = "Export backup",
-                arrayListOf(
-                        "Export and copy to clipboard",
-                        "Export to file"
-                ),
-                multiSelect = false,
-                buttonLabel = "Choose export option",
-                onSelectRadio = {
-                    makeExportPayload(it == "Export and copy to clipboard")
-                },
-                onViewReady = {}
-        );
-        options.show(parentFragmentManager, options.tag)
+        val options = arrayListOf("Export and copy to clipboard", "Export to file")
+        MaterialAlertDialogBuilder(requireContext())
+            .setItems(options.toTypedArray()) { _, index ->
+                makeExportPayload(index==0)
+            }
+            .setTitle(getString(R.string.choose_export_opt))
+            .show()
 
     }
 

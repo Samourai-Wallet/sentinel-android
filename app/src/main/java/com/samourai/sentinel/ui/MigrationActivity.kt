@@ -22,7 +22,6 @@ import com.samourai.sentinel.ui.views.confirm
 import com.samourai.sentinel.util.FormatsUtil
 import kotlinx.android.synthetic.main.activity_migration.*
 import kotlinx.android.synthetic.main.fragment_bottomsheet_view_pager.*
-import kotlinx.android.synthetic.main.keypad_view.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import org.koin.java.KoinJavaComponent
