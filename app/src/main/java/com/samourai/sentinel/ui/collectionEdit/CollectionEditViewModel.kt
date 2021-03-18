@@ -10,10 +10,11 @@ import com.samourai.sentinel.data.repository.TransactionsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent
+import org.koin.java.KoinJavaComponent.inject
 
 class CollectionEditViewModel : ViewModel() {
-    private val repository: CollectionRepository by KoinJavaComponent.inject(CollectionRepository::class.java)
-    private val transactionsRepository: TransactionsRepository by KoinJavaComponent.inject(TransactionsRepository::class.java)
+    private val repository: CollectionRepository by inject(CollectionRepository::class.java)
+    private val transactionsRepository: TransactionsRepository by inject(TransactionsRepository::class.java)
     val message: MutableLiveData<String> = MutableLiveData("")
     private val pubKeyCollectionLiveData: MutableLiveData<PubKeyCollection> = MutableLiveData()
     private val pubKeys: MutableLiveData<ArrayList<PubKeyModel>> = MutableLiveData()
