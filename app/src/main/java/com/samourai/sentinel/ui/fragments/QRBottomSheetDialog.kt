@@ -1,5 +1,6 @@
 package com.samourai.sentinel.ui.fragments;
 
+import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -17,6 +18,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.transition.TransitionManager
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.zxing.BarcodeFormat
@@ -24,12 +27,19 @@ import com.google.zxing.WriterException
 import com.google.zxing.client.android.Contents
 import com.google.zxing.client.android.encode.QRCodeEncoder
 import com.samourai.sentinel.R
+import com.samourai.sentinel.ui.views.GenericBottomSheet
 import com.samourai.sentinel.util.AppUtil
 import java.io.File
 import java.io.FileOutputStream
 
-class QRBottomSheetDialog(val qrData: String, val title: String? = "", val clipboardLabel: String? = "") : BottomSheetDialogFragment() {
+class QRBottomSheetDialog(val qrData: String, val title: String? = "", val clipboardLabel: String? = "") : GenericBottomSheet() {
 
+    override fun getTheme(): Int = R.style.AppTheme_BottomSheet_Theme
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = BottomSheetDialog(
+        requireContext(),
+        theme
+    )
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -44,12 +54,15 @@ class QRBottomSheetDialog(val qrData: String, val title: String? = "", val clipb
 
         val qrDialogCopyToClipBoard = view.findViewById<TextView>(R.id.qrDialogCopyToClipBoard);
         val shareQrButton = view.findViewById<TextView>(R.id.shareQrButton);
-        val qrDialogTitle = view.findViewById<TextView>(R.id.qrDialogTitle);
+        val qrToolbar = view.findViewById<MaterialToolbar>(R.id.qrToolbar);
         val qrTextView = view.findViewById<TextView>(R.id.qrTextView);
         val qRImage = view.findViewById<ShapeableImageView>(R.id.imgQrCode);
 
         title?.let {
-            qrDialogTitle.text = title
+            qrToolbar.title = it
+        }
+        qrToolbar.setNavigationOnClickListener {
+            this.dismiss()
         }
         var bitmap: Bitmap? = null
         val qrCodeEncoder = QRCodeEncoder(qrData, null, Contents.Type.TEXT, BarcodeFormat.QR_CODE.toString(), 500)
