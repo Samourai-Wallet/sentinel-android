@@ -1,6 +1,7 @@
 package com.samourai.sentinel.ui.home
 
 import android.Manifest
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -30,11 +31,10 @@ import com.samourai.sentinel.ui.views.confirm
 import com.samourai.sentinel.util.FormatsUtil
 import com.samourai.sentinel.util.MonetaryUtil
 import io.matthewnelson.topl_service.TorServiceController
-import io.matthewnelson.topl_service.prefs.TorServicePrefs
+import io.matthewnelson.topl_service_base.TorServicePrefs
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.*
 import org.koin.java.KoinJavaComponent.inject
-import timber.log.Timber
 
 
 class HomeActivity : SentinelActivity() {
@@ -48,6 +48,7 @@ class HomeActivity : SentinelActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSwipeBackEnable(false)
         setContentView(R.layout.activity_home)
         setSupportActionBar(toolbarHome)
         torServicePrefs = TorServicePrefs(this)
@@ -141,7 +142,7 @@ class HomeActivity : SentinelActivity() {
                     if (it == SentinelState.TorState.ON) {
                         GlobalScope.launch {
                             delay(250L)
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 model.fetchBalance()
                             }
                         }
@@ -164,7 +165,6 @@ class HomeActivity : SentinelActivity() {
                     positiveText = "TestNet",
                     negativeText = "MainNet",
                     onConfirm = { confirm ->
-
                         prefsUtil.firstRun = false
                         if (confirm) {
                             prefsUtil.testnet = true
@@ -236,7 +236,7 @@ class HomeActivity : SentinelActivity() {
     }
 
     private fun updateBalance(it: Long) {
-        homeBalanceBtc.text = "${MonetaryUtil.getInstance().formatToBtc(it)} BTC"
+        homeBalanceBtc.text = "${MonetaryUtil.getInstance().getBTCDecimalFormat(it)} BTC"
     }
 
     private fun updateFiat(it: String) {
@@ -278,7 +278,7 @@ class HomeActivity : SentinelActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == CAMERA_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == Companion.CAMERA_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (connectingDojo) {
                 showDojoSetUpBottomSheet()
                 return
@@ -286,7 +286,7 @@ class HomeActivity : SentinelActivity() {
             showPubKeyBottomSheet()
 
         } else {
-            if (requestCode == CAMERA_PERMISSION && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+            if (requestCode == Companion.CAMERA_PERMISSION && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show()
                 if (connectingDojo) {
                     showDojoSetUpBottomSheet()
