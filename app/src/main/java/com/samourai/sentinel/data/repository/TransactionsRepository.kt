@@ -183,10 +183,11 @@ class TransactionsRepository {
         }
     }
 
-    fun removeTxsRelatedToPubKey(pubKeyModel: PubKeyModel, collectionId: String) {
+    suspend fun removeTxsRelatedToPubKey(pubKeyModel: PubKeyModel, collectionId: String) {
         val collection = collectionRepository.findById(collectionId)
         if (collection != null) {
             txDao.deleteRelatedCollection(collection.id, pubKeyModel.pubKey)
+            utxoDao.deleteByCollection(collection.id)
         }
     }
 
