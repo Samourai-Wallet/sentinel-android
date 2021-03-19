@@ -5,6 +5,7 @@ import com.samourai.sentinel.api.ApiService
 import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.repository.CollectionRepository
 import com.samourai.sentinel.data.repository.ExchangeRateRepository
+import com.samourai.sentinel.data.repository.FeeRepository
 import com.samourai.sentinel.data.repository.TransactionsRepository
 import com.samourai.sentinel.ui.dojo.DojoUtility
 import com.samourai.sentinel.ui.utils.PrefsUtil
@@ -16,7 +17,6 @@ import kotlinx.coroutines.launch
 import org.bitcoinj.core.Coin
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
-import java.math.BigInteger
 
 class HomeViewModel : ViewModel() {
 
@@ -26,6 +26,7 @@ class HomeViewModel : ViewModel() {
     private val transactionsRepository: TransactionsRepository by inject(TransactionsRepository::class.java)
     private val dojoUtility: DojoUtility by inject(DojoUtility::class.java)
     private val apiService: ApiService by inject(ApiService::class.java)
+    private val feeRepository: FeeRepository by inject(FeeRepository::class.java)
 
     private val errorMessage: MutableLiveData<String> = MutableLiveData()
     private val balance: MutableLiveData<Long> = MutableLiveData()
@@ -80,6 +81,16 @@ class HomeViewModel : ViewModel() {
                 }
                 netWorkJobs.add(job)
             }
+            val job = apiScope.launch {
+                try {
+                    feeRepository.getDynamicFees()
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    throw  CancellationException(e.message)
+                }
+            }
+            netWorkJobs.add(job)
+
             if (netWorkJobs.isNotEmpty()) {
                 //Save last sync time to prefs
                 netWorkJobs[netWorkJobs.lastIndex]?.let {
@@ -111,11 +122,11 @@ class HomeViewModel : ViewModel() {
 
         val mediatorLiveData = MediatorLiveData<String>();
 
-        mediatorLiveData.addSource(exchangeRateRepository.getRate()) {
+        mediatorLiveData.addSource(exchangeRateRepository.getRateLive()) {
             mediatorLiveData.value = getFiatBalance(balance.value, it)
         }
         mediatorLiveData.addSource(balance) {
-            mediatorLiveData.value = getFiatBalance(it, exchangeRateRepository.getRate().value)
+            mediatorLiveData.value = getFiatBalance(it, exchangeRateRepository.getRateLive().value)
         }
         return mediatorLiveData
     }
@@ -125,7 +136,7 @@ class HomeViewModel : ViewModel() {
             balance?.let {
                 return try {
                     val fiatRate = MonetaryUtil.getInstance().getFiatFormat(prefsUtil.selectedCurrency)
-                            .format((balance/1e8) * rate.rate)
+                            .format((balance / 1e8) * rate.rate)
                     "$fiatRate ${rate.currency}"
                 } catch (e: Exception) {
                     "00.00 ${rate.currency}"

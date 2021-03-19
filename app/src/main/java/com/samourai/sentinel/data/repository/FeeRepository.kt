@@ -121,16 +121,10 @@ class FeeRepository : FeeUtil() {
             else -> {
             }
         }
-        Timber.i("FEEADD:setFeesREPO ${estimatedFees.size}" +
-                "${highFee?.defaultPerKB} " +
-                "${lowFee?.defaultPerKB} " +
-                "${normalFee?.defaultPerKB}" +
-                "")
     }
 
     public fun getLowFee(): SuggestedFee {
         return if (lowFee == null) {
-            Timber.i("FEEADD getLowFee: NULL")
             getSuggested()
         } else {
             lowFee!!
@@ -164,11 +158,12 @@ class FeeRepository : FeeUtil() {
     }
 
     public fun parse(map: Map<String, Long>) {
-        if (map.toJSON() != null)
-            this.parse(JSONObject(map.toJSON()!!))
+//        if (map.toJSON() != null)
+//            this.parse(JSONObject(map.toJSON()!!))
     }
 
     private fun saveState(json: JSONObject) {
+         Timber.i("saveState: $json")
         dataBaseScope.launch(Dispatchers.IO) {
             sentinelCollectionStore.getFee().write(json)
         }

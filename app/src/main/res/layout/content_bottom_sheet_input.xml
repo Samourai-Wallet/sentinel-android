@@ -26,6 +26,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/bottomSheetInputField"
             android:layout_width="match_parent"
+            android:imeOptions="actionDone"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>

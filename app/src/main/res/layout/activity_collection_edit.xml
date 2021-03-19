@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/collectionDetailsRootLayout"
     android:layout_height="match_parent">
 
@@ -39,55 +40,48 @@
                     android:id="@+id/collectionEdiText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Collection Name" />
+                    android:hint="@string/collection_name"
+                    android:importantForAutofill="no" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:id="@+id/collectionEditNestedScroll"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pubKeyRecyclerView"
             android:layout_width="match_parent"
+            tools:listitem="@layout/pub_key_item_layout"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+           />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:padding="12dp"
-                android:text="Public Keys"
-                android:textColor="@color/v3_textColorSecondary" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/pubKeyRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <Button
-                android:id="@+id/addNewPublicKey"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:padding="12dp"
-                android:text="Add another public key"
-                android:textColor="@color/v3_textColorSecondary"
-                android:textStyle="normal" />
-
-        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/addNewPubFab"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:elevation="0dp"
+        android:paddingHorizontal="@dimen/spacing_smlarge"
+        android:text="Add new"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/grey_accent"
+        app:elevation="12dp"
+        app:icon="@drawable/ic_library_add_white_24dp"
+        app:iconTint="@color/white"
+        app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.MediumComponent" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

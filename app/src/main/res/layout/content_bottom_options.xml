@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        >
-
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,26 +27,57 @@
             <FrameLayout
                 android:id="@+id/bottomSheetOptionsItemLayout"
                 android:layout_width="match_parent"
-                android:layout_marginLeft="12dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_mlarge"
+                  />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bottomSheetConfirmBtn"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_margin="12dp"
-                android:layout_marginTop="@dimen/spacing_middle"
-                android:text="Confirm"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                app:backgroundTint="@color/md_grey_800"
-                app:rippleColor="@color/grey_accent"
-                tools:text="Text button" />
+                android:layout_height="109dp"/>
+
         </LinearLayout>
 
 
     </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/v3_background"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomSheetOptionsItemLayoutScroll"
+        app:layout_constraintEnd_toEndOf="@+id/bottomSheetOptionsItemLayoutScroll"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/bottomSheetOptionsItemLayoutScroll">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bottomSheetConfirmPositiveBtn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Confirm"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/grey_accent"
+            tools:text="Text button" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bottomSheetConfirmBtn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:text="Cancel"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:rippleColor="@color/grey_accent"
+            app:strokeColor="@color/disabled_grey"
+            tools:text="Text button" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

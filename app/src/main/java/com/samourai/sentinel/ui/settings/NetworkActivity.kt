@@ -14,15 +14,18 @@ import com.google.android.material.snackbar.Snackbar
 import com.samourai.sentinel.R
 import com.samourai.sentinel.api.APIConfig
 import com.samourai.sentinel.core.SentinelState
+import com.samourai.sentinel.ui.SentinelActivity
 import com.samourai.sentinel.ui.dojo.DojoConfigureBottomSheet
 import com.samourai.sentinel.ui.dojo.DojoUtility
 import com.samourai.sentinel.ui.utils.PrefsUtil
+import com.samourai.sentinel.ui.utils.pxToDp
 import com.samourai.sentinel.ui.utils.showFloatingSnackBar
 import com.samourai.sentinel.ui.views.confirm
 import io.matthewnelson.topl_service.TorServiceController
 import org.koin.java.KoinJavaComponent.inject
 
-class NetworkActivity : AppCompatActivity() {
+class NetworkActivity : SentinelActivity() {
+    
     var torRenewBtn: TextView? = null
     var torConnectionStatus: TextView? = null
     var dojoConnectionStatus: TextView? = null

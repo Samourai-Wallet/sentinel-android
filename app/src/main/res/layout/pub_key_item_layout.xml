@@ -5,11 +5,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:layout_marginBottom="24dp"
-    android:animateLayoutChanges="true">
+    app:cardCornerRadius="8dp"
+    app:cardElevation="1dp"
+    android:layout_margin="@dimen/spacing_middle">
 
-    <include layout="@layout/pub_key_item_layout_collapse" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutRv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/pubKeyItemLabel"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:elevation="2dp"
+            android:textColor="#ffff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/pubKeyType"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Whirlpool ZPUB" />
+
+        <TextView
+            android:id="@+id/pubkeyAmount"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:elevation="2dp"
+            tools:text="0.0058000 BTC"
+            android:textColor="#ffff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/pubKeyItemLabel"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/pubKeyItemLabel"
+            app:layout_constraintTop_toBottomOf="@+id/pubKeyItemLabel"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/pubKeyType"
+            style="@style/TextAppearance.MaterialComponents.Overline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            tools:text="BIP49"
+            app:layout_constraintBottom_toBottomOf="@+id/pubkeyAmount"
+            app:layout_constraintEnd_toStartOf="@+id/moreButton"
+            app:layout_constraintTop_toTopOf="@+id/pubkeyAmount"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/moreButton"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_more_vert_white_24dp"
+            app:iconTint="@color/white"
+            app:strokeColor="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

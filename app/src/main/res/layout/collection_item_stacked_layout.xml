@@ -29,7 +29,7 @@
         android:layout_height="24dp"
         android:layout_marginStart="24dp"
         android:contentDescription="wallet icon"
-        android:tint="#E4E4E4"
+        app:tint="#E4E4E4"
         app:layout_constraintBottom_toBottomOf="@+id/rvItemCollectionBalance"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rvItemCollectionTitle"

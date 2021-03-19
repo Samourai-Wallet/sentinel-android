@@ -34,7 +34,7 @@ open class SentinelActivity : AppCompatActivity(), SwipeBackActivityBase {
         mHelper.onActivityCreate();
         overridePendingTransition(R.anim.slide_in, R.anim.no_anim)
         mHelper.swipeBackLayout
-            .setScrollThresHold(0.6f)
+            .setScrollThresHold(0.7f)
     }
 
 
@@ -45,7 +45,7 @@ open class SentinelActivity : AppCompatActivity(), SwipeBackActivityBase {
 
     override fun finish() {
         super.finish()
-        overridePendingTransition( R.anim.no_anim, R.anim.slide_out)
+        overridePendingTransition(R.anim.no_anim, R.anim.slide_out)
     }
 
     override fun onResume() {
@@ -105,20 +105,6 @@ open class SentinelActivity : AppCompatActivity(), SwipeBackActivityBase {
         }
         return result
     }
-
-
-    val screenRectPx: Rect
-        get() = displayMetrics.run { Rect(0, 0, widthPixels, heightPixels) }
-
-    val screenRectDp: RectF
-        get() = displayMetrics.run { RectF(0f, 0f, widthPixels.px2dp, heightPixels.px2dp) }
-
-    val Number.px2dp: Float
-        get() = this.toFloat() / displayMetrics.density
-
-    val Number.dp2px: Int
-        get() = (this.toFloat() * displayMetrics.density).roundToInt()
-
 
     override fun getSwipeBackLayout(): SwipeBackLayout? {
         return mHelper.swipeBackLayout
