@@ -2,11 +2,11 @@ package com.samourai.sentinel.data.db
 
 import com.google.gson.reflect.TypeToken
 import com.samourai.sentinel.core.access.AccessFactory
-import com.samourai.sentinel.core.crypto.AESUtil
 import com.samourai.sentinel.helpers.fromJSON
 import com.samourai.sentinel.helpers.toJSON
 import com.samourai.sentinel.ui.utils.logThreadInfo
-import com.samourai.sentinel.util.CharSequenceX
+import com.samourai.wallet.crypto.AESUtil
+import com.samourai.wallet.util.CharSequenceX
 import timber.log.Timber
 import java.io.File
 

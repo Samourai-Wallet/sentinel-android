@@ -3,7 +3,7 @@ package com.samourai.sentinel.sweep;
 import android.util.Base64;
 
 import com.samourai.sentinel.core.SentinelState;
-import com.samourai.sentinel.util.CharSequenceX;
+import com.samourai.wallet.util.CharSequenceX;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bitcoinj.core.Base58;
@@ -14,7 +14,6 @@ import org.bitcoinj.crypto.BIP38PrivateKey;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
-import java.security.MessageDigest;
 
 //import android.util.Log;
 

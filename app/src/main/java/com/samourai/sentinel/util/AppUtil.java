@@ -5,26 +5,19 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Looper;
 import android.text.InputType;
 import android.util.Log;
-import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.Toast;
 
-//import com.samourai.sentinel.MainActivity2;
- import com.samourai.sentinel.R;
- import com.samourai.sentinel.core.crypto.AESUtil;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.samourai.sentinel.R;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+//import com.samourai.sentinel.MainActivity2;
 
 public class AppUtil {
 
@@ -221,148 +214,6 @@ public class AppUtil {
 
     }
 
-    public void doRestore() {
-
-        final EditText password = new EditText(context);
-        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        password.setHint(R.string.password);
-
-        AlertDialog.Builder dlg = new AlertDialog.Builder(context)
-                .setTitle(R.string.app_name)
-                .setView(password)
-                .setMessage(R.string.restore_wallet_from_backup)
-                .setCancelable(false)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        final String pw = password.getText().toString();
-                        if (pw == null || pw.length() < 1) {
-                            Toast.makeText(context, R.string.invalid_password, Toast.LENGTH_SHORT).show();
-                            AppUtil.getInstance(context).restartApp();
-                        }
-
-                        final EditText edBackup = new EditText(context);
-                        edBackup.setSingleLine(false);
-                        edBackup.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-                        edBackup.setLines(5);
-                        edBackup.setHint(R.string.encrypted_backup);
-                        edBackup.setGravity(Gravity.START);
-
-                        AlertDialog.Builder dlg = new AlertDialog.Builder(context)
-                                .setTitle(R.string.app_name)
-                                .setView(edBackup)
-                                .setMessage(R.string.restore_wallet_from_backup)
-                                .setCancelable(false)
-                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                                        String encrypted = edBackup.getText().toString();
-                                        if (encrypted == null || encrypted.length() < 1) {
-                                            Toast.makeText(context, R.string.decryption_error, Toast.LENGTH_SHORT).show();
-                                            AppUtil.getInstance(context).restartApp();
-                                        }
-
-                                        try {
-                                            JSONObject jsonObject = new JSONObject(encrypted);
-                                            if(jsonObject != null && jsonObject.has("payload"))    {
-                                                encrypted = jsonObject.getString("payload");
-                                            }
-                                        }
-                                        catch(JSONException je) {
-                                            ;
-                                        }
-
-                                        String decrypted = null;
-                                        try {
-                                            decrypted = AESUtil.decrypt(encrypted, new CharSequenceX(pw), AESUtil.DefaultPBKDF2Iterations);
-                                        } catch (Exception e) {
-                                            Toast.makeText(context, R.string.decryption_error, Toast.LENGTH_SHORT).show();
-                                        } finally {
-                                            if (decrypted == null || decrypted.length() < 1) {
-                                                Toast.makeText(context, R.string.decryption_error, Toast.LENGTH_SHORT).show();
-                                                AppUtil.getInstance(context).restartApp();
-                                            }
-                                        }
-
-                                        final String decryptedPayload = decrypted;
-                                        if (progress != null && progress.isShowing()) {
-                                            progress.dismiss();
-                                            progress = null;
-                                        }
-
-                                        progress = new ProgressDialog(context);
-                                        progress.setCancelable(false);
-                                        progress.setTitle(R.string.app_name);
-                                        progress.setMessage(context.getString(R.string.please_wait));
-                                        progress.show();
-
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Looper.prepare();
-
-                                                try {
-
-//                                                    JSONObject json = new JSONObject(decryptedPayload);
-//                                                    if(json != null && (json.has("xpubs") || json.has("legacy")))    {
-//                                                        SamouraiSentinel.getInstance(context).parseJSON(json);
-//
-//                                                        try {
-//                                                            SamouraiSentinel.getInstance(context).serialize(SamouraiSentinel.getInstance(context).toJSON(), null);
-//                                                        } catch (IOException ioe) {
-//                                                            ;
-//                                                        } catch (JSONException je) {
-//                                                            ;
-//                                                        }
-//
-//                                                        AppUtil.getInstance(context).restartApp();
-//                                                    }
-
-                                                } finally {
-                                                    if (progress != null && progress.isShowing()) {
-                                                        progress.dismiss();
-                                                        progress = null;
-                                                    }
-                                                    AppUtil.getInstance(context).restartApp();
-                                                }
-
-                                                Looper.loop();
-
-                                            }
-                                        }).start();
-
-                                    }
-                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                                        AppUtil.getInstance(context).restartApp();
-
-                                    }
-                                });
-
-                        dlg.show();
-
-                    }
-                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        AppUtil.getInstance(context).restartApp();
-
-                    }
-                });
-
-        dlg.show();
-
-    }
-
-    public void checkTimeOut()   {
-        if(TimeOutUtil.getInstance().isTimedOut())    {
-            AppUtil.getInstance(context).restartApp();
-        }
-        else    {
-            TimeOutUtil.getInstance().updatePin();
-        }
-    }
 
     public boolean isSideLoaded() {
         List<String> validInstallers = new ArrayList<>(Arrays.asList("com.android.vending", "com.google.android.feedback"));

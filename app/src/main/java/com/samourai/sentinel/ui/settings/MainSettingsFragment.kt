@@ -17,7 +17,6 @@ import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.samourai.sentinel.R
 import com.samourai.sentinel.core.access.AccessFactory
-import com.samourai.sentinel.core.crypto.AESUtil
 import com.samourai.sentinel.data.db.dao.TxDao
 import com.samourai.sentinel.data.db.dao.UtxoDao
 import com.samourai.sentinel.data.repository.CollectionRepository
@@ -31,6 +30,8 @@ import com.samourai.sentinel.ui.views.LockScreenDialog
 import com.samourai.sentinel.ui.views.alertWithInput
 import com.samourai.sentinel.ui.views.confirm
 import com.samourai.sentinel.util.*
+import com.samourai.wallet.crypto.AESUtil
+import com.samourai.wallet.util.CharSequenceX
 import kotlinx.coroutines.*
 import org.koin.java.KoinJavaComponent.inject
 import java.io.*
