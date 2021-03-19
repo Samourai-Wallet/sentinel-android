@@ -87,12 +87,6 @@ class PubKeyAdapter : RecyclerView.Adapter<PubKeyAdapter.PubKeyViewHolder>() {
 
     }
 
-
-    fun setOnDeleteListener(callback: (Int) -> Unit) {
-        this.onDeleteClick = callback
-    }
-
-
     fun setOnEditClickListener(callback: (Int, PubKeyModel) -> Unit) {
         this.onOptionsClick = callback
     }

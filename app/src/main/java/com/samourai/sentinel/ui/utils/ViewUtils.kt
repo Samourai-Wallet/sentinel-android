@@ -79,6 +79,7 @@ fun listenForAllSpringsEnd(
 fun Context.px(@DimenRes dimen: Int): Int = resources.getDimension(dimen).toInt()
 
 fun Context.dp(@DimenRes dimen: Int): Float = px(dimen) / resources.displayMetrics.density
+fun Context.pxToDp( dimen: Int): Float =dimen / resources.displayMetrics.density
 
 val Int.px get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
