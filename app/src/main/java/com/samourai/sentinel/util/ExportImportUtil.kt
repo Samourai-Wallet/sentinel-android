@@ -3,7 +3,6 @@ package com.samourai.sentinel.util
 import com.google.gson.reflect.TypeToken
 import com.samourai.sentinel.BuildConfig
 import com.samourai.sentinel.core.access.AccessFactory
-import com.samourai.sentinel.core.crypto.AESUtil
 import com.samourai.sentinel.data.AddressTypes
 import com.samourai.sentinel.data.PubKeyCollection
 import com.samourai.sentinel.data.PubKeyModel
@@ -14,6 +13,8 @@ import com.samourai.sentinel.helpers.fromJSON
 import com.samourai.sentinel.helpers.toJSON
 import com.samourai.sentinel.ui.dojo.DojoUtility
 import com.samourai.sentinel.ui.utils.PrefsUtil
+import com.samourai.wallet.crypto.AESUtil
+import com.samourai.wallet.util.CharSequenceX
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -56,8 +57,14 @@ class ExportImportUtil {
 
     fun decryptAndParseSamouraiPayload(backUp: String, password: String): PubKeyCollection {
         val backUpJson = JSONObject(backUp)
-        if (backUpJson.has("payload")) {
-            val decrypted = AESUtil.decrypt(backUpJson.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
+        if (backUpJson.has("payload") &&  backUpJson.has("version")  ) {
+            val payloadVersion = backUpJson.getInt("version");
+            var decrypted = ""
+            decrypted = if(payloadVersion==1){
+                AESUtil.decrypt(backUpJson.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
+            }else{
+                AESUtil.decryptSHA256(backUpJson.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
+            }
             val pubKeyCollection = PubKeyCollection(collectionLabel = "Samourai wallet")
             val json = JSONObject(decrypted)
             if (json.has("wallet")) {
@@ -158,8 +165,14 @@ class ExportImportUtil {
 
     fun decryptSentinel(backUp: String, password: String): Triple<ArrayList<PubKeyCollection>?, JSONObject, JSONObject?> {
         val json = JSONObject(backUp)
-        if (json.has("payload")) {
-            val decrypted = AESUtil.decrypt(json.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
+        if (json.has("payload") && json.has("version")) {
+            val payloadVersion = json.getInt("version");
+            var decrypted = ""
+            decrypted = if(payloadVersion == 1){
+                AESUtil.decrypt(json.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
+            }else{
+                AESUtil.decryptSHA256(json.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
+            }
             val payloadJSON = JSONObject(decrypted)
             val collectionArrayType = object : TypeToken<ArrayList<PubKeyCollection?>?>() {}.type
             val collections = fromJSON<ArrayList<PubKeyCollection>>(payloadJSON.getJSONArray("collections").toString(), collectionArrayType)
