@@ -68,7 +68,7 @@ class PayloadRecord(private val location: String, val name: String) {
     private fun encrypt(value: String): String {
         val pin = AccessFactory.getInstance(null).pin
         if (!pin.isNullOrEmpty()) {
-            return AESUtil.encrypt(value, CharSequenceX(pin), AESUtil.DefaultPBKDF2Iterations);
+            return AESUtil.encryptSHA256(value, CharSequenceX(pin), AESUtil.DefaultPBKDF2Iterations);
         }
         return value
     }
@@ -77,7 +77,7 @@ class PayloadRecord(private val location: String, val name: String) {
         val pin = AccessFactory.getInstance(null).pin
 
         if (!pin.isNullOrEmpty()) {
-            return AESUtil.decrypt(value, CharSequenceX(pin), AESUtil.DefaultPBKDF2Iterations);
+            return AESUtil.decryptSHA256(value, CharSequenceX(pin), AESUtil.DefaultPBKDF2Iterations);
         }
 
         return value
