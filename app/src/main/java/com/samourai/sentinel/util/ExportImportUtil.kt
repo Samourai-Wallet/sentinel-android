@@ -21,6 +21,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
 
 /**
  * sentinel-android
@@ -29,12 +30,12 @@ import org.koin.java.KoinJavaComponent.inject
 
 class ExportImportUtil {
 
-    private val accessFactory: AccessFactory by inject(AccessFactory::class.java);
     private val txDao: TxDao by inject(TxDao::class.java);
     private val utxoDao: UtxoDao by inject(UtxoDao::class.java);
     private val dojoUtility: DojoUtility by inject(DojoUtility::class.java);
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java);
     private val collectionRepository: CollectionRepository by inject(CollectionRepository::class.java);
+    private val dojoUtil: DojoUtility by inject(DojoUtility::class.java);
 
 
     fun makePayload(): JSONObject {
@@ -63,7 +64,7 @@ class ExportImportUtil {
             decrypted = if(payloadVersion==1){
                 AESUtil.decrypt(backUpJson.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
             }else{
-                AESUtil.decryptSHA256(backUpJson.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
+                AESUtil.decryptSHA256(backUpJson.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2HMACSHA256Iterations)
             }
             val pubKeyCollection = PubKeyCollection(collectionLabel = "Samourai wallet")
             val json = JSONObject(decrypted)
@@ -98,7 +99,7 @@ class ExportImportUtil {
                         val xpub = jsonObject.getString("ypub")
                         if (FormatsUtil.isValidXpub(xpub)) {
                             val pubKeyModel = PubKeyModel(pubKey = xpub,
-                                    label = "BIP49 account ${it}",
+                                    label = "BIP49 account $it",
                                     AddressTypes.BIP49,
                                     change_index = if (jsonObject.has("changeIdx")) jsonObject.getInt("changeIdx") else 0,
                                     account_index = if (jsonObject.has("receiveIdx")) jsonObject.getInt("receiveIdx") else 0
@@ -171,7 +172,7 @@ class ExportImportUtil {
             decrypted = if(payloadVersion == 1){
                 AESUtil.decrypt(json.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
             }else{
-                AESUtil.decryptSHA256(json.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
+                AESUtil.decryptSHA256(json.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2HMACSHA256Iterations)
             }
             val payloadJSON = JSONObject(decrypted)
             val collectionArrayType = object : TypeToken<ArrayList<PubKeyCollection?>?>() {}.type
@@ -182,6 +183,90 @@ class ExportImportUtil {
                 dojo = payloadJSON.getJSONObject("dojo")
             }
             return Triple(collections, prefs, dojo)
+        } else {
+            throw  Exception("Invalid payload")
+        }
+    }
+
+
+    fun decryptSentinelLegacy(backUp: String, password: String): Pair<ArrayList<PubKeyModel>, JSONObject?> {
+        val jsonBackUp = JSONObject(backUp)
+        if (jsonBackUp.has("payload") && jsonBackUp.has("version")) {
+            val payloadVersion = jsonBackUp.getInt("version");
+            val publicKeys: ArrayList<PubKeyModel> = arrayListOf()
+            val decrypted: String = if(payloadVersion == 1){
+                AESUtil.decrypt(jsonBackUp.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
+            }else{       
+                AESUtil.decryptSHA256(jsonBackUp.getString("payload"), CharSequenceX(password), AESUtil.DefaultPBKDF2Iterations)
+            }
+            val payloadJSON = JSONObject(decrypted)
+
+            if (payloadJSON.has("xpubs")) {
+                val xpubs = payloadJSON.getJSONArray("xpubs")
+                repeat(xpubs.length()) {
+                    val xpubObject = xpubs.getJSONObject(it)
+                    xpubObject.keys().forEach { key ->
+                        val type = validate(key);
+                        if (type == AddressTypes.BIP44) {
+                            val pubKeyModel = PubKeyModel(pubKey = key,
+                                label = xpubObject.getString(key), type = AddressTypes.BIP44)
+                            publicKeys.add(pubKeyModel)
+                        }
+                    }
+                }
+            }
+
+            if (payloadJSON.has("bip49")) {
+                val xpubs = payloadJSON.getJSONArray("bip49")
+                repeat(xpubs.length()) {
+                    val xpubObject = xpubs.getJSONObject(it)
+                    xpubObject.keys().forEach { key ->
+                        val type = validate(key);
+                        if (type == AddressTypes.BIP49) {
+                            val pubKeyModel = PubKeyModel(pubKey = key,
+                                label = xpubObject.getString(key), type = AddressTypes.BIP49)
+                            publicKeys.add(pubKeyModel)
+                        }
+                    }
+                }
+            }
+
+            if (payloadJSON.has("bip84")) {
+                val xpubs = payloadJSON.getJSONArray("bip84")
+                repeat(xpubs.length()) {
+                    val xpubObject = xpubs.getJSONObject(it)
+                    xpubObject.keys().forEach { key ->
+                        val type = validate(key);
+                        if (type == AddressTypes.BIP84) {
+                            val pubKeyModel = PubKeyModel(pubKey = key,
+                                label = xpubObject.getString(key), type = AddressTypes.BIP84)
+                            publicKeys.add(pubKeyModel)
+                        }
+                    }
+                }
+            }
+
+            if (payloadJSON.has("legacy")) {
+                val xpubs = payloadJSON.getJSONArray("legacy")
+                repeat(xpubs.length()) {
+                    val xpubObject = xpubs.getJSONObject(it)
+                    xpubObject.keys().forEach { key ->
+                        val type = validate(key);
+                        if (type == AddressTypes.ADDRESS) {
+                            val pubKeyModel = PubKeyModel(pubKey = key,
+                                label = xpubObject.getString(key), type = AddressTypes.ADDRESS)
+                            publicKeys.add(pubKeyModel)
+                        }
+                    }
+                }
+            }
+            var dojo: JSONObject? = null
+            if (payloadJSON.has("dojo")) {
+                if (dojoUtil.validate(payloadJSON.getString("dojo"))) {
+                    dojo = payloadJSON.getJSONObject("dojo")
+                }
+            }
+            return Pair(publicKeys,dojo)
         } else {
             throw  Exception("Invalid payload")
         }
@@ -207,5 +292,49 @@ class ExportImportUtil {
 
     fun importPrefs(it: JSONObject) {
         prefsUtil.import(it)
+    }
+
+
+    private fun validate(code: String): AddressTypes? {
+
+        var payload = code
+
+        if (code.startsWith("BITCOIN:")) {
+            payload = code.substring(8)
+
+        }
+        if (code.startsWith("bitcoin:")) {
+            payload = code.substring(8)
+        }
+        if (code.startsWith("bitcointestnet:")) {
+            payload = code.substring(15)
+        }
+        if (code.contains("?")) {
+            payload = code.substring(0, code.indexOf("?"))
+        }
+        if (code.contains("?")) {
+            payload = code.substring(0, code.indexOf("?"))
+        }
+
+        var type = AddressTypes.ADDRESS
+
+        if (code.startsWith("xpub") || code.startsWith("tpub")) {
+            type = AddressTypes.BIP44
+        } else if (code.startsWith("ypub") || code.startsWith("upub")) {
+            type = AddressTypes.BIP49
+        } else if (code.startsWith("zpub") || code.startsWith("vpub")) {
+            type = AddressTypes.BIP84
+        }
+
+        return if (type == AddressTypes.ADDRESS) {
+            FormatsUtil.isValidBitcoinAddress(code)
+            null
+        } else {
+            if (FormatsUtil.isValidXpub(code)) {
+                type
+            } else {
+                null
+            }
+        }
     }
 }

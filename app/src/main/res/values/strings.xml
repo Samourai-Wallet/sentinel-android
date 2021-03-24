@@ -285,6 +285,7 @@
     <string name="public_keys">Public Keys</string>
     <string name="choose_export_opt">Choose export option</string>
     <string name="options">Options</string>
+    <string name="import_supports">Import Supports Samourai backup or Sentinel backup</string>
 
 
 </resources>
