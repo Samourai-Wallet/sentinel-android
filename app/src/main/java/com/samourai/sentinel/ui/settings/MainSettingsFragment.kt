@@ -263,7 +263,7 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
                             maskInput = true,
                             maxLen = 12,
                             label = "Add payload password", onConfirm = {
-                        val payloadEncrypted = ExportImportUtil().addVersionInfo(AESUtil.encrypt(payload.toString(), CharSequenceX(it), AESUtil.DefaultPBKDF2Iterations))
+                        val payloadEncrypted = ExportImportUtil().addVersionInfo(AESUtil.encryptSHA256(payload.toString(), CharSequenceX(it), AESUtil.DefaultPBKDF2HMACSHA256Iterations))
                         exportedBackUp = payloadEncrypted.toString()
                         if (copyToClipBoard) {
                             val cm = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
