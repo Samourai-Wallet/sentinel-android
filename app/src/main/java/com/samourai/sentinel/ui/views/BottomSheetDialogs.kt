@@ -141,6 +141,7 @@ fun AppCompatActivity.alertWithInput(
         textInput?.setText(value)
         if(maskInput){
             textInput?.inputType = EditorInfo.TYPE_TEXT_VARIATION_PASSWORD
+            textInput?.transformationMethod = PasswordTransformationMethod.getInstance();
         }
         textInput?.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLen))
         view?.findViewById<MaterialButton>(R.id.bottomSheetConfirmPositiveBtn)?.setOnClickListener { _ ->
