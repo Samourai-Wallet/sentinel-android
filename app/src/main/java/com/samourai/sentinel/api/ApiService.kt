@@ -10,6 +10,7 @@ import com.samourai.sentinel.ui.utils.PrefsUtil
 import com.samourai.sentinel.util.apiScope
 import kotlinx.coroutines.*
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
@@ -21,6 +22,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
+
 /**
  * sentinel-android
  *
@@ -31,12 +33,10 @@ open class ApiService {
 
     private val prefsUtil: PrefsUtil by inject(PrefsUtil::class.java);
     private val dojoUtility: DojoUtility by inject(DojoUtility::class.java);
-
     private var ACCESS_TOKEN: String? = null
-
     private val ACCESS_TOKEN_REFRESH = 300L
-
     lateinit var client: OkHttpClient
+    private val  JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
 
     init {
         try {
@@ -49,7 +49,13 @@ open class ApiService {
 
 
     private fun buildClient(excludeApiKey: Boolean = false, excludeAuthenticator: Boolean = false) {
-        client = buildClient(excludeApiKey, getAPIUrl(), this, prefsUtil.authorization, excludeAuthenticator)
+        client = buildClient(
+            excludeApiKey,
+            getAPIUrl(),
+            this,
+            prefsUtil.authorization,
+            excludeAuthenticator
+        )
     }
 
 
@@ -74,8 +80,8 @@ open class ApiService {
     suspend fun checkImportStatus(pubKey: String) = withContext(Dispatchers.IO) {
         buildClient(excludeAuthenticator = true)
         val request = Request.Builder()
-                .url("${getAPIUrl()}/xpub/${pubKey}/import/status")
-                .build()
+            .url("${getAPIUrl()}/xpub/${pubKey}/import/status")
+            .build()
         val response = client.newCall(request).await()
         val status = response.body?.string()
         if (!status.isNullOrEmpty()) {
@@ -96,18 +102,14 @@ open class ApiService {
 
     suspend fun importXpub(pubKey: String, segwit: String): Response {
         buildClient(excludeAuthenticator = true)
-        /**
-         * Import process a long running process , this depends on the xpub
-         *
-         */
         client.newBuilder()
-                .connectTimeout(120, TimeUnit.SECONDS)
-                .readTimeout(120, TimeUnit.SECONDS)
-                .callTimeout(120, TimeUnit.SECONDS)
+            .connectTimeout(120, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .callTimeout(120, TimeUnit.SECONDS)
         val request = Request.Builder()
-                .post(byteArrayOf().toRequestBody())
-                .url("${getAPIUrl()}/xpub?xpub=$pubKey&&segwit=$segwit&type=restore")
-                .build()
+            .post(byteArrayOf().toRequestBody())
+            .url("${getAPIUrl()}/xpub?xpub=$pubKey&&segwit=$segwit&type=restore")
+            .build()
         return client.newCall(request).await()
     }
 
@@ -115,9 +117,9 @@ open class ApiService {
     suspend fun authenticateDojo(apiKey: String): Response {
         buildClient()
         val request = Request.Builder()
-                .post(byteArrayOf().toRequestBody())
-                .url("${getAPIUrl()}/auth/login?apikey=$apiKey")
-                .build()
+            .post(byteArrayOf().toRequestBody())
+            .url("${getAPIUrl()}/auth/login?apikey=$apiKey")
+            .build()
         return client.newCall(request).await()
     }
 
@@ -125,8 +127,8 @@ open class ApiService {
     suspend fun getTx(txId: String): Response {
         buildClient()
         val request = Request.Builder()
-                .url("${getAPIUrl()}/tx/${txId}?fees=1")
-                .build()
+            .url("${getAPIUrl()}/tx/${txId}?fees=1")
+            .build()
         return client.newCall(request).await()
     }
 
@@ -134,8 +136,8 @@ open class ApiService {
     suspend fun getFees(): Response {
         buildClient()
         val request = Request.Builder()
-                .url("${getAPIUrl()}/fees")
-                .build()
+            .url("${getAPIUrl()}/fees")
+            .build()
         return client.newCall(request).await()
     }
 
@@ -143,8 +145,8 @@ open class ApiService {
     suspend fun getWallet(pubKey: String): Response {
         buildClient()
         val request = Request.Builder()
-                .url("${getAPIUrl()}/wallet?active=${pubKey}")
-                .build()
+            .url("${getAPIUrl()}/wallet?active=${pubKey}")
+            .build()
         return client.newCall(request).await()
     }
 
@@ -177,15 +179,42 @@ open class ApiService {
         this.ACCESS_TOKEN = accessToken
     }
 
+    suspend fun broadcast(hex: String): String {
+        buildClient()
+        val formBody: RequestBody = FormBody.Builder()
+            .add("tx", hex)
+            .build()
+        val request = Request.Builder()
+            .url("${getAPIUrl()}/pushtx/")
+            .post(formBody)
+            .build()
+        val response = client.newCall(request).await()
+        val string = response.body?.string() ?: "{}"
+        val json = JSONObject(string)
+        return if (response.isSuccessful) {
+            if (json.has("status") && json.getString("status").equals("ok")) {
+                json.getString("data")
+            } else {
+                "TX_ID_NOT_FOUND"
+            }
+        } else {
+            if (json.has("status") && json.getString("status").equals("error")) {
+                throw  Exception(json.getJSONObject("error").getString("message"))
+            } else {
+                throw InvalidResponse()
+            }
+        }
+    }
+
     class ApiNotConfigured : Throwable(message = "Api endpoint is not configured")
     class InvalidResponse : Throwable(message = "Invalid response")
 
     companion object {
         fun buildClient(
-                excludeApiKey: Boolean = false, url: String?,
-                apiService: ApiService?,
-                authToken: String?,
-                excludeAuthenticator: Boolean = false,
+            excludeApiKey: Boolean = false, url: String?,
+            apiService: ApiService?,
+            authToken: String?,
+            excludeAuthenticator: Boolean = false,
         ): OkHttpClient {
             val builder = OkHttpClient.Builder()
             if (BuildConfig.DEBUG) {
@@ -213,18 +242,18 @@ open class ApiService {
              * for more please refer https://code.samourai.io/dojo/samourai-dojo/-/blob/master/doc/POST_auth_login.md#authentication
              */
             if (!excludeApiKey)
-                builder.addInterceptor(object : Interceptor {
-                    override fun intercept(chain: Interceptor.Chain): Response {
-                        val original = chain.request()
-                        val newBuilder = original.newBuilder()
-                        if (!authToken.isNullOrEmpty() && SentinelState.isDojoEnabled()) {
-                            newBuilder.url(original.url.newBuilder()
-                                    .addQueryParameter("at", authToken)
-                                    .build())
-                        }
-                        val request = newBuilder.build()
-                        return chain.proceed(request)
+                builder.addInterceptor(Interceptor { chain ->
+                    val original = chain.request()
+                    val newBuilder = original.newBuilder()
+                    if (!authToken.isNullOrEmpty() && SentinelState.isDojoEnabled()) {
+                        newBuilder.url(
+                            original.url.newBuilder()
+                                .addQueryParameter("at", authToken)
+                                .build()
+                        )
                     }
+                    val request = newBuilder.build()
+                    chain.proceed(request)
                 })
             return builder.build()
         }
@@ -234,9 +263,17 @@ open class ApiService {
 
             // Create a trust manager that does not validate certificate chains
             val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-                override fun checkClientTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {}
+                override fun checkClientTrusted(
+                    chain: Array<java.security.cert.X509Certificate>,
+                    authType: String
+                ) {
+                }
 
-                override fun checkServerTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {}
+                override fun checkServerTrusted(
+                    chain: Array<java.security.cert.X509Certificate>,
+                    authType: String
+                ) {
+                }
 
                 override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> {
                     return arrayOf()
