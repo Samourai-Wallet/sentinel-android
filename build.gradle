@@ -2,15 +2,14 @@
 
 buildscript {
     ext.kotlin_version = '1.4.21'
-    ext.koin_version = '2.1.6'
+    ext.koin_version = '3.0.1'
     repositories {
-        jcenter()
         google()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath 'com.android.tools.build:gradle:4.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.koin:koin-gradle-plugin:$koin_version"
         // in the individual module build.gradle files
     }
 }
@@ -20,13 +19,14 @@ rootProject.allprojects {
         maven {
             url "https://raw.githubusercontent.com/guardianproject/gpmaven/master"
         }
+        mavenCentral()
         maven { url 'https://jitpack.io' }
     }
 }
 
 allprojects {
     repositories {
-        jcenter()
+        mavenCentral()
         google()
     }
 }
