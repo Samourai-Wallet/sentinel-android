@@ -3,6 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/home_options_broadcast"
+        android:title="Broadcast transaction" />
+
+    <item
         android:id="@+id/home_options_settings"
         android:title="Settings" />
 

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/motionItem"
+    android:layout_width="match_parent"
+    android:layout_height="420dp"
+    android:minHeight="420dp"
+    >
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/materialToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:title="Broadcast transaction"
+        app:titleCentered="true" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pasteHex"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/spacing_xxlarge"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="paste"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/grey_accent"
+        app:cornerRadius="6dp"
+        app:icon="@drawable/ic_content_paste_24px"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/scanHex"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintHorizontal_bias="0.80"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scanHex" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/scanHex"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/spacing_xxlarge"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:text="Scan"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/grey_accent"
+        app:cornerRadius="6dp"
+        app:icon="@drawable/ic_baseline_qr_code_24"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/broadCastTransactionBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.20"
+        app:layout_constraintStart_toStartOf="@+id/guideline5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50121653" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
+        app:cardBackgroundColor="@color/v3_background_light"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/scanHex"
+        app:layout_constraintEnd_toEndOf="@+id/scanHex"
+        app:layout_constraintStart_toStartOf="@+id/pasteHex"
+        app:layout_constraintTop_toBottomOf="@+id/materialToolbar">
+
+        <TextView
+            android:id="@+id/hexTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="start"
+            android:nestedScrollingEnabled="true"
+            android:padding="@dimen/spacing_medium"
+            android:scrollbars="vertical"
+            tools:text="0100000010\n1\n101410" />
+
+    </androidx.cardview.widget.CardView>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/broadCastTransactionBtn"
+        android:layout_width="0dp"
+        android:layout_height="58dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/broadcast_transaction"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/md_green_400"
+        app:cornerRadius="28dp"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/scanHex"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/pasteHex" />
+
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:id="@+id/broadcastProgress"
+        android:elevation="2dp"
+        app:indicatorSize="24dp"
+        app:dotWidth="2dp"
+        android:visibility="gone"
+        app:indicatorColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/broadCastTransactionBtn"
+        app:layout_constraintEnd_toEndOf="@+id/broadCastTransactionBtn"
+        app:layout_constraintStart_toStartOf="@+id/broadCastTransactionBtn"
+        app:layout_constraintTop_toTopOf="@+id/broadCastTransactionBtn" />
+</androidx.constraintlayout.widget.ConstraintLayout>

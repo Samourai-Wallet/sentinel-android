@@ -80,7 +80,6 @@ dependencies {
     def topl_android_version = "2.1.0"
     def room_version = "2.2.6"
     def paging_version = "2.1.2"
-    def lottieVersion = "3.4.0"
 
     implementation ('io.samourai.code.wallet:ExtLibJ:0.0.16-aes') {
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
@@ -96,7 +95,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'org.apache.commons:commons-lang3:3.4'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.56'
-    implementation "com.airbnb.android:lottie:$lottieVersion"
 
     implementation 'com.google.guava:guava:24.1-jre'
     implementation 'com.google.code.gson:gson:2.8.6'
